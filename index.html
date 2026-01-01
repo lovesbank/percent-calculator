@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>퍼센트 계산기</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    max-width: 720px;
+    margin: 20px auto;
+    padding: 0 16px;
+    line-height: 1.6;
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-top: 28px;
+  }
+
+  .card {
+    background: #f5f5f7;
+    border: 1px solid #e5e5ea;
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 10px;
+  }
+
+  .row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  input, select, button {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  input {
+    width: 120px;
+  }
+
+  .result {
+    font-weight: 700;
+  }
+
+  button {
+    margin-top: 30px;
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<h2>전체값에서 일정 비율에 해당하는 값 계산</h2>
+<div class="card">
+  <div class="row">
+    전체값 <input type="number" id="total1" value="100">
+    의 비율값 <input type="number" id="rate1" value="20"> %
+  </div>
+  <div class="row result">
+    일부값 <span id="result1">20</span> 입니다.
+  </div>
+</div>
+
+<h2>전체값에서 일정 값에 해당하는 비율 계산</h2>
+<div class="card">
+  <div class="row">
+    전체값 <input type="number" id="total2" value="100">
+    에서 일부값 <input type="number" id="part2" value="20">
+  </div>
+  <div class="row result">
+    비율값 <span id="result2">20</span> % 입니다.
+  </div>
+</div>
+
+<h2>기준값이 변경값으로 변했을 때 증가/감소율</h2>
+<div class="card">
+  <div class="row">
+    기준값 <input type="number" id="base3" value="100">
+    이(가) 변경값 <input type="number" id="new3" value="150">
+    로 바뀌면
+  </div>
+  <div class="row result">
+    증가값 <span id="result3">50</span> % 입니다.
+  </div>
+</div>
+
+<h2>기준값에서 일정 비율로 증가/감소한 결과</h2>
+<div class="card">
+  <div class="row">
+    기준값 <input type="number" id="base4" value="100">
+    이(가) 비율값 <input type="number" id="rate4" value="20"> %
+    <select id="type4">
+      <option value="up">증가</option>
+      <option value="down">감소</option>
+    </select>
+    하면
+  </div>
+  <div class="row result">
+    변경값 <span id="result4">120</span> 입니다.
+  </div>
+</div>
+
+<button onclick="resetAll()">초기화</button>
+
+<script>
+function calcAll() {
+  // 1번
+  const total1 = +total1El.value;
+  const rate1 = +rate1El.value;
+  result1.textContent = ((total1 * rate1) / 100).toFixed(2);
+
+  // 2번
+  const total2 = +total2El.value;
+  const part2 = +part2El.value;
+  result2.textContent = total2 ? ((part2 / total2) * 100).toFixed(2) : 0;
+
+  // 3번
+  const base3 = +base3El.value;
+  const new3 = +new3El.value;
+  result3.textContent = base3 ? (((new3 - base3) / base3) * 100).toFixed(2) : 0;
+
+  // 4번
+  const base4 = +base4El.value;
+  const rate4 = +rate4El.value;
+  const type4 = type4El.value;
+  const value =
+    type4 === "up"
+      ? base4 * (1 + rate4 / 100)
+      : base4 * (1 - rate4 / 100);
+  result4.textContent = value.toFixed(2);
+}
+
+function resetAll() {
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.querySelectorAll("span").forEach(s => s.textContent = "0");
+}
+
+const total1El = document.getElementById("total1");
+const rate1El = document.getElementById("rate1");
+const total2El = document.getElementById("total2");
+const part2El = document.getElementById("part2");
+const base3El = document.getElementById("base3");
+const new3El = document.getElementById("new3");
+const base4El = document.getElementById("base4");
+const rate4El = document.getElementById("rate4");
+const type4El = document.getElementById("type4");
+
+document.querySelectorAll("input, select").forEach(el => {
+  el.addEventListener("input", calcAll);
+});
+
+calcAll();
+</script>
+
+</body>
+</html>
