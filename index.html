@@ -20,6 +20,15 @@
       --c-in:  #dfe8f6;
       --c-out: #f6ddcf;
       --c-bal: #d7f1ea;
+
+      /* ✅ 추가: 상단 3칸 배경색 */
+      --sum-carry:#e7f1ff;   /* 11월 이월금액 */
+      --sum-net:#fff3d9;     /* 수입-지출 */
+      --sum-end:#ffe3e3;     /* 12/31 통장잔액 */
+
+      /* ✅ 추가: 수입/지출 표 배경색 (적요/금액 + 헤더 같은 톤) */
+      --ie-inc:#e7f1ff;
+      --ie-exp:#ffe8dd;
     }
 
     *{ box-sizing:border-box; }
@@ -101,6 +110,8 @@
 
     /* =========================
        ✅ 제목(첫번째 캡쳐 스타일)
+       - 제목 바로 눌러 수정 가능
+       - 빨간 점선(점선 테두리) 완전 제거
        ========================= */
     .titleWrap{
       margin:6px 0 14px;
@@ -117,13 +128,15 @@
     .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
 
     .titleBox{
-      border:2px dashed #d12a2a;
+      /* ❌ dashed 제거 */
+      border:0;
       padding:10px 14px;
       display:flex;
       justify-content:center;
       align-items:center;
       background:#fff;
     }
+
     .titleText{
       font-weight:900;
       font-size:56px;
@@ -132,6 +145,12 @@
       color:#143a63;
       text-shadow: 4px 4px 0 rgba(0,0,0,.18);
       white-space:nowrap;
+
+      /* ✅ 제목 수정 가능 */
+      outline:none;
+      cursor:text;
+      -webkit-user-select:text;
+      user-select:text;
     }
 
     .summary{
@@ -144,6 +163,12 @@
     }
     .sumCell{ border-right:var(--b) solid var(--ink); }
     .sumCell:last-child{ border-right:0; }
+
+    /* ✅ 상단 3칸 각각 배경색 */
+    .summaryGrid .sumCell:nth-child(1){ background:var(--sum-carry); }
+    .summaryGrid .sumCell:nth-child(2){ background:var(--sum-net); }
+    .summaryGrid .sumCell:nth-child(3){ background:var(--sum-end); }
+
     .sumHead{
       border-bottom:var(--b) solid var(--ink);
       text-align:center;
@@ -226,6 +251,42 @@
     .colDesc2{ width:28%; }
     .colAmt2{ width:16%; }
     .colBigo{ width:12%; }
+
+    /* =========================
+       ✅ 12월 수입/지출 내역서 표 색 적용
+       - 수입(적요/금액) 2칸 배경색
+       - 지출(적요/금액) 2칸 배경색
+       - 헤더(적요/금액 줄)도 같은 톤
+       ========================= */
+    /* 헤더(적요/금액 줄) */
+    #incomeExpenseTable thead tr.subhead th:nth-child(1),
+    #incomeExpenseTable thead tr.subhead th:nth-child(2){
+      background:var(--ie-inc);
+    }
+    #incomeExpenseTable thead tr.subhead th:nth-child(3),
+    #incomeExpenseTable thead tr.subhead th:nth-child(4){
+      background:var(--ie-exp);
+    }
+
+    /* 본문: 수입 1~2열, 지출 3~4열 */
+    #incomeExpenseTable tbody td:nth-child(1),
+    #incomeExpenseTable tbody td:nth-child(2){
+      background:var(--ie-inc);
+    }
+    #incomeExpenseTable tbody td:nth-child(3),
+    #incomeExpenseTable tbody td:nth-child(4){
+      background:var(--ie-exp);
+    }
+
+    /* 합계줄도 톤 맞춤(선택: 보기 통일) */
+    #incomeExpenseTable tfoot th:nth-child(1),
+    #incomeExpenseTable tfoot th:nth-child(2){
+      background:var(--ie-inc);
+    }
+    #incomeExpenseTable tfoot th:nth-child(3),
+    #incomeExpenseTable tfoot th:nth-child(4){
+      background:var(--ie-exp);
+    }
 
     .bankWrap{
       border:var(--b) solid var(--ink);
@@ -327,13 +388,28 @@
       align-items:center;
       margin-top:2px;
     }
+
+    /* =========================
+       ✅ 하단 회사명/대표이사 “사진 같은 공문 느낌”
+       - 문구는 그대로, 폰트/크기/자간/무게만 스타일로 맞춤
+       ========================= */
     .bottomText{
       text-align:center;
-      font-weight:900;
-      letter-spacing:2px;
       padding:6px 0;
       white-space:nowrap;
       overflow:hidden;
+
+      font-family: "Noto Serif KR","Apple SD Gothic Neo",serif;
+      font-size:22px;
+      font-weight:500;
+      letter-spacing:4px;
+      line-height:1.4;
+      color:#111;
+    }
+    #ceoLine{
+      font-size:24px;
+      letter-spacing:6px;
+      font-weight:500;
     }
 
     /* ✅ 도장(직인) */
@@ -364,11 +440,11 @@
     <div class="sheetWrap" id="sheetWrap">
       <div class="sheet" id="sheet">
 
-        <!-- ✅ 제목(캡쳐처럼) -->
+        <!-- ✅ 제목(캡쳐처럼) + 바로 수정 가능 -->
         <div class="titleWrap">
           <div class="titleLineTop"></div>
           <div class="titleBox">
-            <div class="titleText">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
+            <div class="titleText" contenteditable="true">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
           </div>
           <div class="titleLineBot"></div>
         </div>
