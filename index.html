@@ -11,16 +11,15 @@
       --muted:#666;
       --red:#d82222;
 
-      --sheet-w: 920px;     /* “한 장” 기준 폭 */
+      --sheet-w: 920px;
       --pad: 18px;
-      --b: 3px;             /* 굵은 테두리 */
-      --b2: 2px;            /* 표 내부선 */
+      --b: 3px;
+      --b2: 2px;
       --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-      /* 은행 표 헤더 색 (캡처 톤) */
-      --c-in:  #dfe8f6;     /* 입금 */
-      --c-out: #f6ddcf;     /* 출금 */
-      --c-bal: #d7f1ea;     /* 잔액 */
+      --c-in:  #dfe8f6;
+      --c-out: #f6ddcf;
+      --c-bal: #d7f1ea;
     }
 
     *{ box-sizing:border-box; }
@@ -30,24 +29,36 @@
       background:#f3f4f6;
       font-family:var(--font);
       color:var(--ink);
-      overflow-x:hidden;                 /* ✅ iPhone 좌측 잘림/가로스크롤 방지 */
-      -webkit-text-size-adjust:100%;     /* ✅ iOS 글자 자동확대 방지 */
+      width:100%;
+      overflow-x:hidden;                 /* 가로스크롤 방지 */
+      -webkit-text-size-adjust:100%;
       text-size-adjust:100%;
     }
 
-    /* iPhone에서 사진처럼 “한 장” */
+    /* ✅ iPhone 안전영역 + 좌우 여유를 확실히 */
     .stage{
       width:100%;
-      padding:14px 10px 40px;            /* ✅ 좌우 여백 조금 안정화 */
-      overflow-x:hidden;                 /* ✅ 혹시라도 가로로 삐져나오면 숨김 */
+      padding-top:14px;
+      padding-bottom:40px;
+      padding-left:calc(10px + env(safe-area-inset-left));
+      padding-right:calc(10px + env(safe-area-inset-right));
+      overflow-x:hidden;                 /* 혹시 삐져나와도 숨김 */
+      position:relative;
     }
+
+    /* ✅ iOS에서 scale + center가 소수점으로 밀려 좌측이 잘리는 현상 방지:
+       margin:auto 대신 left:50% + translateX(-50%)로 강제 중앙 고정 */
     .sheetWrap{
       width:var(--sheet-w);
-      margin:0 auto;                     /* ✅ flex 대신 margin auto로 센터 */
+      position:relative;
+      left:50%;
       transform-origin: top center;
-      transform: scale(var(--scale, 1));
+      transform: translateX(-50%) scale(var(--scale, 1));
       will-change: transform;
+      backface-visibility:hidden;
+      -webkit-font-smoothing: antialiased;
     }
+
     .sheet{
       width:var(--sheet-w);
       background:#fff;
@@ -56,10 +67,9 @@
       padding:var(--pad);
     }
 
-    /* 입력칸처럼 안 보이게 */
     input{
       width:100%;
-      min-width:0;              /* ✅ 칸 늘어나는 거 방지 */
+      min-width:0;
       max-width:100%;
       border:0;
       outline:0;
@@ -79,23 +89,21 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* ✅ 모든 표: 절대 늘어나지 않게 고정 */
     table{
       width:100%;
       border-collapse:collapse;
-      table-layout:fixed;       /* ✅ 핵심 */
+      table-layout:fixed;
     }
     th, td{
-      overflow:hidden;          /* ✅ 핵심 */
-      white-space:nowrap;       /* ✅ 핵심 */
+      overflow:hidden;
+      white-space:nowrap;
       text-overflow:clip;
       vertical-align:middle;
-      min-width:0;              /* ✅ iOS에서 열 확장 방지 */
+      min-width:0;
     }
 
-    /* 제목 */
     .title{
-      text-align:center;        /* ✅ 정중앙 */
+      text-align:center;
       font-weight:900;
       font-size:56px;
       letter-spacing:-1px;
@@ -104,7 +112,6 @@
       line-height:1.02;
     }
 
-    /* 요약 3칸 */
     .summary{
       border:var(--b) solid var(--ink);
       margin:6px 0 12px;
@@ -139,7 +146,6 @@
 
     .miniNote{ display:none; }
 
-    /* 섹션 타이틀(동그라미 포함) */
     .sectionTitle{
       display:flex;
       align-items:center;
@@ -161,7 +167,6 @@
       cursor:text;
     }
 
-    /* 수입/지출 내역 표 */
     .tbl{
       border:var(--b) solid var(--ink);
     }
@@ -194,14 +199,12 @@
       font-weight:800;
     }
 
-    /* ✅ 수입/지출 표 열폭 (합계 100%로 고정) */
     .colDesc{ width:28%; }
     .colAmt{ width:16%; }
     .colDesc2{ width:28%; }
     .colAmt2{ width:16%; }
     .colBigo{ width:12%; }
 
-    /* 은행 영역 */
     .bankWrap{
       border:var(--b) solid var(--ink);
       padding:10px;
@@ -216,8 +219,8 @@
     }
     .bankTbl th, .bankTbl td{
       border:var(--b2) solid var(--grid);
-      padding:6px 6px;          /* ✅ 숫자 공간 확보 */
-      font-size:14px;           /* ✅ 억/십억 단위도 안 잘리게 */
+      padding:6px 6px;
+      font-size:14px;
     }
     .bankTopTitle{
       border-bottom:var(--b2) solid var(--grid);
@@ -228,7 +231,6 @@
       background:#fff;
     }
 
-    /* 전월이월액 줄 */
     .prevRow{
       display:grid;
       grid-template-columns: 140px 1fr;
@@ -249,7 +251,6 @@
       min-width:0;
     }
 
-    /* ✅ 은행 컬럼 폭: 적요 더 줄이고(28%), 금액 24%씩(총 100%) */
     .bankTbl col.desc{ width:28%; }
     .bankTbl col.in{ width:24%; }
     .bankTbl col.out{ width:24%; }
@@ -260,11 +261,9 @@
     .thOut{ background:var(--c-out) !important; }
     .thBal{ background:var(--c-bal) !important; }
 
-    /* 적요/금액 칸에 살짝 색 */
     .cellDesc{ background:#fbfbfb; }
     .cellAmt{ background:#fdfdfd; }
 
-    /* 통합잔액 박스 */
     .integratedBox{
       border:var(--b) solid var(--ink);
       margin-top:10px;
@@ -288,7 +287,6 @@
       overflow:hidden;
     }
 
-    /* 하단: 테두리 제거 */
     .bottomArea{
       position:relative;
       margin-top:14px;
@@ -316,7 +314,6 @@
       overflow:hidden;
     }
 
-    /* 도장 오버레이 */
     .stampOverlay{
       position:absolute;
       right:34px;
@@ -332,7 +329,7 @@
       body{ background:#fff; }
       .stage{ padding:0; }
       .sheet{ border:0; box-shadow:none; }
-      .sheetWrap{ transform:none !important; }
+      .sheetWrap{ transform: translateX(-50%) scale(1) !important; }
     }
   </style>
 </head>
@@ -344,39 +341,25 @@
 
         <div class="title">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산 보고서</div>
 
-        <!-- 요약 3칸 -->
         <div class="summary">
           <div class="summaryGrid">
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true">11월 이월금액</span>
-              </div>
-              <div class="sumVal">
-                <input id="carry" class="num money" inputmode="numeric" value="25,554,575">
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">11월 이월금액</span></div>
+              <div class="sumVal"><input id="carry" class="num money" inputmode="numeric" value="25,554,575"></div>
             </div>
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true">수 입 - 지 출</span>
-              </div>
-              <div class="sumVal">
-                <input id="net" class="num" value="0" readonly>
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">수 입 - 지 출</span></div>
+              <div class="sumVal"><input id="net" class="num" value="0" readonly></div>
             </div>
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true">12월 31일 통 장 잔 액</span>
-              </div>
-              <div class="sumVal red">
-                <input id="endBal" class="num" value="0" readonly>
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">12월 31일 통 장 잔 액</span></div>
+              <div class="sumVal red"><input id="endBal" class="num" value="0" readonly></div>
             </div>
           </div>
         </div>
 
         <div class="miniNote"></div>
 
-        <!-- 12월 수입/지출 내역서 -->
         <div class="sectionTitle">
           <span class="dot"></span>
           <span class="editText" contenteditable="true" id="titleIncomeExpense">12월 수입/지출 내역서</span>
@@ -487,7 +470,6 @@
           </tfoot>
         </table>
 
-        <!-- 12월 은행 입출금 내역 -->
         <div class="sectionTitle" style="margin-top:14px;">
           <span class="dot"></span>
           <span class="editText" contenteditable="true" id="titleBank">12월 은행 입출금 내역</span>
@@ -496,20 +478,15 @@
         <div class="bankWrap">
           <div class="bankTables">
 
-            <!-- 기업은행 -->
             <div>
-              <div class="bankTopTitle">
-                <span class="editText" contenteditable="true">기 업 은 행</span>
-              </div>
+              <div class="bankTopTitle"><span class="editText" contenteditable="true">기 업 은 행</span></div>
               <div class="prevRow">
                 <div class="label"><span class="editText" contenteditable="true">전월이월액</span></div>
                 <div class="val"><input id="ibPrev" class="num money" inputmode="numeric" value="15,541,634"></div>
               </div>
 
               <table class="bankTbl" id="ibTable">
-                <colgroup>
-                  <col class="desc"><col class="in"><col class="out"><col class="bal">
-                </colgroup>
+                <colgroup><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
                 <thead>
                   <tr>
                     <th class="center">적&nbsp;&nbsp;요</th>
@@ -545,20 +522,15 @@
               </table>
             </div>
 
-            <!-- 농협 -->
             <div>
-              <div class="bankTopTitle">
-                <span class="editText" contenteditable="true">농&nbsp;&nbsp;협</span>
-              </div>
+              <div class="bankTopTitle"><span class="editText" contenteditable="true">농&nbsp;&nbsp;협</span></div>
               <div class="prevRow">
                 <div class="label"><span class="editText" contenteditable="true">전월이월액</span></div>
                 <div class="val"><input id="nhPrev" class="num money" inputmode="numeric" value="10,012,941"></div>
               </div>
 
               <table class="bankTbl" id="nhTable">
-                <colgroup>
-                  <col class="desc"><col class="in"><col class="out"><col class="bal">
-                </colgroup>
+                <colgroup><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
                 <thead>
                   <tr>
                     <th class="center">적&nbsp;&nbsp;요</th>
@@ -598,17 +570,13 @@
           </div>
 
           <div class="integratedBox">
-            <div class="integratedTitle">
-              <span class="editText" contenteditable="true">12월 31일 통합잔액</span>
-            </div>
+            <div class="integratedTitle"><span class="editText" contenteditable="true">12월 31일 통합잔액</span></div>
             <div class="integratedVal" id="integratedBal">0</div>
           </div>
         </div>
 
         <div class="bottomArea">
-          <div class="bottomDate">
-            <span class="editText" contenteditable="true">2025년 12월 31일</span>
-          </div>
+          <div class="bottomDate"><span class="editText" contenteditable="true">2025년 12월 31일</span></div>
           <div class="bottomRow">
             <div class="bottomText"><span class="editText" contenteditable="true">염전마을주민발전주식회사</span></div>
             <div class="bottomText" id="ceoLine"><span class="editText" contenteditable="true">대표이사&nbsp;&nbsp;&nbsp;김&nbsp;진&nbsp;욱</span></div>
@@ -621,20 +589,31 @@
   </div>
 
   <script>
-    /* ===== iPhone “한 장 자동 축소” ===== */
+    /* ===== iPhone “한 장 자동 축소” (좌우 safe-area 포함해서 계산) ===== */
     (function(){
       const wrap = document.getElementById('sheetWrap');
+      const stage = document.querySelector('.stage');
+
+      function px(v){ return Number(String(v).replace('px','')) || 0; }
+
       function fit(){
-        const vw = document.documentElement.clientWidth;        // ✅ iOS에서 더 안정적
+        const vw = document.documentElement.clientWidth;
         const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
-        const scale = Math.min(1, (vw - 20) / base);            // ✅ 좌우 패딩 고려
+
+        const st = getComputedStyle(stage);
+        const padL = px(st.paddingLeft);
+        const padR = px(st.paddingRight);
+
+        const usable = Math.max(320, vw - padL - padR);   // 화면 실사용 폭
+        const scale = Math.min(1, usable / base);
+
         wrap.style.setProperty('--scale', scale.toFixed(4));
       }
+
       window.addEventListener('resize', fit, {passive:true});
       fit();
     })();
 
-    /* ===== 숫자 파싱/포맷 ===== */
     function toNumber(v){
       if (v == null) return 0;
       const s = String(v).replace(/[^\d\-]/g,'');
@@ -661,9 +640,7 @@
 
     function sumInputs(selector){
       let s = 0;
-      document.querySelectorAll(selector).forEach(el=>{
-        s += toNumber(el.value);
-      });
+      document.querySelectorAll(selector).forEach(el=>{ s += toNumber(el.value); });
       return s;
     }
 
@@ -679,16 +656,14 @@
       document.getElementById('net').value = fmt(net);
 
       const carry = toNumber(document.getElementById('carry').value);
-      const endBal = carry + net;
-      document.getElementById('endBal').value = fmt(endBal);
+      document.getElementById('endBal').value = fmt(carry + net);
     }
 
     function recalcBankOne(prefix, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
       let bal = toNumber(document.getElementById(prevId).value);
       let inSum = 0, outSum = 0;
 
-      const rows = document.querySelectorAll(prefix + ' tbody tr');
-      rows.forEach(tr=>{
+      document.querySelectorAll(prefix + ' tbody tr').forEach(tr=>{
         const inEl  = tr.querySelector(inSel);
         const outEl = tr.querySelector(outSel);
         const balEl = tr.querySelector(balSel);
@@ -700,10 +675,7 @@
         outSum += out;
 
         bal = bal + inn - out;
-
-        if (balEl){
-          balEl.value = fmt(bal);
-        }
+        if (balEl) balEl.value = fmt(bal);
       });
 
       document.getElementById(inSumId).value = fmt(inSum);
@@ -714,20 +686,9 @@
     }
 
     function recalcBank(){
-      const ibEnd = recalcBankOne(
-        '#ibTable', 'ibPrev',
-        '.ib-in', '.ib-out', '.ib-bal',
-        'ibInSum','ibOutSum','ibEnd'
-      );
-
-      const nhEnd = recalcBankOne(
-        '#nhTable', 'nhPrev',
-        '.nh-in', '.nh-out', '.nh-bal',
-        'nhInSum','nhOutSum','nhEnd'
-      );
-
-      const integrated = ibEnd + nhEnd;
-      document.getElementById('integratedBal').textContent = fmt(integrated);
+      const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
+      const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
+      document.getElementById('integratedBal').textContent = fmt(ibEnd + nhEnd);
     }
 
     function recalcAll(){
@@ -736,7 +697,6 @@
     }
     recalcAll();
 
-    /* ===== 도장: GitHub에 stamp.png 올리면 그대로 로드 ===== */
     const STAMP_DATA_URL = 'stamp.png';
 
     async function makeStampTransparent(){
@@ -759,17 +719,13 @@
         for(let i=0;i<d.length;i+=4){
           const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
           if (a===0) continue;
-          if (r>235 && g>235 && b>235){
-            d[i+3]=0;
-          }
+          if (r>235 && g>235 && b>235) d[i+3]=0;
         }
         ctx.putImageData(imgData,0,0);
         out.src = c.toDataURL('image/png');
       };
 
-      img.onerror = ()=>{
-        out.style.display='none';
-      };
+      img.onerror = ()=>{ out.style.display='none'; };
     }
     makeStampTransparent();
   </script>
