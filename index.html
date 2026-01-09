@@ -8,19 +8,23 @@
     :root{
       --ink:#111;
       --grid:#222;
-      --muted:#666;
-      --red:#d82222;
-      --paper:#fff;
       --bg:#f3f4f6;
+      --paper:#fff;
+      --red:#d82222;
 
-      /* 시트 기준 폭(숫자 잘림 방지 위해 넉넉히) */
-      --sheet-w: 980px;
-      --sheet-pad: 22px;
+      /* “사진처럼 한 장” 기준 폭 */
+      --sheet-w: 900px;
+      --pad: 18px;
 
-      --b: 3px;   /* 굵은 테두리 */
-      --b2: 2px;  /* 내부 테두리 */
+      --b: 3px;
+      --b2: 2px;
 
       --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+
+      /* 은행표 헤더 색(캡쳐 느낌) */
+      --in-bg:#dfe9ff;
+      --out-bg:#ffe4db;
+      --bal-bg:#dff7e7;
     }
 
     *{ box-sizing:border-box; }
@@ -31,13 +35,13 @@
       color:var(--ink);
     }
 
-    /* iPhone에서 “사진처럼 한 장” 자동 축소 */
+    /* iPhone에서 “사진처럼 한 장” 자동 스케일 */
     .stage{
       display:flex;
       justify-content:center;
-      padding:14px 8px 36px;
+      padding:14px 8px 40px;
     }
-    .sheetWrap{
+    .wrap{
       width:var(--sheet-w);
       transform-origin: top center;
       transform: scale(var(--scale, 1));
@@ -47,11 +51,11 @@
       background:var(--paper);
       border:1px solid #d5d7db;
       box-shadow:0 8px 28px rgba(0,0,0,.08);
-      padding:var(--sheet-pad);
+      padding:var(--pad);
     }
 
-    /* 입력칸처럼 안 보이게 */
-    input.plain{
+    /* “입력칸처럼 안 보이게” */
+    input{
       width:100%;
       border:0;
       outline:none;
@@ -61,87 +65,57 @@
       padding:0;
       margin:0;
       min-width:0;
+      font-size:16px; /* iOS 자동 줌 방지 */
+      line-height:1.2;
     }
-    input.plain::placeholder{ color:#bbb; }
-    input.num{
+    .num{
       text-align:right;
-      letter-spacing:0.2px;
       font-variant-numeric: tabular-nums;
+      letter-spacing:0.2px;
+    }
+    .readonly{
+      pointer-events:none;
+      user-select:text;
     }
 
-    /* 타이틀 */
+    /* 제목 정중앙 + 수정 가능 */
     .title{
       text-align:center;
       font-weight:900;
-      font-size:56px;
+      font-size:54px;
       letter-spacing:-1px;
-      margin:6px 0 18px;
+      margin:8px 0 14px;
       color:#143a63;
-      line-height:1.02;
+      line-height:1.05;
     }
+    .title input{ text-align:center; font-weight:900; font-size:54px; color:#143a63; }
 
-    /* 로고 + 사인(캡쳐처럼) */
-    .topRow{
-      display:grid;
-      grid-template-columns: 1fr 1.25fr;
-      gap:18px;
-      align-items:stretch;
-      margin-bottom:12px;
+    /* 공통 표 */
+    table{ width:100%; border-collapse:collapse; table-layout:fixed; }
+    .tbl{ border:var(--b) solid var(--ink); }
+    .tbl th,.tbl td{
+      border:var(--b2) solid var(--grid);
+      padding:6px 8px;
+      font-size:15px;
+      vertical-align:middle;
     }
-    .logoBox{
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      padding:6px 6px 6px 2px;
+    .tbl th{
+      background:#f2f2f2;
+      text-align:center;
+      font-weight:900;
+      letter-spacing:2px;
     }
-    .logoBox img{
-      width:100%;
-      max-width:430px;
-      height:auto;
-      display:block;
-      object-fit:contain;
-    }
+    .center{ text-align:center; }
+    .right{ text-align:right; }
+    .bold{ font-weight:900; }
 
-    .signBox{
-      border:var(--b) solid var(--ink);
-      display:grid;
-      grid-template-columns: 110px 1fr;
-      height:84px;
-    }
-    .signLabel{
-      border-right:var(--b) solid var(--ink);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      font-size:18px;
-      letter-spacing:6px;
-    }
-    .signArea{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:6px 10px;
-    }
-    .signArea img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      display:block;
-    }
-
-    /* 상단 요약 3칸(캡쳐 느낌) */
+    /* 상단 요약 3칸 */
     .summary{
       border:var(--b) solid var(--ink);
-      margin:8px 0 14px;
+      margin:4px 0 14px;
     }
-    .summaryGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    .sumCell{
-      border-right:var(--b) solid var(--ink);
-    }
+    .summaryGrid{ display:grid; grid-template-columns: 1fr 1fr 1fr; }
+    .sumCell{ border-right:var(--b) solid var(--ink); }
     .sumCell:last-child{ border-right:0; }
     .sumHead{
       border-bottom:var(--b) solid var(--ink);
@@ -149,36 +123,28 @@
       font-size:20px;
       padding:10px 8px;
       letter-spacing:2px;
+      font-weight:900;
     }
     .sumVal{
       text-align:center;
       font-weight:900;
-      font-size:34px;
+      font-size:36px;
       padding:14px 10px;
-      font-variant-numeric: tabular-nums;
     }
     .sumVal input{
-      font-weight:900;
-      font-size:34px;
       text-align:center;
+      font-weight:900;
+      font-size:36px;
     }
     .sumVal.red{ color:var(--red); }
     .sumVal.red input{ color:var(--red); }
 
-    .sumSub{
-      margin-top:4px;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      letter-spacing:1px;
-    }
-
-    /* 섹션 타이틀(동그라미 포함) */
+    /* 섹션 타이틀 */
     .sectionTitle{
       display:flex;
       align-items:center;
       gap:10px;
-      margin:10px 0 8px;
+      margin:12px 0 8px;
       font-weight:900;
       font-size:22px;
     }
@@ -189,36 +155,7 @@
       flex:0 0 auto;
     }
 
-    /* 표 공통 */
-    table{
-      width:100%;
-      border-collapse:collapse;
-      table-layout:fixed;
-    }
-    .tbl{
-      border:var(--b) solid var(--ink);
-    }
-    .tbl th, .tbl td{
-      border:var(--b2) solid var(--grid);
-      padding:6px 8px;
-      font-size:16px;
-      vertical-align:middle;
-    }
-    .tbl th{
-      background:#f2f2f2;
-      text-align:center;
-      font-weight:900;
-      letter-spacing:2px;
-    }
-    .tbl .subhead th{
-      background:#f7f7f7;
-      font-weight:900;
-      letter-spacing:1px;
-    }
-    .center{ text-align:center; }
-    .right{ text-align:right; }
-    .bold{ font-weight:900; }
-
+    /* 수입/지출 안내 줄 */
     .noteLine{
       border:var(--b) solid var(--ink);
       padding:8px 10px;
@@ -226,237 +163,177 @@
       font-size:14px;
       color:#222;
       text-align:center;
-      font-weight:800;
+      font-weight:700;
     }
 
-    /* 수입/지출 표 열폭(숫자 잘림 방지) */
-    .io col.cDesc{ width:34%; }
-    .io col.cAmt{ width:16%; }
-    .io col.cDesc2{ width:34%; }
-    .io col.cAmt2{ width:16%; }
-    .io col.cBigo{ width:18%; }
+    /* 수입/지출 표 컬럼 */
+    .io col.inDesc{ width:30%; }
+    .io col.inAmt{ width:14%; }
+    .io col.outDesc{ width:30%; }
+    .io col.outAmt{ width:14%; }
+    .io col.bigo{ width:12%; }
 
-    /* 은행 영역: 통장잔액 컬럼/문구 전부 삭제, 대신 기업/농협 넓게 */
-    .bankWrap{
+    /* 은행 영역(통장잔액 표/컬럼 완전 삭제 → 기업/농협 폭 확장) */
+    .bankArea{
       border:var(--b) solid var(--ink);
       padding:10px;
     }
-    .bankTables{
+    .bankTopTitles{
       display:grid;
-      grid-template-columns: 1fr 1fr; /* 기업/농협만 */
-      gap:12px;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-bottom:8px;
     }
-    .bankCardTitle{
+    .bankTitle{
       border:var(--b) solid var(--ink);
       text-align:center;
       font-weight:900;
       padding:6px 0;
-      letter-spacing:4px;
+      letter-spacing:5px;
       font-size:18px;
-      margin-bottom:8px;
     }
-
-    .bankTbl{
-      border:var(--b) solid var(--ink);
+    .bankGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      align-items:start;
     }
-    .bankTbl th, .bankTbl td{
+    .bankTbl{ border:var(--b) solid var(--ink); }
+    .bankTbl th,.bankTbl td{
       border:var(--b2) solid var(--grid);
       padding:6px 8px;
-      font-size:15px;
+      font-size:14px;
     }
-    .bankTbl th{
-      background:#f2f2f2;
-      text-align:center;
+    .bankTbl .prevRow td{
       font-weight:900;
-      letter-spacing:2px;
+      background:#f7f7f7;
     }
+    .bankTbl .prevRow td:first-child{
+      text-align:center;
+      letter-spacing:2px;
+      width:140px;
+      white-space:nowrap;
+    }
+    .bankTbl .head2 th{ font-weight:900; letter-spacing:2px; }
+    .bankTbl .h-in{ background:var(--in-bg); }
+    .bankTbl .h-out{ background:var(--out-bg); }
+    .bankTbl .h-bal{ background:var(--bal-bg); }
 
-    /* 은행 표 컬럼 폭: 숫자 절대 안 잘리게 넓게 */
+    /* 숫자 안 잘리게 컬럼 배분(기업/농협 폭 자체가 넓어짐) */
     .bankTbl col.desc{ width:38%; }
     .bankTbl col.in{ width:20%; }
     .bankTbl col.out{ width:20%; }
     .bankTbl col.bal{ width:22%; }
 
-    .prevRow{
-      display:grid;
-      grid-template-columns: 160px 1fr;
-      border-bottom:var(--b2) solid var(--grid);
-    }
-    .prevRow > div{
-      padding:8px 8px;
+    /* 은행 합계행 */
+    .sumRow td{
       font-weight:900;
-      font-size:15px;
-    }
-    .prevRow .label{
       background:#f7f7f7;
-      border-right:var(--b2) solid var(--grid);
-      text-align:center;
-      letter-spacing:2px;
     }
 
-    /* 통합잔액(맨 아래만 유지) */
-    .integratedBox{
+    /* 통합잔액(맨 아래 1칸만 유지) */
+    .integrated{
       border:var(--b) solid var(--ink);
-      margin-top:12px;
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr 260px;
+      align-items:stretch;
+    }
+    .integrated .label{
       padding:10px 12px;
-    }
-    .integratedTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:6px;
-    }
-    .integratedTitle{
       font-weight:900;
       letter-spacing:2px;
-      font-size:16px;
+      display:flex;
+      align-items:center;
     }
-    .integratedHint{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      letter-spacing:1px;
-      text-align:right;
-      flex:1;
-    }
-    .integratedVal{
-      width:100%;
-      text-align:right;
+    .integrated .val{
+      border-left:var(--b2) solid var(--grid);
+      padding:10px 12px;
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
       font-size:34px;
       font-weight:900;
       color:var(--red);
       font-variant-numeric: tabular-nums;
     }
 
-    /* 하단 */
-    .bottomDate{
-      margin:14px 0 12px;
-      border:var(--b) solid var(--ink);
-      padding:8px 10px;
+    /* 하단: 테두리 제거(요구사항) */
+    .footerDate{
+      margin:14px 0 10px;
       text-align:center;
       font-weight:900;
       letter-spacing:2px;
     }
-    .bottomDate input{
-      text-align:center;
-      font-weight:900;
-      letter-spacing:2px;
-    }
-
-    .bottomRow{
+    .footerDate input{ text-align:center; font-weight:900; letter-spacing:2px; }
+    .footerRow{
       display:grid;
-      grid-template-columns: 1fr 1fr 170px;
+      grid-template-columns: 1fr 1fr;
       gap:12px;
       align-items:center;
       margin-top:6px;
     }
-    .bottomBox{
-      border:var(--b) solid var(--ink);
-      padding:10px 12px;
-      font-weight:900;
+    .footerText{
       text-align:center;
+      font-weight:900;
       letter-spacing:2px;
+      font-size:22px;
+      padding:8px 0;
     }
-    .stampBox{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-    .stampBox img{
-      width:120px;
-      height:120px;
-      object-fit:contain;
-      display:block;
-    }
+    .footerText input{ text-align:center; font-weight:900; font-size:22px; letter-spacing:2px; }
 
-    /* 자동계산 표시(수정은 못하게) */
-    .auto{
-      pointer-events:none;
-      user-select:text;
-      color:inherit;
-    }
-    .auto.num{ text-align:right; }
-    .auto.red{ color:var(--red); }
-
-    /* 프린트 */
     @media print{
       body{ background:#fff; }
       .stage{ padding:0; }
       .sheet{ border:0; box-shadow:none; }
-      .sheetWrap{ transform:none !important; }
+      .wrap{ transform:none !important; }
     }
   </style>
 </head>
 
 <body>
   <div class="stage">
-    <div class="sheetWrap" id="sheetWrap">
+    <div class="wrap" id="wrap">
       <div class="sheet" id="sheet">
 
-        <!-- 타이틀(수정 가능) -->
+        <!-- ✅ 상단 로고/사인/직인 영역 완전 삭제 -->
         <div class="title">
-          <input class="plain" id="titleText" value="2025년 12월 결산 보고서" />
+          <input id="docTitle" value="2025년 12월 결산 보고서">
         </div>
 
-        <!-- 상단 로고 + 대표 사인(이미지 코드에 직접 삽입) -->
-        <div class="topRow">
-          <div class="logoBox">
-            <img id="logoImg" alt="로고" />
-          </div>
-
-          <div class="signBox">
-            <div class="signLabel">대 표</div>
-            <div class="signArea">
-              <img id="signImg" alt="대표 사인" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 상단 요약 3칸 -->
+        <!-- ✅ 상단 요약 3칸(설명문구 숨김 / 숫자 자동) -->
         <div class="summary">
           <div class="summaryGrid">
             <div class="sumCell">
-              <div class="sumHead"><input class="plain" value="11월 이월금액" style="text-align:center;font-weight:900;letter-spacing:2px;" /></div>
+              <div class="sumHead">11월 이월금액</div>
               <div class="sumVal">
-                <input class="plain num" id="carryIn" value="25,554,575" inputmode="numeric" />
+                <input id="carry" class="num" inputmode="numeric" value="25,554,575">
               </div>
             </div>
-
             <div class="sumCell">
-              <div class="sumHead"><input class="plain" value="수 입 - 지 출" style="text-align:center;font-weight:900;letter-spacing:2px;" /></div>
+              <div class="sumHead">수&nbsp;&nbsp;입 - 지&nbsp;&nbsp;출</div>
               <div class="sumVal">
-                <div class="auto num" id="netTop">0</div>
-                <div class="sumSub">* 2번 표 합계(수입-지출) 자동</div>
+                <input id="net" class="num readonly" tabindex="-1" value="0">
               </div>
             </div>
-
             <div class="sumCell">
-              <div class="sumHead"><input class="plain" value="12월 31일 통 장 잔 액" style="text-align:center;font-weight:900;letter-spacing:2px;" /></div>
+              <div class="sumHead">12월 31일 통 장 잔 액</div>
               <div class="sumVal red">
-                <div class="auto num red" id="finalTop">0</div>
-                <div class="sumSub">* 이월금액 + (수입-지출) 자동</div>
+                <input id="endBal" class="num readonly" tabindex="-1" value="0">
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 12월 수입/지출 내역서 -->
+        <!-- ✅ 12월 수입/지출 내역서 -->
         <div class="sectionTitle">
-          <div class="dot"></div>
-          <div><input class="plain" value="12월 수입/지출 내역서" style="font-weight:900;font-size:22px;" /></div>
+          <span class="dot"></span><span>12월 수입/지출 내역서</span>
         </div>
-        <div class="noteLine">
-          <input class="plain" value="( 수입은 한달전 생산된 금액입니다. 한달지연 입금됩니다 )" style="text-align:center;font-weight:800;" />
-        </div>
+        <div class="noteLine">( 수입은 한달전 생산된 금액입니다. 한달지연 입금됩니다 )</div>
 
-        <table class="tbl io" id="ioTable">
+        <table class="tbl io" id="ioTbl">
           <colgroup>
-            <col class="cDesc" />
-            <col class="cAmt" />
-            <col class="cDesc2" />
-            <col class="cAmt2" />
-            <col class="cBigo" />
+            <col class="inDesc"><col class="inAmt"><col class="outDesc"><col class="outAmt"><col class="bigo">
           </colgroup>
           <thead>
             <tr>
@@ -464,136 +341,113 @@
               <th colspan="2">지&nbsp;&nbsp;출</th>
               <th>비&nbsp;&nbsp;고</th>
             </tr>
-            <tr class="subhead">
-              <th class="center">적&nbsp;&nbsp;요</th>
-              <th class="center">금&nbsp;&nbsp;액</th>
-              <th class="center">적&nbsp;&nbsp;요</th>
-              <th class="center">금&nbsp;&nbsp;액</th>
-              <th class="center"></th>
+            <tr>
+              <th>적&nbsp;&nbsp;요</th><th>금&nbsp;&nbsp;액</th>
+              <th>적&nbsp;&nbsp;요</th><th>금&nbsp;&nbsp;액</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="ioBody"></tbody>
           <tfoot>
-            <tr>
+            <tr class="sumRow">
               <td class="center bold">합&nbsp;&nbsp;계</td>
-              <td class="right bold"><div class="auto num" id="incomeSum">0</div></td>
+              <td><input id="ioInSum" class="num readonly" tabindex="-1" value="0"></td>
               <td class="center bold">합&nbsp;&nbsp;계</td>
-              <td class="right bold"><div class="auto num" id="expenseSum">0</div></td>
-              <td class="right bold"><div class="auto num" id="netSum">0</div></td>
+              <td><input id="ioOutSum" class="num readonly" tabindex="-1" value="0"></td>
+              <td><input id="ioNetEcho" class="num readonly" tabindex="-1" value="0"></td>
             </tr>
           </tfoot>
         </table>
 
-        <!-- 12월 은행 입출금 내역 -->
+        <!-- ✅ 12월 은행 입출금 내역 -->
         <div class="sectionTitle" style="margin-top:14px;">
-          <div class="dot"></div>
-          <div><input class="plain" value="12월 은행 입출금 내역" style="font-weight:900;font-size:22px;" /></div>
+          <span class="dot"></span><span>12월 은행 입출금 내역</span>
         </div>
 
-        <div class="bankWrap">
-          <div class="bankTables">
+        <div class="bankArea">
+          <div class="bankTopTitles">
+            <div class="bankTitle">기 업 은 행</div>
+            <div class="bankTitle">농&nbsp;&nbsp;협</div>
+          </div>
+
+          <!-- ✅ 통장잔액 표/컬럼 자체 삭제: 2개 표만 존재 -->
+          <div class="bankGrid">
 
             <!-- 기업은행 -->
-            <div>
-              <div class="bankCardTitle"><input class="plain" value="기 업 은 행" style="text-align:center;font-weight:900;letter-spacing:4px;" /></div>
-
-              <div class="prevRow">
-                <div class="label">전월이월액</div>
-                <div class="right">
-                  <input class="plain num" id="ibkPrev" value="15,541,634" inputmode="numeric" />
-                </div>
-              </div>
-
-              <table class="bankTbl" id="ibkTable">
-                <colgroup>
-                  <col class="desc" />
-                  <col class="in" />
-                  <col class="out" />
-                  <col class="bal" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>적&nbsp;&nbsp;요</th>
-                    <th>입&nbsp;&nbsp;금</th>
-                    <th>출&nbsp;&nbsp;금</th>
-                    <th style="background:#dff3e6;">잔&nbsp;&nbsp;액</th>
-                  </tr>
-                </thead>
-                <tbody id="ibkBody"></tbody>
-                <tfoot>
-                  <tr>
-                    <td class="center bold">합&nbsp;&nbsp;계</td>
-                    <td class="right bold"><div class="auto num" id="ibkInSum">0</div></td>
-                    <td class="right bold"><div class="auto num" id="ibkOutSum">0</div></td>
-                    <td class="right bold"><div class="auto num" id="ibkEnd">0</div></td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
+            <table class="bankTbl" id="ibkTbl">
+              <colgroup>
+                <col class="desc"><col class="in"><col class="out"><col class="bal">
+              </colgroup>
+              <thead>
+                <tr class="prevRow">
+                  <td class="center">전월이월액</td>
+                  <td colspan="3"><input id="ibkPrev" class="num" inputmode="numeric" value="15,541,634"></td>
+                </tr>
+                <tr class="head2">
+                  <th>적&nbsp;&nbsp;요</th>
+                  <th class="h-in">입&nbsp;&nbsp;금</th>
+                  <th class="h-out">출&nbsp;&nbsp;금</th>
+                  <th class="h-bal">잔&nbsp;&nbsp;액</th>
+                </tr>
+              </thead>
+              <tbody id="ibkBody"></tbody>
+              <tfoot>
+                <tr class="sumRow">
+                  <td class="center bold">합&nbsp;&nbsp;계</td>
+                  <td><input id="ibkInSum" class="num readonly" tabindex="-1" value="0"></td>
+                  <td><input id="ibkOutSum" class="num readonly" tabindex="-1" value="0"></td>
+                  <td><input id="ibkFinal" class="num readonly" tabindex="-1" value="0"></td>
+                </tr>
+              </tfoot>
+            </table>
 
             <!-- 농협 -->
-            <div>
-              <div class="bankCardTitle"><input class="plain" value="농&nbsp;&nbsp;협" style="text-align:center;font-weight:900;letter-spacing:4px;" /></div>
-
-              <div class="prevRow">
-                <div class="label">전월이월액</div>
-                <div class="right">
-                  <input class="plain num" id="nhPrev" value="10,012,941" inputmode="numeric" />
-                </div>
-              </div>
-
-              <table class="bankTbl" id="nhTable">
-                <colgroup>
-                  <col class="desc" />
-                  <col class="in" />
-                  <col class="out" />
-                  <col class="bal" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>적&nbsp;&nbsp;요</th>
-                    <th>입&nbsp;&nbsp;금</th>
-                    <th>출&nbsp;&nbsp;금</th>
-                    <th style="background:#dff3e6;">잔&nbsp;&nbsp;액</th>
-                  </tr>
-                </thead>
-                <tbody id="nhBody"></tbody>
-                <tfoot>
-                  <tr>
-                    <td class="center bold">합&nbsp;&nbsp;계</td>
-                    <td class="right bold"><div class="auto num" id="nhInSum">0</div></td>
-                    <td class="right bold"><div class="auto num" id="nhOutSum">0</div></td>
-                    <td class="right bold"><div class="auto num" id="nhEnd">0</div></td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
+            <table class="bankTbl" id="nhTbl">
+              <colgroup>
+                <col class="desc"><col class="in"><col class="out"><col class="bal">
+              </colgroup>
+              <thead>
+                <tr class="prevRow">
+                  <td class="center">전월이월액</td>
+                  <td colspan="3"><input id="nhPrev" class="num" inputmode="numeric" value="10,012,941"></td>
+                </tr>
+                <tr class="head2">
+                  <th>적&nbsp;&nbsp;요</th>
+                  <th class="h-in">입&nbsp;&nbsp;금</th>
+                  <th class="h-out">출&nbsp;&nbsp;금</th>
+                  <th class="h-bal">잔&nbsp;&nbsp;액</th>
+                </tr>
+              </thead>
+              <tbody id="nhBody"></tbody>
+              <tfoot>
+                <tr class="sumRow">
+                  <td class="center bold">합&nbsp;&nbsp;계</td>
+                  <td><input id="nhInSum" class="num readonly" tabindex="-1" value="0"></td>
+                  <td><input id="nhOutSum" class="num readonly" tabindex="-1" value="0"></td>
+                  <td><input id="nhFinal" class="num readonly" tabindex="-1" value="0"></td>
+                </tr>
+              </tfoot>
+            </table>
 
           </div>
 
-          <!-- 맨 아래 통합잔액(이 칸만 유지 / 통장잔액 문구는 없음) -->
-          <div class="integratedBox">
-            <div class="integratedTop">
-              <div class="integratedTitle">12월 31일 통합잔액</div>
-              <div class="integratedHint">* 기업은행 최종잔액 + 농협 최종잔액 자동</div>
-            </div>
-            <div class="integratedVal" id="integratedVal">0</div>
+          <!-- ✅ 맨 아래 “12월 31일 통합잔액” 1칸만 유지 (통장잔액 문구/칸 없음) -->
+          <div class="integrated">
+            <div class="label">12월 31일 통합잔액</div>
+            <div class="val" id="integratedVal">0</div>
           </div>
         </div>
 
-        <!-- 하단 날짜(수정 가능) -->
-        <div class="bottomDate">
-          <input class="plain" id="bottomDate" value="2025년 12월 31일" />
+        <!-- ✅ 하단: 테두리 전부 제거 + 수정 가능 -->
+        <div class="footerDate">
+          <input id="docDate" value="2025년 12월 31일">
         </div>
-
-        <!-- 하단 회사/대표/직인 -->
-        <div class="bottomRow">
-          <div class="bottomBox"><input class="plain" value="염전마을주민발전주식회사" style="text-align:center;font-weight:900;letter-spacing:2px;" /></div>
-          <div class="bottomBox">
-            <input class="plain" value="대표이사   김 진 욱" style="text-align:center;font-weight:900;letter-spacing:2px;" />
+        <div class="footerRow">
+          <div class="footerText">
+            <input id="companyName" value="염전마을주민발전주식회사">
           </div>
-          <div class="stampBox">
-            <img id="stampImg" alt="직인" />
+          <div class="footerText">
+            <input id="ceoName" value="대표이사   김 진 욱">
           </div>
         </div>
 
@@ -601,338 +455,237 @@
     </div>
   </div>
 
-  <script>
-    /* =========================
-       1) 이미지(로고/사인/직인) - 코드에 직접 삽입
-       ========================= */
-    const IMG_LOGO = "data:image/jpeg;base64,{{LOGO_BASE64}}";
-    const IMG_SIGN = "data:image/jpeg;base64,{{SIGN_BASE64}}";
-    const IMG_STAMP = "data:image/jpeg;base64,{{STAMP_BASE64}}";
+<script>
+/* =========================
+   0) “사진처럼 한 장” 자동 스케일
+========================= */
+(function(){
+  const wrap = document.getElementById("wrap");
+  function fit(){
+    const vw = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
+    const sheetW = 900;
+    const pad = 16; // 좌우 여백
+    const scale = Math.min(1, (vw - pad) / sheetW);
+    wrap.style.setProperty("--scale", String(scale));
+  }
+  window.addEventListener("resize", fit, {passive:true});
+  fit();
+})();
 
-    // 위 {{...}}는 아래에서 실제 base64로 채워 넣음(스크립트 끝에서 대입)
+/* =========================
+   1) 숫자 유틸 (빈칸=0, 콤마)
+========================= */
+const $ = (s)=>document.querySelector(s);
+function parseMoney(v){
+  if(v == null) return 0;
+  const t = String(v).replace(/[^\d\-]/g,"").trim();
+  if(t === "" || t === "-") return 0;
+  const n = Number(t);
+  return Number.isFinite(n) ? n : 0;
+}
+function fmtMoney(n){
+  const x = Math.trunc(Number(n) || 0);
+  return x.toLocaleString("en-US");
+}
+function normalizeMoneyInput(el){
+  if(!el) return;
+  const n = parseMoney(el.value);
+  el.value = el.value.trim()==="" ? "" : fmtMoney(n);
+}
 
-    /* =========================
-       2) 표 생성(캡쳐 형태 유지, 안쪽 사각 박스 없음)
-       ========================= */
-    const IO_ROWS = 12;      // 수입/지출 행(원본처럼 + 빈칸)
-    const BANK_ROWS = 12;    // 은행 행(원본처럼 + 빈칸)
+/* =========================
+   2) 수입/지출 표: 캡쳐처럼 “고정 줄수”
+      (빈줄 포함, 합계는 아래로 모두 합산)
+========================= */
+const IO_ROWS = 12;  // 캡쳐 기준: 12줄(채움/빈줄 포함)
+const ioSeed = [
+  {inDesc:"1차 SMP", inAmt:"8,508,100", outDesc:"송전료", outAmt:"347,720", bigo:""},
+  {inDesc:"2차 SMP", inAmt:"6,967,300", outDesc:"이사회 식대", outAmt:"52,000", bigo:""},
+  {inDesc:"3차 SMP", inAmt:"4,527,300", outDesc:"사람과사람세무사", outAmt:"154,000", bigo:""},
+  {inDesc:"4차 SMP", inAmt:"1,895,650", outDesc:"보상금", outAmt:"10,500,500", bigo:""},
+  {inDesc:"KT 전력예측", inAmt:"0", outDesc:"대표및이사회수당", outAmt:"800,000", bigo:""},
+  {inDesc:"rec", inAmt:"0", outDesc:"군청근조화환", outAmt:"100,000", bigo:""},
+  {inDesc:"이자", inAmt:"946", outDesc:"이음북스", outAmt:"93,700", bigo:""},
+  {inDesc:"이자", inAmt:"5,492", outDesc:"토지임대료", outAmt:"14,300,000", bigo:""},
+  {inDesc:"", inAmt:"0", outDesc:"운영비", outAmt:"11,000,500", bigo:""},
+];
 
-    function makeIORow(i){
-      return `
-        <tr>
-          <td><input class="plain" data-io-desc="in" data-row="${i}" value=""></td>
-          <td><input class="plain num" data-io-amt="in" data-row="${i}" value="" inputmode="numeric"></td>
-          <td><input class="plain" data-io-desc="out" data-row="${i}" value=""></td>
-          <td><input class="plain num" data-io-amt="out" data-row="${i}" value="" inputmode="numeric"></td>
-          <td><input class="plain" data-io-bigo data-row="${i}" value=""></td>
-        </tr>
-      `;
-    }
+function buildIOTable(){
+  const tb = $("#ioBody");
+  tb.innerHTML = "";
+  for(let i=0;i<IO_ROWS;i++){
+    const r = ioSeed[i] || {inDesc:"", inAmt:"", outDesc:"", outAmt:"", bigo:""};
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input value="${r.inDesc||""}"></td>
+      <td><input class="num io-in" inputmode="numeric" value="${r.inAmt||""}"></td>
+      <td><input value="${r.outDesc||""}"></td>
+      <td><input class="num io-out" inputmode="numeric" value="${r.outAmt||""}"></td>
+      <td><input value="${r.bigo||""}"></td>
+    `;
+    tb.appendChild(tr);
+  }
+}
 
-    function makeBankRow(bank, i){
-      return `
-        <tr>
-          <td><input class="plain" data-bank="${bank}" data-kind="desc" data-row="${i}" value=""></td>
-          <td><input class="plain num" data-bank="${bank}" data-kind="in" data-row="${i}" value="" inputmode="numeric"></td>
-          <td><input class="plain num" data-bank="${bank}" data-kind="out" data-row="${i}" value="" inputmode="numeric"></td>
-          <td class="right"><div class="auto num" data-bank="${bank}" data-kind="bal" data-row="${i}">0</div></td>
-        </tr>
-      `;
-    }
+/* =========================
+   3) 은행 표: “캡쳐 줄칸수대로” 고정
+      - 통장잔액(별도 컬럼/표) 완전 삭제
+      - 기업/농협 각각 동일한 거래 줄 수
+      - 잔액은 자동 누적(수정 불가)
+      - 빈칸도 0으로 계산해서 잔액 유지
+========================= */
+const BANK_ROWS = 14; // ✅ 캡쳐 기준 줄수(거래+빈줄 포함). 필요하면 여기만 바꾸면 전체가 맞춰짐.
 
-    function initTables(){
-      const ioBody = document.getElementById("ioBody");
-      let ioHtml = "";
-      for(let i=0;i<IO_ROWS;i++) ioHtml += makeIORow(i);
-      ioBody.innerHTML = ioHtml;
+const ibkSeed = [
+  {desc:"전력거래소", inAmt:"8,508,100", outAmt:"0"},
+  {desc:"염전마을주", inAmt:"0", outAmt:"15,500,000"},
+  {desc:"이자", inAmt:"946", outAmt:"0"},
+  {desc:"전력거래소", inAmt:"6,967,300", outAmt:"0"},
+  {desc:"전력거래소", inAmt:"4,527,300", outAmt:"0"},
+  {desc:"염전마을주", inAmt:"0", outAmt:"14,300,000"},
+  {desc:"전력거래소", inAmt:"1,895,650", outAmt:"0"},
+];
 
-      const ibkBody = document.getElementById("ibkBody");
-      const nhBody = document.getElementById("nhBody");
-      let b1="", b2="";
-      for(let i=0;i<BANK_ROWS;i++){
-        b1 += makeBankRow("ibk", i);
-        b2 += makeBankRow("nh", i);
-      }
-      ibkBody.innerHTML = b1;
-      nhBody.innerHTML = b2;
-    }
+const nhSeed = [
+  {desc:"이음북스", inAmt:"0", outAmt:"93,700"},
+  {desc:"이사회식대", inAmt:"0", outAmt:"52,000"},
+  {desc:"염전마을주", inAmt:"15,500,000", outAmt:"0"},
+  {desc:"송전료", inAmt:"0", outAmt:"347,720"},
+  {desc:"김균태회계", inAmt:"0", outAmt:"154,000"},
+  {desc:"보상금", inAmt:"0", outAmt:"10,500,500"},
+  {desc:"대표및이사회수당", inAmt:"0", outAmt:"800,000"},
+  {desc:"군청근조화환", inAmt:"0", outAmt:"100,000"},
+  {desc:"운영비", inAmt:"0", outAmt:"11,000,500"},
+  {desc:"이자", inAmt:"5,492", outAmt:"0"},
+];
 
-    /* =========================
-       3) 숫자 파싱/표시(콤마)
-       ========================= */
-    function parseNum(v){
-      if(v==null) return 0;
-      const s = String(v).replace(/[^\d\-]/g,"").trim();
-      if(!s || s==="-" ) return 0;
-      const n = Number(s);
-      return Number.isFinite(n) ? n : 0;
-    }
-    function fmtNum(n){
-      const sign = n < 0 ? "-" : "";
-      const x = Math.abs(Math.trunc(n));
-      return sign + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-    function setAuto(el, n){
-      el.textContent = fmtNum(n);
-    }
+function buildBankBody(tbodySel, seed){
+  const tb = $(tbodySel);
+  tb.innerHTML = "";
+  for(let i=0;i<BANK_ROWS;i++){
+    const r = seed[i] || {desc:"", inAmt:"", outAmt:""};
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input value="${r.desc||""}"></td>
+      <td><input class="num b-in" inputmode="numeric" value="${r.inAmt||""}"></td>
+      <td><input class="num b-out" inputmode="numeric" value="${r.outAmt||""}"></td>
+      <td><input class="num b-bal readonly" tabindex="-1" value="0"></td>
+    `;
+    tb.appendChild(tr);
+  }
+}
 
-    function attachFormatters(){
-      // 모든 num input: 포커스 시 콤마 제거 / 블러 시 콤마 적용
-      document.querySelectorAll("input.num").forEach(inp=>{
-        inp.addEventListener("focus", ()=>{
-          const n = parseNum(inp.value);
-          inp.value = (inp.value.trim()==="") ? "" : String(n);
-        });
-        inp.addEventListener("blur", ()=>{
-          if(inp.value.trim()===""){ inp.value=""; return; }
-          const n = parseNum(inp.value);
-          inp.value = fmtNum(n);
-          recalcAll();
-        });
-        inp.addEventListener("input", ()=>{
-          // 입력 중에도 계산 반영(빈칸=0)
-          recalcAll();
-        });
-      });
+/* =========================
+   4) 자동 계산
+      - 수입/지출 합계(빈칸도 0)
+      - 수입-지출 = 수입합계-지출합계
+      - 12/31 통장잔액 = 이월 + (수입-지출)
+      - 은행: 전월이월액부터 입금-출금 누적 잔액(빈칸 0)
+      - 통합잔액 = 기업 최종잔액 + 농협 최종잔액
+      - 상단 12/31 통장잔액은 “통합잔액”과 동일하게 맞춤(캡쳐 운영 방식)
+========================= */
+function calcIO(){
+  let inSum = 0;
+  let outSum = 0;
 
-      // 일반 input도 수정 중 계산(예: 날짜/제목은 영향 없음)
-      document.querySelectorAll("input.plain:not(.num)").forEach(inp=>{
-        inp.addEventListener("input", ()=>{ /* no-op */ });
-      });
-    }
+  document.querySelectorAll(".io-in").forEach(el=> inSum += parseMoney(el.value));
+  document.querySelectorAll(".io-out").forEach(el=> outSum += parseMoney(el.value));
 
-    /* =========================
-       4) 계산 로직
-       - 수입합계/지출합계/수입-지출
-       - 상단 수입-지출 = (수입합계 - 지출합계)
-       - 12/31 통장잔액 = 이월금액 + (수입-지출)
-       - 은행: 전월이월액에서 입금+ / 출금- 누적
-       - 통합잔액 = 기업 최종잔액 + 농협 최종잔액
-       ========================= */
-    function sumIO(kind){
-      let s=0;
-      document.querySelectorAll(`input[data-io-amt="${kind}"]`).forEach(inp=>{
-        s += parseNum(inp.value);
-      });
-      return s;
-    }
+  $("#ioInSum").value = fmtMoney(inSum);
+  $("#ioOutSum").value = fmtMoney(outSum);
 
-    function recalcIO(){
-      const income = sumIO("in");
-      const expense = sumIO("out");
-      const net = income - expense;
+  const net = inSum - outSum;
+  $("#ioNetEcho").value = fmtMoney(net);
+  $("#net").value = fmtMoney(net);
 
-      setAuto(document.getElementById("incomeSum"), income);
-      setAuto(document.getElementById("expenseSum"), expense);
-      setAuto(document.getElementById("netSum"), net);
+  const carry = parseMoney($("#carry").value);
+  const endBal = carry + net;
+  $("#endBal").value = fmtMoney(endBal);
+}
 
-      setAuto(document.getElementById("netTop"), net);
+function calcBankOne(prevSel, bodySel, inSumSel, outSumSel, finalSel){
+  const prev = parseMoney($(prevSel).value);
+  const rows = document.querySelectorAll(bodySel + " tr");
 
-      const carry = parseNum(document.getElementById("carryIn").value);
-      const final = carry + net;
-      setAuto(document.getElementById("finalTop"), final);
-    }
+  let bal = prev;
+  let inSum = 0;
+  let outSum = 0;
 
-    function recalcBank(bank){
-      const prev = parseNum(document.getElementById(bank==="ibk" ? "ibkPrev" : "nhPrev").value);
-      let bal = prev;
+  rows.forEach(tr=>{
+    const inEl  = tr.querySelector(".b-in");
+    const outEl = tr.querySelector(".b-out");
+    const balEl = tr.querySelector(".b-bal");
 
-      let inSum=0, outSum=0;
+    const inn = parseMoney(inEl.value);   // 빈칸=0
+    const out = parseMoney(outEl.value);  // 빈칸=0
 
-      for(let i=0;i<BANK_ROWS;i++){
-        const inInp = document.querySelector(`input[data-bank="${bank}"][data-kind="in"][data-row="${i}"]`);
-        const outInp = document.querySelector(`input[data-bank="${bank}"][data-kind="out"][data-row="${i}"]`);
-        const balCell = document.querySelector(`div[data-bank="${bank}"][data-kind="bal"][data-row="${i}"]`);
+    inSum += inn;
+    outSum += out;
 
-        const inV = parseNum(inInp.value);
-        const outV = parseNum(outInp.value);
+    bal = bal + inn - out;
+    balEl.value = fmtMoney(bal);
+  });
 
-        inSum += inV;
-        outSum += outV;
+  $(inSumSel).value = fmtMoney(inSum);
+  $(outSumSel).value = fmtMoney(outSum);
+  $(finalSel).value = fmtMoney(bal);
 
-        bal = bal + inV - outV;
-        setAuto(balCell, bal);
-      }
+  return bal;
+}
 
-      setAuto(document.getElementById(bank==="ibk" ? "ibkInSum" : "nhInSum"), inSum);
-      setAuto(document.getElementById(bank==="ibk" ? "ibkOutSum" : "nhOutSum"), outSum);
+function calcBank(){
+  const ibkFinal = calcBankOne("#ibkPrev", "#ibkBody", "#ibkInSum", "#ibkOutSum", "#ibkFinal");
+  const nhFinal  = calcBankOne("#nhPrev",  "#nhBody",  "#nhInSum",  "#nhOutSum",  "#nhFinal");
 
-      const endEl = document.getElementById(bank==="ibk" ? "ibkEnd" : "nhEnd");
-      setAuto(endEl, bal);
+  const integrated = ibkFinal + nhFinal;
+  $("#integratedVal").textContent = fmtMoney(integrated);
 
-      return bal;
-    }
+  // ✅ 상단 12/31 통장잔액은 통합잔액으로 “동일 값” 유지
+  $("#endBal").value = fmtMoney(integrated);
+}
 
-    function recalcIntegrated(){
-      const ibkEnd = parseNum(document.getElementById("ibkEnd").textContent);
-      const nhEnd  = parseNum(document.getElementById("nhEnd").textContent);
-      const integrated = ibkEnd + nhEnd;
-      document.getElementById("integratedVal").textContent = fmtNum(integrated);
-    }
+function calcAll(){
+  calcIO();
+  calcBank();
+}
 
-    function recalcAll(){
-      recalcIO();
-      const ibkEnd = recalcBank("ibk");
-      const nhEnd  = recalcBank("nh");
-      recalcIntegrated();
+/* =========================
+   5) 입력 이벤트 바인딩
+========================= */
+function bindMoney(el, onChange){
+  if(!el) return;
+  el.addEventListener("blur", ()=>{ normalizeMoneyInput(el); onChange(); });
+  el.addEventListener("input", onChange);
+}
+function initFormat(){
+  document.querySelectorAll('input.num:not(.readonly)').forEach(el=> normalizeMoneyInput(el));
+}
 
-      // (옵션) 상단 12/31 통장잔액을 통합잔액과 맞추고 싶으면 아래 줄을 켜면 됨.
-      // document.getElementById("finalTop").textContent = fmtNum(ibkEnd + nhEnd);
-    }
+function wire(){
+  // 상단 이월금액
+  bindMoney($("#carry"), calcAll);
 
-    /* =========================
-       5) iPhone에서 한 장으로 보이도록 자동 scale
-       ========================= */
-    function applyScale(){
-      const wrap = document.getElementById("sheetWrap");
-      const W = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sheet-w"));
-      const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
-      const margin = 16; // 좌우 여백
-      let scale = (vw - margin) / W;
-      if(scale > 1) scale = 1;
-      if(scale < 0.1) scale = 0.1;
-      wrap.style.setProperty("--scale", scale.toFixed(4));
-    }
+  // 수입/지출 금액칸
+  document.querySelectorAll(".io-in, .io-out").forEach(el=> bindMoney(el, calcAll));
 
-    /* =========================
-       6) 초기값(원본 예시) 채우기
-       ========================= */
-    function seedExample(){
-      // 수입/지출 예시(캡쳐에 있는 값들 일부 기본 채움)
-      const inDesc = [
-        "1차 SMP","2차 SMP","3차 SMP","4차 SMP","KT 전력예측","rec","이자","이자","","","", ""
-      ];
-      const inAmt = [
-        "8,508,100","6,967,300","4,527,300","1,895,650","0","0","946","5,492","","","", ""
-      ];
-      const outDesc = [
-        "송전료","이사회 식대","사람과사람세무사","보상금","대표및이사회수당","군청근조화환","이음북스","토지임대료","운영비","","",""
-      ];
-      const outAmt = [
-        "347,720","52,000","154,000","10,500,500","800,000","100,000","93,700","14,300,000","11,000,500","","",""
-      ];
-      for(let i=0;i<IO_ROWS;i++){
-        const dIn = document.querySelector(`input[data-io-desc="in"][data-row="${i}"]`);
-        const aIn = document.querySelector(`input[data-io-amt="in"][data-row="${i}"]`);
-        const dOut= document.querySelector(`input[data-io-desc="out"][data-row="${i}"]`);
-        const aOut= document.querySelector(`input[data-io-amt="out"][data-row="${i}"]`);
-        const bigo= document.querySelector(`input[data-io-bigo][data-row="${i}"]`);
+  // 은행 전월이월액
+  bindMoney($("#ibkPrev"), calcAll);
+  bindMoney($("#nhPrev"), calcAll);
 
-        dIn.value = inDesc[i] || "";
-        aIn.value = inAmt[i] || "";
-        dOut.value= outDesc[i] || "";
-        aOut.value= outAmt[i] || "";
-        bigo.value= (i<9 && (i===0 || i===1 || i===2 || i===3 || i===4 || i===5 || i===6 || i===7 || i===8)) ? "" : "";
-      }
+  // 은행 입/출금
+  document.querySelectorAll(".b-in, .b-out").forEach(el=> bindMoney(el, calcAll));
 
-      // 기업은행 예시(캡쳐 기준 흐름) - 잔액은 자동
-      const ibkRows = [
-        ["전력거래소","8,508,100",""],
-        ["염전마을주","", "15,500,000"],
-        ["이자","946",""],
-        ["전력거래소","6,967,300",""],
-        ["전력거래소","4,527,300",""],
-        ["염전마을주","", "14,300,000"],
-        ["전력거래소","1,895,650",""],
-        ["","",""],
-        ["","",""],
-        ["","",""],
-        ["","",""],
-        ["","",""],
-      ];
-      for(let i=0;i<BANK_ROWS;i++){
-        document.querySelector(`input[data-bank="ibk"][data-kind="desc"][data-row="${i}"]`).value = ibkRows[i]?.[0] || "";
-        document.querySelector(`input[data-bank="ibk"][data-kind="in"][data-row="${i}"]`).value = ibkRows[i]?.[1] || "";
-        document.querySelector(`input[data-bank="ibk"][data-kind="out"][data-row="${i}"]`).value = ibkRows[i]?.[2] || "";
-      }
+  initFormat();
+  calcAll();
+}
 
-      // 농협 예시(캡쳐 기준 흐름)
-      const nhRows = [
-        ["이음북스","", "93,700"],
-        ["이사회식대","", "52,000"],
-        ["염전마을주","15,500,000",""],
-        ["송전료","", "347,720"],
-        ["김균태회계","", "154,000"],
-        ["보상금","", "10,500,500"],
-        ["대표,이사회수당","", "800,000"],
-        ["군청근조화환","", "100,000"],
-        ["운영비","", "11,000,500"],
-        ["이자","5,492",""],
-        ["","",""],
-        ["","",""],
-      ];
-      for(let i=0;i<BANK_ROWS;i++){
-        document.querySelector(`input[data-bank="nh"][data-kind="desc"][data-row="${i}"]`).value = nhRows[i]?.[0] || "";
-        document.querySelector(`input[data-bank="nh"][data-kind="in"][data-row="${i}"]`).value = nhRows[i]?.[1] || "";
-        document.querySelector(`input[data-bank="nh"][data-kind="out"][data-row="${i}"]`).value = nhRows[i]?.[2] || "";
-      }
-
-      // 숫자 입력들 기본 콤마 정리
-      document.querySelectorAll("input.num").forEach(inp=>{
-        const n = parseNum(inp.value);
-        inp.value = (inp.value.trim()==="") ? "" : fmtNum(n);
-      });
-    }
-
-    /* =========================
-       7) 이미지 base64 실제 주입
-       ========================= */
-    function injectImages(){
-      // 여기 아래 base64는 “사용자가 올린 이미지 파일”을 그대로 인코딩한 값으로 넣음.
-      // (GitHub Pages에서도 외부 파일 없이 단일 HTML로 동작)
-      const logoB64 = "{{LOGO_B64_REAL}}";
-      const signB64 = "{{SIGN_B64_REAL}}";
-      const stampB64 = "{{STAMP_B64_REAL}}";
-
-      document.getElementById("logoImg").src  = "data:image/jpeg;base64," + logoB64;
-      document.getElementById("signImg").src  = "data:image/jpeg;base64," + signB64;
-      document.getElementById("stampImg").src = "data:image/png;base64,"  + stampB64;
-    }
-
-    /* =========================
-       실행
-       ========================= */
-    initTables();
-    attachFormatters();
-    seedExample();
-
-    // base64 실제값은 아래에 바로 붙여넣어 둠
-    injectImages();
-
-    recalcAll();
-    applyScale();
-    window.addEventListener("resize", applyScale);
-  </script>
-
-  <!--
-    ============================
-    base64 실제 데이터(단일 파일 유지)
-    - 아래 3개 값을 교체해 넣음
-    ============================
-  -->
-  <script>
-    // 로고(JPG)
-    const __LOGO_B64 = "REPLACE_LOGO_BASE64";
-    // 사인(JPG)
-    const __SIGN_B64 = "REPLACE_SIGN_BASE64";
-    // 직인(PNG)
-    const __STAMP_B64 = "REPLACE_STAMP_BASE64";
-
-    // 위 placeholder를 실제 base64로 바꿔치기
-    (function(){
-      const s = document.currentScript.previousElementSibling; // 위 script 태그(메인 로직)
-      // 안전하게 문자열 치환(페이지 로드 후 실행되므로 즉시 반영)
-      const allScripts = document.querySelectorAll("script");
-      // 메인 로직 스크립트는 바로 위에 있고, 그 안에 {{...}}가 있음.
-      // 여기서는 DOM을 직접 고치기보다, injectImages()가 참조하는 placeholder를 전역 치환 방식으로 해결:
-      // -> 간단히 injectImages를 다시 정의해서 이 값을 사용.
-      window.injectImages = function(){
-        document.getElementById("logoImg").src  = "data:image/jpeg;base64," + __LOGO_B64;
-        document.getElementById("signImg").src  = "data:image/jpeg;base64," + __SIGN_B64;
-        document.getElementById("stampImg").src = "data:image/png;base64,"  + __STAMP_B64;
-      };
-      window.injectImages();
-    })();
-  </script>
+/* =========================
+   6) 초기 생성
+========================= */
+buildIOTable();
+buildBankBody("#ibkBody", ibkSeed);
+buildBankBody("#nhBody", nhSeed);
+setTimeout(wire, 0);
+</script>
 </body>
 </html>
