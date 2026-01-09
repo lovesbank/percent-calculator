@@ -17,14 +17,10 @@
       --b2: 2px;
       --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-      --c-in:  #dfe8f6;   /* 수입톤 */
-      --c-out: #f6ddcf;   /* 지출톤 */
+      /* 은행표 헤더만 은은하게(요구한 “한 줄만” 느낌) */
+      --c-in:  #dfe8f6;
+      --c-out: #f6ddcf;
       --c-bal: #d7f1ea;
-
-      /* ✅ 상단 3칸 배경톤(너무 과하지 않게) */
-      --c-sum1:#eef4ff;
-      --c-sum2:#fff6df;
-      --c-sum3:#ffe8ea;
     }
 
     *{ box-sizing:border-box; }
@@ -105,7 +101,7 @@
     }
 
     /* =========================
-       ✅ 제목(수정 가능 + 빨간 점선 제거)
+       제목(수정 가능 + 점선 제거)
        ========================= */
     .titleWrap{
       margin:6px 0 14px;
@@ -122,7 +118,6 @@
     .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
 
     .titleBox{
-      /* ❌ 빨간 점선 제거 */
       border:0;
       padding:10px 14px;
       display:flex;
@@ -157,12 +152,14 @@
       padding:10px 8px;
       letter-spacing:2px;
       font-weight:900;
+      background:#fff; /* ✅ 배경색 제거 */
     }
     .sumVal{
       text-align:center;
       font-weight:900;
       font-size:34px;
       padding:14px 10px;
+      background:#fff; /* ✅ 배경색 제거 */
     }
     .sumVal.red{ color:var(--red); }
     .sumVal input{
@@ -171,14 +168,6 @@
       font-size:34px;
     }
     .sumVal.red input{ color:var(--red); }
-
-    /* ✅ 상단 3칸 배경색 */
-    .sumCell:nth-child(1) .sumVal,
-    .sumCell:nth-child(1) .sumHead{ background:var(--c-sum1); }
-    .sumCell:nth-child(2) .sumVal,
-    .sumCell:nth-child(2) .sumHead{ background:var(--c-sum2); }
-    .sumCell:nth-child(3) .sumVal,
-    .sumCell:nth-child(3) .sumHead{ background:var(--c-sum3); }
 
     .miniNote{ display:none; }
 
@@ -197,7 +186,6 @@
       flex:0 0 auto;
     }
 
-    /* ✅ 수정 가능한 텍스트 */
     .editText{
       display:inline-block;
       min-width:10px;
@@ -243,26 +231,8 @@
     .colAmt2{ width:16%; }
     .colBigo{ width:12%; }
 
-    /* ✅ “12월 수입/지출 내역서” 표: 헤더(적요/금액 줄) + 칸 배경색 */
-    #incomeExpenseTable thead tr.subhead th:nth-child(1),
-    #incomeExpenseTable thead tr.subhead th:nth-child(2){
-      background:var(--c-in);
-    }
-    #incomeExpenseTable thead tr.subhead th:nth-child(3),
-    #incomeExpenseTable thead tr.subhead th:nth-child(4){
-      background:var(--c-out);
-    }
-
-    /* 수입 2칸(적요/금액) */
-    #incomeExpenseTable tbody td:nth-child(1),
-    #incomeExpenseTable tbody td:nth-child(2){
-      background:rgba(223,232,246,.55);
-    }
-    /* 지출 2칸(적요/금액) */
-    #incomeExpenseTable tbody td:nth-child(3),
-    #incomeExpenseTable tbody td:nth-child(4){
-      background:rgba(246,221,207,.55);
-    }
+    /* ✅ 수입/지출 표 배경색(칸/헤더) 전부 제거 */
+    /* (기존에 넣었던 nth-child 배경/rgba 등 없음) */
 
     .bankWrap{
       border:var(--b) solid var(--ink);
@@ -316,6 +286,8 @@
     .bankTbl col.bal{ width:24%; }
 
     .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
+
+    /* ✅ 은행 “한 줄만” 색: 헤더의 입금/출금/잔액 칸만 */
     .thIn{ background:var(--c-in) !important; }
     .thOut{ background:var(--c-out) !important; }
     .thBal{ background:var(--c-bal) !important; }
@@ -324,10 +296,9 @@
     .cellAmt{ background:#fdfdfd; }
 
     /* =========================
-       ✅ 하단: 통합잔액 박스 키우고(아래 지운 만큼),
-       ✅ 날짜+회사/대표를 박스 안으로 이동(2줄),
-       ✅ 날짜 수정 가능
-       ✅ 라벨(12월 31일 통합잔액) 텍스트는 제거
+       하단: 통합잔액(그냥 전체 숫자)
+       - 라벨 없음
+       - 날짜/회사+대표 2줄 박스 안
        ========================= */
     .integratedBox{
       border:var(--b) solid var(--ink);
@@ -336,12 +307,9 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-      position:relative; /* 도장 위치 기준 */
-      min-height:150px;  /* ✅ 아래 지운만큼 “칸” 늘린 효과 */
+      position:relative;
+      min-height:150px;
     }
-
-    /* ❌ 라벨 텍스트 제거용(HTML에서 아예 제거함) */
-    .integratedTitle{ display:none; }
 
     .integratedVal{
       width:100%;
@@ -354,35 +322,24 @@
       line-height:1.05;
     }
 
-    /* ✅ 아래 2줄: 제목 스타일 느낌(조금 작게) */
     .integratedMeta{
       display:flex;
       flex-direction:column;
       gap:6px;
       padding-top:2px;
     }
-    .metaLine1{
-      text-align:center;
-      font-weight:900;
-      color:#143a63;
-      text-shadow: 2px 2px 0 rgba(0,0,0,.14);
-      letter-spacing:-0.5px;
-      font-size:30px; /* 제목(56px)보다 작게 */
-      line-height:1.02;
-      white-space:nowrap;
-    }
+    .metaLine1,
     .metaLine2{
       text-align:center;
       font-weight:900;
       color:#143a63;
       text-shadow: 2px 2px 0 rgba(0,0,0,.14);
       letter-spacing:-0.5px;
-      font-size:30px; /* 동일 크기 */
+      font-size:30px;
       line-height:1.02;
       white-space:nowrap;
     }
 
-    /* ✅ 도장(직인) - 이제 통합잔액 박스 안에 붙음 */
     .stampOverlay{
       position:absolute;
       right:18px;
@@ -410,11 +367,9 @@
     <div class="sheetWrap" id="sheetWrap">
       <div class="sheet" id="sheet">
 
-        <!-- ✅ 제목(캡쳐처럼) -->
         <div class="titleWrap">
           <div class="titleLineTop"></div>
           <div class="titleBox">
-            <!-- ✅ 제목 바로 눌러서 수정 가능 -->
             <div class="titleText editText" contenteditable="true">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
           </div>
           <div class="titleLineBot"></div>
@@ -649,22 +604,18 @@
 
           </div>
 
-          <!-- ✅ 통합잔액 박스: 라벨 제거 + 아래 2줄 삽입 -->
           <div class="integratedBox">
             <div class="integratedVal" id="integratedBal">0</div>
 
             <div class="integratedMeta">
-              <!-- ✅ 2025년 12월 31일 ← 수정 가능 -->
               <div class="metaLine1">
                 <span class="editText" contenteditable="true">2025년 12월 31일</span>
               </div>
-
               <div class="metaLine2">
                 <span class="editText" contenteditable="true">염전마을주민발전주식회사&nbsp;&nbsp;&nbsp;대표이사&nbsp;&nbsp;김진욱</span>
               </div>
             </div>
 
-            <!-- ✅ 도장(직인) -->
             <img id="stampOut" class="stampOverlay" alt="직인">
           </div>
 
@@ -679,7 +630,6 @@
     (function(){
       const wrap = document.getElementById('sheetWrap');
       const stage = document.querySelector('.stage');
-
       function px(v){ return Number(String(v).replace('px','')) || 0; }
 
       function fit(){
@@ -692,7 +642,6 @@
 
         const usable = Math.max(320, vw - padL - padR);
         const scale = Math.min(1, usable / base);
-
         wrap.style.setProperty('--scale', scale.toFixed(4));
       }
       window.addEventListener('resize', fit, {passive:true});
@@ -782,9 +731,7 @@
     }
     recalcAll();
 
-    /* =========================
-       ✅ 도장 이미지: base64 (흰 배경 투명 처리)
-       ========================= */
+    /* ===== 도장 이미지(base64) ===== */
     const STAMP_DATA_URL =
       "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBAQEBAPDw8PEA8PDw8PDw8PDw8PFREWFhURFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGy0lICUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBBAcDAv/EADcQAAEDAgQDBgUEAgIDAAAAAAEAAgMEEQUSITFBBhMiUWFxgZEyQoGxwdEUI0JSYnKS8RYzU3PC/8QAGQEAAwEBAQAAAAAAAAAAAAAAAAECAwQF/8QAJxEAAQQBAwMDBQEAAAAAAAAAAAECEQMSITEEQVEiMmFxgZGhsdH/2gAMAwEAAhEDEQA/APm6oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//Z";
 
@@ -797,7 +744,6 @@
 
       const im = ctx.getImageData(0,0,c.width,c.height);
       const d = im.data;
-
       for(let i=0;i<d.length;i+=4){
         const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
         if(a===0) continue;
