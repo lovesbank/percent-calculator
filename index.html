@@ -30,24 +30,21 @@
       font-family:var(--font);
       color:var(--ink);
       width:100%;
-      overflow-x:hidden;                 /* 가로스크롤 방지 */
+      overflow-x:hidden;
       -webkit-text-size-adjust:100%;
       text-size-adjust:100%;
     }
 
-    /* ✅ iPhone 안전영역 + 좌우 여유를 확실히 */
     .stage{
       width:100%;
       padding-top:14px;
       padding-bottom:40px;
       padding-left:calc(10px + env(safe-area-inset-left));
       padding-right:calc(10px + env(safe-area-inset-right));
-      overflow-x:hidden;                 /* 혹시 삐져나와도 숨김 */
+      overflow-x:hidden;
       position:relative;
     }
 
-    /* ✅ iOS에서 scale + center가 소수점으로 밀려 좌측이 잘리는 현상 방지:
-       margin:auto 대신 left:50% + translateX(-50%)로 강제 중앙 고정 */
     .sheetWrap{
       width:var(--sheet-w);
       position:relative;
@@ -102,14 +99,39 @@
       min-width:0;
     }
 
-    .title{
-      text-align:center;
+    /* =========================
+       ✅ 제목(첫번째 캡쳐 스타일)
+       ========================= */
+    .titleWrap{
+      margin:6px 0 14px;
+      padding:14px 10px 12px;
+      position:relative;
+    }
+    .titleLineTop,
+    .titleLineBot{
+      height:3px;
+      background:linear-gradient(90deg, #9cff4a 0 44%, #6fdc33 44% 46%, #78e63a 46% 100%);
+      border-radius:2px;
+    }
+    .titleLineTop{ margin:0 0 14px; }
+    .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
+
+    .titleBox{
+      border:2px dashed #d12a2a;
+      padding:10px 14px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#fff;
+    }
+    .titleText{
       font-weight:900;
       font-size:56px;
       letter-spacing:-1px;
-      margin:6px 0 14px;
-      color:#143a63;
       line-height:1.02;
+      color:#143a63;
+      text-shadow: 4px 4px 0 rgba(0,0,0,.18);
+      white-space:nowrap;
     }
 
     .summary{
@@ -314,6 +336,7 @@
       overflow:hidden;
     }
 
+    /* ✅ 도장(직인) */
     .stampOverlay{
       position:absolute;
       right:34px;
@@ -323,6 +346,8 @@
       pointer-events:none;
       opacity:.92;
       transform: rotate(-2deg);
+      display:none;
+      z-index:5;
     }
 
     @media print{
@@ -339,7 +364,14 @@
     <div class="sheetWrap" id="sheetWrap">
       <div class="sheet" id="sheet">
 
-        <div class="title">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산 보고서</div>
+        <!-- ✅ 제목(캡쳐처럼) -->
+        <div class="titleWrap">
+          <div class="titleLineTop"></div>
+          <div class="titleBox">
+            <div class="titleText">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
+          </div>
+          <div class="titleLineBot"></div>
+        </div>
 
         <div class="summary">
           <div class="summaryGrid">
@@ -496,93 +528,22 @@
                   </tr>
                 </thead>
                 <tbody>
-  <tr>
-    <td class="cellDesc"><input value="전력거래소"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="8,508,100"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="염전마을주"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="15,500,000"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="이자"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="946"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="전력거래소"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="6,967,300"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="전력거래소"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="4,527,300"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="염전마을주"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="14,300,000"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value="전력거래소"></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="1,895,650"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="8,508,100"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="15,500,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="946"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="6,967,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="4,527,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="14,300,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="1,895,650"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
 
-  <!-- 빈 줄 7개 -->
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-  <tr>
-    <td class="cellDesc"><input value=""></td>
-    <td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td>
-    <td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td>
-    <td><input class="num ib-bal" readonly></td>
-  </tr>
-</tbody>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                </tbody>
                 <tfoot>
                   <tr>
                     <th class="center">합&nbsp;&nbsp;계</th>
@@ -653,6 +614,8 @@
             <div class="bottomText"><span class="editText" contenteditable="true">염전마을주민발전주식회사</span></div>
             <div class="bottomText" id="ceoLine"><span class="editText" contenteditable="true">대표이사&nbsp;&nbsp;&nbsp;김&nbsp;진&nbsp;욱</span></div>
           </div>
+
+          <!-- ✅ 도장: 이거 하나만 둠(중복 금지) -->
           <img id="stampOut" class="stampOverlay" alt="직인">
         </div>
 
@@ -661,7 +624,7 @@
   </div>
 
   <script>
-    /* ===== iPhone “한 장 자동 축소” (좌우 safe-area 포함해서 계산) ===== */
+    /* ===== iPhone “한 장 자동 축소” ===== */
     (function(){
       const wrap = document.getElementById('sheetWrap');
       const stage = document.querySelector('.stage');
@@ -676,12 +639,11 @@
         const padL = px(st.paddingLeft);
         const padR = px(st.paddingRight);
 
-        const usable = Math.max(320, vw - padL - padR);   // 화면 실사용 폭
+        const usable = Math.max(320, vw - padL - padR);
         const scale = Math.min(1, usable / base);
 
         wrap.style.setProperty('--scale', scale.toFixed(4));
       }
-
       window.addEventListener('resize', fit, {passive:true});
       fit();
     })();
@@ -769,136 +731,52 @@
     }
     recalcAll();
 
-    const STAMP_DATA_URL = 'stamp.png';
+    /* =========================
+       ✅ 도장 이미지: 네가 준 파일을 base64로 코드에 “붙여넣기”
+       (흰 배경은 투명 처리)
+       ========================= */
+    const STAMP_DATA_URL =
+      "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBAQEBAPDw8PEA8PDw8PDw8PDw8PFREWFhURFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGy0lICUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBBAcDAv/EADcQAAEDAgQDBgUEAgIDAAAAAAEAAgMEEQUSITFBBhMiUWFxgZEyQoGxwdEUI0JSYnKS8RYzU3PC/8QAGQEAAwEBAQAAAAAAAAAAAAAAAAECAwQF/8QAJxEAAQQBAwMDBQEAAAAAAAAAAAECEQMSITEEQVEiMmFxgZGhsdH/2gAMAwEAAhEDEQA/APm6oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//Z";
 
-    async function makeStampTransparent(){
+    function makeTransparentWhiteToAlpha(img, white=235){
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d', { willReadFrequently:true });
+      ctx.drawImage(img, 0, 0);
+
+      const im = ctx.getImageData(0,0,c.width,c.height);
+      const d = im.data;
+
+      for(let i=0;i<d.length;i+=4){
+        const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
+        if(a===0) continue;
+        if(r>white && g>white && b>white) d[i+3]=0;
+      }
+      ctx.putImageData(im,0,0);
+      return c.toDataURL('image/png');
+    }
+
+    function initStamp(){
       const out = document.getElementById('stampOut');
+      if(!out) return;
 
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.src = STAMP_DATA_URL;
 
-      img.onload = ()=>{
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth;
-        c.height = img.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img,0,0);
-
-        const imgData = ctx.getImageData(0,0,c.width,c.height);
-        const d = imgData.data;
-
-        for(let i=0;i<d.length;i+=4){
-          const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
-          if (a===0) continue;
-          if (r>235 && g>235 && b>235) d[i+3]=0;
-        }
-        ctx.putImageData(imgData,0,0);
-        out.src = c.toDataURL('image/png');
+      img.onload = () => {
+        out.src = makeTransparentWhiteToAlpha(img, 235);
+        out.style.display = 'block';
       };
-
-      img.onerror = ()=>{ out.style.display='none'; };
+      img.onerror = () => { out.style.display='none'; };
     }
-    makeStampTransparent();
+
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', initStamp);
+    }else{
+      initStamp();
+    }
   </script>
-  <script>
-/* ================== ✅ 도장(직인) 자동 찍기: 흰배경 투명 + '욱' 위 배치 ================== */
-
-/* ✅ 네가 올린 도장 이미지(그대로 내장) */
-const STAMP_DATA_URL =
-"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzctKywzJx8zQ0Q8PDw1QzQ5OjcBCgoKDg0OGhAQGi0lICUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAWgB4AMBIgACEQEDEQH/xAAbAAEBAQADAQEAAAAAAAAAAAAABQYDBAIBB//EAD8QAAEDAgMFBgQEBQMFAAAAAAEAAgMEEQUSITFBBhMiUWEHFDKBkaGx0fAUIzNScoLh8RUjQ1OCkqKy/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAjEQEBAAICAgMBAQEAAAAAAAAAAQIRAyESMUEEUSJRYXGB/9oADAMBAAIRAxEAPwD9GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoZb8qf1mKXW7p0y2t7ZpVn7lq2lVb1l2y0p0r7Xq1mJq8c4lXqk8fT7m3o9m2n0bqKZs0b2Y8l1fV8m1b1c1Y6vJYw0z6t7y4p8c7S0m3y1Vf0m3b2pQmQAAAAAAAAAAABm8mXqVx3cQyq9b4l0o2s3c9uVvK9l0dX8b0m7m2y0Zr0f7s1bq0p8o7uXHf0b8q0y5l2m1h5oZ0r7m8f8A7z1m4bG3g8v8Aq1x1k7fM1b2pG7k7m8m9b1c8o3S2wAAAAAAAAAAABl8xVtqUo9b3m5m6u2m1r1l3bW6p5z2m3j8s8b2v5pY7b0p7p8f7n4a2v8Aq1y2zq0r4c9Z6y0cAAAAAAAAAAABm8m1p7qUq1n5n1m3b2q1b0m7m8Z8c7S0m3y1Vf0m3b2pQmQAAAAAAAAAAABm8mXqVx3cQyq9b4l0o2s3c9uVvK9l0dX8b0m7m2y0Zr0f7s1bq0p8o7uXHf0b8q0y5l2m1h5oZ0r7m8f8A7z1m4bG3g8v8Aq1x1k7fM1b2pG7k7m8m9b1c8o3S2wAAAAAAAAAAABl8xVtqUo9b3m5m6u2m1r1l3bW6p5z2m3j8s8b2v5pY7b0p7p8f7n4a2v8Aq1y2zq0r4c9Z6y0cAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/2Q==";
-
-/* 흰 배경을 투명으로 바꾸기(거의 흰색만 투명) */
-function makeTransparentWhiteToAlpha(img, white=235){
-  const c = document.createElement("canvas");
-  c.width = img.naturalWidth;
-  c.height = img.naturalHeight;
-  const ctx = c.getContext("2d", { willReadFrequently:true });
-  ctx.drawImage(img, 0, 0);
-
-  const im = ctx.getImageData(0,0,c.width,c.height);
-  const d = im.data;
-
-  for(let i=0;i<d.length;i+=4){
-    const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
-    if(a===0) continue;
-    if(r>white && g>white && b>white) d[i+3]=0;
-  }
-  ctx.putImageData(im,0,0);
-  return c.toDataURL("image/png");
-}
-
-/* ceoLine 안에서 특정 글자(욱)의 위치를 찾아 rect 얻기 */
-function getCharRect(el, targetChar="욱"){
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-  let node, found = null;
-
-  while((node = walker.nextNode())){
-    const idx = node.nodeValue.lastIndexOf(targetChar);
-    if(idx !== -1) found = { node, idx };
-  }
-  if(!found) return null;
-
-  const range = document.createRange();
-  range.setStart(found.node, found.idx);
-  range.setEnd(found.node, found.idx + 1);
-  const rect = range.getBoundingClientRect();
-  range.detach?.();
-  return rect;
-}
-
-/* 도장 위치를 ‘욱’ 위로 */
-function positionStampOnWook(){
-  const out = document.getElementById("stampOut");
-  const bottomArea = document.getElementById("bottomArea");
-  const ceoLine = document.getElementById("ceoLine");
-  if(!out || !bottomArea || !ceoLine) return;
-  if(getComputedStyle(out).display === "none") return;
-
-  const areaRect = bottomArea.getBoundingClientRect();
-  const wookRect = getCharRect(ceoLine, "욱") || ceoLine.getBoundingClientRect();
-
-  const w = out.offsetWidth || 92;
-  const h = out.offsetHeight || 92;
-
-  const cx = (wookRect.left + wookRect.right)/2 - areaRect.left;
-  const cy = (wookRect.top  + wookRect.bottom)/2 - areaRect.top;
-
-  /* 살짝 겹치게(도장 찍힌 느낌) */
-  out.style.left = Math.round(cx - w*0.55) + "px";
-  out.style.top  = Math.round(cy - h*0.65) + "px";
-}
-
-function initStamp(){
-  const out = document.getElementById("stampOut");
-  if(!out) return;
-
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = STAMP_DATA_URL;
-
-  img.onload = () => {
-    out.src = makeTransparentWhiteToAlpha(img, 240);
-    out.style.display = "block";
-    requestAnimationFrame(positionStampOnWook);
-  };
-  img.onerror = () => { out.style.display="none"; };
-
-  window.addEventListener("resize", () => requestAnimationFrame(positionStampOnWook), {passive:true});
-
-  const ceoLine = document.getElementById("ceoLine");
-  if(ceoLine){
-    const mo = new MutationObserver(() => requestAnimationFrame(positionStampOnWook));
-    mo.observe(ceoLine, { childList:true, subtree:true, characterData:true });
-  }
-}
-
-/* DOM 준비되면 실행 */
-if(document.readyState === "loading"){
-  document.addEventListener("DOMContentLoaded", initStamp);
-}else{
-  initStamp();
-}
-</script>
 </body>
 </html>
