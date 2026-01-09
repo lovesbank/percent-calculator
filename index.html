@@ -801,5 +801,104 @@
     }
     makeStampTransparent();
   </script>
+  <script>
+/* ================== ✅ 도장(직인) 자동 찍기: 흰배경 투명 + '욱' 위 배치 ================== */
+
+/* ✅ 네가 올린 도장 이미지(그대로 내장) */
+const STAMP_DATA_URL =
+"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzctKywzJx8zQ0Q8PDw1QzQ5OjcBCgoKDg0OGhAQGi0lICUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAWgB4AMBIgACEQEDEQH/xAAbAAEBAQADAQEAAAAAAAAAAAAABQYDBAIBB//EAD8QAAEDAgMFBgQEBQMFAAAAAAEAAgMEEQUSITFBBhMiUWEHFDKBkaGx0fAUIzNScoLh8RUjQ1OCkqKy/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAjEQEBAAICAgMBAQEAAAAAAAAAAQIRAyESMUEEUSJRYXGB/9oADAMBAAIRAxEAPwD9GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoZb8qf1mKXW7p0y2t7ZpVn7lq2lVb1l2y0p0r7Xq1mJq8c4lXqk8fT7m3o9m2n0bqKZs0b2Y8l1fV8m1b1c1Y6vJYw0z6t7y4p8c7S0m3y1Vf0m3b2pQmQAAAAAAAAAAABm8mXqVx3cQyq9b4l0o2s3c9uVvK9l0dX8b0m7m2y0Zr0f7s1bq0p8o7uXHf0b8q0y5l2m1h5oZ0r7m8f8A7z1m4bG3g8v8Aq1x1k7fM1b2pG7k7m8m9b1c8o3S2wAAAAAAAAAAABl8xVtqUo9b3m5m6u2m1r1l3bW6p5z2m3j8s8b2v5pY7b0p7p8f7n4a2v8Aq1y2zq0r4c9Z6y0cAAAAAAAAAAABm8m1p7qUq1n5n1m3b2q1b0m7m8Z8c7S0m3y1Vf0m3b2pQmQAAAAAAAAAAABm8mXqVx3cQyq9b4l0o2s3c9uVvK9l0dX8b0m7m2y0Zr0f7s1bq0p8o7uXHf0b8q0y5l2m1h5oZ0r7m8f8A7z1m4bG3g8v8Aq1x1k7fM1b2pG7k7m8m9b1c8o3S2wAAAAAAAAAAABl8xVtqUo9b3m5m6u2m1r1l3bW6p5z2m3j8s8b2v5pY7b0p7p8f7n4a2v8Aq1y2zq0r4c9Z6y0cAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/2Q==";
+
+/* 흰 배경을 투명으로 바꾸기(거의 흰색만 투명) */
+function makeTransparentWhiteToAlpha(img, white=235){
+  const c = document.createElement("canvas");
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const ctx = c.getContext("2d", { willReadFrequently:true });
+  ctx.drawImage(img, 0, 0);
+
+  const im = ctx.getImageData(0,0,c.width,c.height);
+  const d = im.data;
+
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i], g=d[i+1], b=d[i+2], a=d[i+3];
+    if(a===0) continue;
+    if(r>white && g>white && b>white) d[i+3]=0;
+  }
+  ctx.putImageData(im,0,0);
+  return c.toDataURL("image/png");
+}
+
+/* ceoLine 안에서 특정 글자(욱)의 위치를 찾아 rect 얻기 */
+function getCharRect(el, targetChar="욱"){
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+  let node, found = null;
+
+  while((node = walker.nextNode())){
+    const idx = node.nodeValue.lastIndexOf(targetChar);
+    if(idx !== -1) found = { node, idx };
+  }
+  if(!found) return null;
+
+  const range = document.createRange();
+  range.setStart(found.node, found.idx);
+  range.setEnd(found.node, found.idx + 1);
+  const rect = range.getBoundingClientRect();
+  range.detach?.();
+  return rect;
+}
+
+/* 도장 위치를 ‘욱’ 위로 */
+function positionStampOnWook(){
+  const out = document.getElementById("stampOut");
+  const bottomArea = document.getElementById("bottomArea");
+  const ceoLine = document.getElementById("ceoLine");
+  if(!out || !bottomArea || !ceoLine) return;
+  if(getComputedStyle(out).display === "none") return;
+
+  const areaRect = bottomArea.getBoundingClientRect();
+  const wookRect = getCharRect(ceoLine, "욱") || ceoLine.getBoundingClientRect();
+
+  const w = out.offsetWidth || 92;
+  const h = out.offsetHeight || 92;
+
+  const cx = (wookRect.left + wookRect.right)/2 - areaRect.left;
+  const cy = (wookRect.top  + wookRect.bottom)/2 - areaRect.top;
+
+  /* 살짝 겹치게(도장 찍힌 느낌) */
+  out.style.left = Math.round(cx - w*0.55) + "px";
+  out.style.top  = Math.round(cy - h*0.65) + "px";
+}
+
+function initStamp(){
+  const out = document.getElementById("stampOut");
+  if(!out) return;
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = STAMP_DATA_URL;
+
+  img.onload = () => {
+    out.src = makeTransparentWhiteToAlpha(img, 240);
+    out.style.display = "block";
+    requestAnimationFrame(positionStampOnWook);
+  };
+  img.onerror = () => { out.style.display="none"; };
+
+  window.addEventListener("resize", () => requestAnimationFrame(positionStampOnWook), {passive:true});
+
+  const ceoLine = document.getElementById("ceoLine");
+  if(ceoLine){
+    const mo = new MutationObserver(() => requestAnimationFrame(positionStampOnWook));
+    mo.observe(ceoLine, { childList:true, subtree:true, characterData:true });
+  }
+}
+
+/* DOM 준비되면 실행 */
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", initStamp);
+}else{
+  initStamp();
+}
+</script>
 </body>
 </html>
