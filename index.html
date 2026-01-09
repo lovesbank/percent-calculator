@@ -1,10 +1,9 @@
-doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>2025년 12월 결산 보고서</title>
-
   <style>
     :root{
       --ink:#111;
@@ -18,15 +17,12 @@ doctype html>
       --b2: 2px;
       --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-      /* ✅ 은행거래내역서처럼 “한 줄만” 톤 */
-      --tone-carry:#e7f1ff;  /* 연파랑 */
-      --tone-net:#fff3d9;    /* 연노랑 */
-      --tone-end:#ffe3e3;    /* 연핑크 */
-
-      /* 은행표 헤더 컬러(기존 유지) */
       --c-in:  #dfe8f6;
       --c-out: #f6ddcf;
       --c-bal: #d7f1ea;
+
+      /* 제목 톤 */
+      --title-blue:#143a63;
     }
 
     *{ box-sizing:border-box; }
@@ -107,9 +103,7 @@ doctype html>
     }
 
     /* =========================
-       ✅ 제목
-       - 바로 눌러 수정 가능
-       - 빨간 점선(점선 테두리) 완전 제거
+       ✅ 제목(첫번째 캡쳐 스타일)
        ========================= */
     .titleWrap{
       margin:6px 0 14px;
@@ -126,7 +120,8 @@ doctype html>
     .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
 
     .titleBox{
-      border:0; /* ✅ dashed 제거 */
+      /* ✅ 빨간 점선 제거 */
+      border:0;
       padding:10px 14px;
       display:flex;
       justify-content:center;
@@ -138,25 +133,18 @@ doctype html>
       font-size:56px;
       letter-spacing:-1px;
       line-height:1.02;
-      color:#143a63;
+      color:var(--title-blue);
       text-shadow: 4px 4px 0 rgba(0,0,0,.18);
       white-space:nowrap;
 
+      /* ✅ 제목 바로 눌러 수정 가능 */
       outline:none;
       cursor:text;
-      -webkit-user-select:text;
-      user-select:text;
     }
 
-    /* =========================
-       ✅ 상단 3칸
-       - “색을 전부”가 아니라, 은행거래내역서처럼 “한 줄만” 색
-       -> 라벨(제목) 줄만 색, 숫자줄은 흰색 유지
-       ========================= */
     .summary{
       border:var(--b) solid var(--ink);
       margin:6px 0 12px;
-      background:#fff;
     }
     .summaryGrid{
       display:grid;
@@ -164,7 +152,6 @@ doctype html>
     }
     .sumCell{ border-right:var(--b) solid var(--ink); }
     .sumCell:last-child{ border-right:0; }
-
     .sumHead{
       border-bottom:var(--b) solid var(--ink);
       text-align:center;
@@ -172,18 +159,12 @@ doctype html>
       padding:10px 8px;
       letter-spacing:2px;
       font-weight:900;
-      background:#fff; /* 기본 */
     }
-    .summaryGrid .sumCell:nth-child(1) .sumHead{ background:var(--tone-carry); }
-    .summaryGrid .sumCell:nth-child(2) .sumHead{ background:var(--tone-net); }
-    .summaryGrid .sumCell:nth-child(3) .sumHead{ background:var(--tone-end); }
-
     .sumVal{
       text-align:center;
       font-weight:900;
       font-size:34px;
       padding:14px 10px;
-      background:#fff; /* ✅ 숫자줄은 흰색 유지 */
     }
     .sumVal.red{ color:var(--red); }
     .sumVal input{
@@ -223,7 +204,6 @@ doctype html>
       border:var(--b2) solid var(--grid);
       padding:6px 8px;
       font-size:16px;
-      background:#fff;
     }
     .tbl th{
       background:#f2f2f2;
@@ -232,8 +212,8 @@ doctype html>
       letter-spacing:2px;
     }
     .tbl .subhead th{
-      letter-spacing:1px;
       background:#f7f7f7;
+      letter-spacing:1px;
     }
     .center{ text-align:center; }
     .right{ text-align:right; }
@@ -247,7 +227,6 @@ doctype html>
       color:#222;
       text-align:center;
       font-weight:800;
-      background:#fff;
     }
 
     .colDesc{ width:28%; }
@@ -256,24 +235,9 @@ doctype html>
     .colAmt2{ width:16%; }
     .colBigo{ width:12%; }
 
-    /* =========================
-       ✅ 12월 수입/지출 내역서 표
-       - “한 줄만” 색: 헤더(적요/금액 줄)만 톤 적용
-       - 본문은 흰색 유지
-       ========================= */
-    #incomeExpenseTable thead tr.subhead th:nth-child(1),
-    #incomeExpenseTable thead tr.subhead th:nth-child(2){
-      background:var(--tone-carry);
-    }
-    #incomeExpenseTable thead tr.subhead th:nth-child(3),
-    #incomeExpenseTable thead tr.subhead th:nth-child(4){
-      background:var(--tone-end);
-    }
-
     .bankWrap{
       border:var(--b) solid var(--ink);
       padding:10px;
-      background:#fff;
     }
     .bankTables{
       display:grid;
@@ -282,13 +246,11 @@ doctype html>
     }
     .bankTbl{
       border:var(--b) solid var(--ink);
-      background:#fff;
     }
     .bankTbl th, .bankTbl td{
       border:var(--b2) solid var(--grid);
       padding:6px 6px;
       font-size:14px;
-      background:#fff;
     }
     .bankTopTitle{
       border-bottom:var(--b2) solid var(--grid);
@@ -317,7 +279,6 @@ doctype html>
       font-weight:900;
       text-align:right;
       min-width:0;
-      background:#fff;
     }
 
     .bankTbl col.desc{ width:28%; }
@@ -333,19 +294,22 @@ doctype html>
     .cellDesc{ background:#fbfbfb; }
     .cellAmt{ background:#fdfdfd; }
 
+    /* =========================
+       ✅ 통합잔액 박스(아래 영역 흡수)
+       - 기존 "12월 31일 통합잔액" 텍스트 제거
+       - 기존 아래 년월일/회사/대표 라인 제거
+       - 그만큼 박스 높이를 늘려 안으로 넣음
+       ========================= */
     .integratedBox{
       border:var(--b) solid var(--ink);
       margin-top:10px;
-      padding:10px 12px;
+      padding:12px 12px 10px;
       display:flex;
       flex-direction:column;
-      gap:6px;
-      background:#fff;
-    }
-    .integratedTitle{
-      font-weight:900;
-      letter-spacing:2px;
-      font-size:16px;
+      gap:8px;
+
+      /* ✅ 아래 지운 만큼 길이 확보 */
+      min-height:140px;
     }
     .integratedVal{
       width:100%;
@@ -355,46 +319,36 @@ doctype html>
       color:var(--red);
       white-space:nowrap;
       overflow:hidden;
+      margin-top:2px;
     }
 
-    .bottomArea{
-      position:relative;
-      margin-top:14px;
+    .integratedMeta{
+      margin-top:auto;
       padding-top:8px;
     }
-    .bottomDate{
+    .metaDate{
       text-align:center;
       font-weight:900;
       letter-spacing:2px;
-      margin:2px 0 10px;
+      color:var(--title-blue);
+      /* ✅ 상단 제목보단 작게 */
+      font-size:22px;
+      line-height:1.1;
     }
-
-    /* =========================
-       ✅ 맨 아래 텍스트
-       "염전마을주민발전주식회사 / 대표이사 김진욱"
-       -> 맨 상단 제목(2025년 12월 결산 보고서)과
-          텍스트 크기/굵기/스타일 똑같이 적용
-       ========================= */
-    .bottomTitleWrap{
+    .metaLines{
+      margin-top:8px;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      gap:6px;
-      padding:8px 0 2px;
-    }
-    .bottomTitleText{
+      gap:4px;
+      color:var(--title-blue);
       font-weight:900;
-      font-size:56px;         /* ✅ 상단과 동일 */
-      letter-spacing:-1px;    /* ✅ 상단과 동일 */
-      line-height:1.02;       /* ✅ 상단과 동일 */
-      color:#143a63;          /* ✅ 상단과 동일 */
-      text-shadow: 4px 4px 0 rgba(0,0,0,.18); /* ✅ 상단과 동일 */
+      letter-spacing:1px;
+      font-size:18px; /* 제목보다 작게 */
+    }
+    .metaLine{
       white-space:nowrap;
-
-      outline:none;
-      cursor:text;
-      user-select:text;
-      -webkit-user-select:text;
+      overflow:hidden;
+      text-overflow:clip;
     }
 
     /* ✅ 도장(직인) */
