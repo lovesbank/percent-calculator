@@ -597,12 +597,46 @@ input.money{
   text-align:right !important;
   padding-right:6px !important;
 }
-    .ceoStamp{
-  height:34px;
-  margin-left:10px;
-  vertical-align:middle;
-  opacity:0.9;
+
+/* ===== 대표자 이름 + 도장 정렬 ===== */
+
+.ceoNameWrap{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:80px;
 }
+
+/* 김   진   욱 간격 */
+.ceoName{
+  font-size:30px;
+  font-weight:900;
+  position:relative;
+}
+
+.ceoName .gap{
+  display:inline-block;
+  width:32px;   /* ← 간격 (더 넓히면 40~48) */
+}
+
+/* ‘욱’ 기준 */
+.name-last{
+  position:relative;
+  z-index:2;
+}
+
+/* 도장: 욱 중앙 위 */
+.ceoStampCenter{
+  position:absolute;
+  width:90px;              /* 🔥 기존 대비 약 2배 */
+  height:auto;
+  left:50%;
+  transform:translateX(35%) translateY(-12px);
+  opacity:0.9;
+  pointer-events:none;
+}
+
   </style>
 </head>
 
@@ -864,15 +898,15 @@ input.money{
       <span class="editText" contenteditable="true">2025년 12월 31일</span>
     </div>
 
-    <div class="metaLine2">
-      <span class="editText" contenteditable="true">
-        염전마을주민발전주식회사&nbsp;&nbsp;대표이사&nbsp;&nbsp;김진욱
-      </span>
-      <img src="stamp.PNG"
-           class="ceoStamp"
-           alt="직인"
-           style="height:45px; margin-left:10px; vertical-align:middle;">
-    </div>
+<div class="metaLine2 ceoNameWrap">
+  <span class="ceoName">
+    김<span class="gap"></span>진<span class="gap"></span><span class="name-last">욱</span>
+  </span>
+
+  <!-- 도장 -->
+  <img src="stamp.PNG" class="ceoStampCenter" alt="직인">
+</div>
+
   </div>
 </div>
           </div>
