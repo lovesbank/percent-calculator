@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>2025년 12월 결산 보고서</title>
   <style>
+    /* 표 크기 및 기본 설정 유지 */
     :root{
       --ink:#111;
       --grid:#222;
@@ -56,6 +57,7 @@
     input{ width:100%; border:0; outline:0; background:transparent; font:inherit; color:inherit; }
     .num{ text-align:right; font-variant-numeric: tabular-nums; }
 
+    /* 테이블 간격 및 너비 설정 유지 */
     table{ width:100%; border-collapse:collapse; table-layout:fixed; }
     th, td{ border:var(--b2) solid var(--grid); padding:6px 8px; font-size:16px; vertical-align:middle; }
     th{ background:#f2f2f2; font-weight:900; text-align:center; }
@@ -106,12 +108,13 @@
       display: inline-block;
     }
 
+    /* 도장 설정: 85px 크기 및 '욱'자 중앙 정렬 */
     .ceoStamp {
       position: absolute;
       width: 85px;   
       height: 85px;
       top: -25px;    
-      right: -25px;  /* 👈 욱자 중앙에 맞춘 위치 조정 */
+      right: -25px;  
       opacity: 0.9;
       pointer-events: none;
       mix-blend-mode: multiply;
@@ -221,6 +224,7 @@
   </div>
 
   <script>
+    /* 계산 로직 원본 유지 */
     (function(){
       const wrap = document.getElementById('sheetWrap');
       function fit(){
@@ -268,6 +272,7 @@
   </script>
 </body>
 </html>
+
 
 
 
