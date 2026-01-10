@@ -531,6 +531,22 @@
 #incomeExpenseTable tbody td:nth-child(4){
   background:#fde9d9 !important;   /* 지출 */
 }
+    /* ===== 수입/지출: '적요/금액' 헤더 한 줄만 색 ===== */
+#incomeExpenseTable thead tr.subhead th:nth-child(1),
+#incomeExpenseTable thead tr.subhead th:nth-child(2){
+  background:#e8f0fb !important; /* 수입: 연한 파랑 */
+}
+
+#incomeExpenseTable thead tr.subhead th:nth-child(3),
+#incomeExpenseTable thead tr.subhead th:nth-child(4){
+  background:#fde9d9 !important; /* 지출: 연한 살구 */
+}
+
+/* (중요) 본문칸은 기존 cellDesc/cellAmt 색이 있으면 제거 */
+#incomeExpenseTable tbody td.cellDesc,
+#incomeExpenseTable tbody td.cellAmt{
+  background:#fff !important;
+}
   </style>
 </head>
 
