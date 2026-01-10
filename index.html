@@ -878,40 +878,7 @@ input.money{
 
           </div>
 
-              <div class="integratedBox">
-  <div class="integratedVal" id="integratedBal">0</div>
-
-  <div class="integratedMeta">
-    <div class="metaLine1">
-      <span class="editText" contenteditable="true">2025년 12월 31일</span>
-    </div>
-    
-  <div class="metaLine2">
-
-</<div class="metaLine2">
-  <span class="editText signLine" contenteditable="true">
-    염전마을주민발전주식회사&nbsp;&nbsp;대표이사&nbsp;&nbsp;
-    김&nbsp;&nbsp;진&nbsp;&nbsp;
-    <span class="nameLast">
-      욱
-      <img src="stamp.PNG" class="ceoStampBig" alt="직인">
-    </span>
-  </span>
-</div> 
-</div>
-  
-<span class="ceoName">
-  김<span class="gap"></span>진<span class="gap"></span>
-  <span class="nameLast">
-    욱
-    <img src="stamp.PNG" class="ceoStampBig" alt="직인">
-  </span>
-</span>
-</div> 
-</div>
-</div>
-  </div>
-</div>
+        
 
         </div>
 
@@ -924,9 +891,29 @@ input.money{
     (function(){
       const wrap = document.getElementById('sheetWrap');
       const stage = document.querySelector('.stage');
-      function px(v){ return Number(String(v).replace('px','')) || 0; }
+      function px(v){ return <div class="integratedBox">
+  <div class="integratedVal" id="integratedBal">0</div>
 
-      function fit(){
+  <div class="integratedMeta">
+    <div class="metaLine1">
+      <span class="editText" contenteditable="true">2025년 12월 31일</span>
+    </div>
+
+    <div class="metaLine2">
+      <span class="editText signLine" contenteditable="true">
+        염전마을주민발전주식회사&nbsp;&nbsp;대표이사&nbsp;&nbsp;
+        김&nbsp;&nbsp;진&nbsp;&nbsp;
+        <span class="nameLast">
+          욱
+          <img src="stamp.PNG" class="ceoStampBig" alt="직인">
+        </span>
+      </span>
+    </div>
+  </div>
+</div> 
+
+Number(String(v).replace('px','')) || 0; }
+     function fit(){
         const vw = document.documentElement.clientWidth;
         const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
 
