@@ -429,6 +429,81 @@
 .integratedBox{
   padding-top:20px;
 }
+    /* =================================================
+   1. 상단 요약 3칸 : 헤더 한 줄만 색 적용
+   ================================================= */
+
+/* 11월 이월금액 – 연한 파랑 */
+.sumCell:nth-child(1) .sumHead{
+  background:#e8f0fb !important;
+}
+
+/* 수입-지출 – 연한 살구 */
+.sumCell:nth-child(2) .sumHead{
+  background:#fde9d9 !important;
+}
+
+/* 12월31일 통장잔액 – 연한 민트 */
+.sumCell:nth-child(3) .sumHead{
+  background:#e6f6f2 !important;
+}
+
+
+/* =================================================
+   2. 12월 수입/지출 내역서
+      ✅ 적요 / 금액 칸만 색 적용
+      (수입, 지출 각각 한 줄 느낌)
+   ================================================= */
+
+/* 수입 : 적요 + 금액 */
+#incomeExpenseTable th:nth-child(1),
+#incomeExpenseTable th:nth-child(2),
+#incomeExpenseTable td:nth-child(1),
+#incomeExpenseTable td:nth-child(2){
+  background:#e8f0fb !important; /* 연한 파랑 */
+}
+
+/* 지출 : 적요 + 금액 */
+#incomeExpenseTable th:nth-child(3),
+#incomeExpenseTable th:nth-child(4),
+#incomeExpenseTable td:nth-child(3),
+#incomeExpenseTable td:nth-child(4){
+  background:#fde9d9 !important; /* 연한 살구 */
+}
+
+
+/* =================================================
+   3. 은행 입출금 내역
+      헤더 한 줄만 색
+   ================================================= */
+
+.thIn{  background:#dfe8f6 !important; } /* 입금 */
+.thOut{ background:#f6ddcf !important; } /* 출금 */
+.thBal{ background:#d7f1ea !important; } /* 잔액 */
+
+
+/* =================================================
+   4. 맨 아래 통합잔액
+      ❌ 숫자 자체 완전 제거
+   ================================================= */
+
+#integratedBal{
+  display:none !important;
+}
+
+/* 숫자 없어도 레이아웃 균형 */
+.integratedBox{
+  padding-top:20px;
+}
+
+
+/* =================================================
+   5. 맨 아래 년월일 ↔ 회사명 간격 최대 확보
+   ================================================= */
+
+.integratedMeta{
+  gap:28px !important;   /* 줄 간격 (더 벌리고 싶으면 32~40) */
+}
   </style>
 </head>
 
