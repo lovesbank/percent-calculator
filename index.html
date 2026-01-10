@@ -1006,55 +1006,53 @@ input.money{
       recalcIncomeExpense();
       recalcBank();
     }
-    recalcAll();
-  <script>
-/* ===============================
-   날짜 자동 세팅 (페이지 열 때마다)
-   - 현재 날짜 기준
-   - 이후 수동 수정 가능
-================================ */
-(function () {
+    /* =========================
+   전월 기준 자동 날짜/문구 세팅
+   ========================= */
+(function autoSetReportTexts(){
+  function lastDayOfMonth(y, m){
+    return new Date(y, m, 0).getDate();
+  }
+
   const now = new Date();
-  const Y = now.getFullYear();
-  const M = now.getMonth() + 1; // 1~12
-  const D = now.getDate();
 
-  // 1. 상단 제목: "YYYY년 MM월 결산 보고서"
+  // 결산 기준 = 전월
+  const report = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const ry = report.getFullYear();
+  const rm = report.getMonth() + 1;
+
+  // 이월금액 = 전전월
+  const carry = new Date(ry, report.getMonth() - 1, 1);
+  const cm = carry.getMonth() + 1;
+
+  const last = lastDayOfMonth(ry, rm);
+
+  // 상단 제목
   const title = document.getElementById('reportTitle');
-  if (title && title.textContent.trim() === '') {
-    title.innerHTML = `${Y}년&nbsp;&nbsp;${M}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
-  }
+  if (title) title.innerHTML = `${ry}년&nbsp;&nbsp;${rm}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
 
-  // 2. 요약 라벨
+  // 요약 라벨
   const carryLabel = document.getElementById('carryLabel');
-  if (carryLabel && carryLabel.textContent.trim() === '') {
-    carryLabel.textContent = `${M - 1 <= 0 ? 12 : M - 1}월 이월금액`;
-  }
+  if (carryLabel) carryLabel.textContent = `${cm}월 이월금액`;
 
   const endBalLabel = document.getElementById('endBalLabel');
-  if (endBalLabel && endBalLabel.textContent.trim() === '') {
-    endBalLabel.textContent = `${M}월 ${D}일 통장 잔액`;
-  }
+  if (endBalLabel) endBalLabel.textContent = `${rm}월 ${last}일 통 장 잔 액`;
 
-  // 3. 중간 섹션 제목들
-  const ieTitle = document.getElementById('titleIncomeExpense');
-  if (ieTitle && ieTitle.textContent.trim() === '') {
-    ieTitle.textContent = `${M}월 수입/지출 내역서`;
-  }
+  // 표 제목
+  const ie = document.getElementById('titleIncomeExpense');
+  if (ie) ie.textContent = `${rm}월 수입/지출 내역서`;
 
-  const bankTitle = document.getElementById('titleBank');
-  if (bankTitle && bankTitle.textContent.trim() === '') {
-    bankTitle.textContent = `${M}월 은행 입출금 내역`;
-  }
+  const bank = document.getElementById('titleBank');
+  if (bank) bank.textContent = `${rm}월 은행 입출금 내역`;
 
-  // 4. 맨 아래 날짜
-  const footDate = document.getElementById('reportDate');
-  if (footDate && footDate.textContent.trim() === '') {
-    footDate.textContent = `${Y}년 ${M}월 ${D}일`;
+  // 맨 아래 날짜 = 오늘
+  const foot = document.getElementById('reportDate');
+  if (foot) {
+    foot.textContent =
+      `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
   }
 })();
-</script>
-
+    recalcAll();
   </script>
  
 </body>
