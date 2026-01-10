@@ -547,6 +547,55 @@
 #incomeExpenseTable tbody td.cellAmt{
   background:#fff !important;
 }
+    /* =========================
+   ✅ 모든 금액 숫자 오른쪽 끝 정렬
+   ========================= */
+
+/* 금액 input 자체 */
+input.num,
+input.money{
+  text-align:right !important;
+  padding-right:0 !important;
+}
+
+/* 요약 상단 3칸 숫자 */
+.sumVal,
+.sumVal input{
+  text-align:right !important;
+  padding-right:12px !important;
+}
+
+/* 수입/지출 표 금액 칸 */
+#incomeExpenseTable td:nth-child(2),
+#incomeExpenseTable td:nth-child(4),
+#incomeExpenseTable td:nth-child(2) input,
+#incomeExpenseTable td:nth-child(4) input{
+  text-align:right !important;
+  padding-right:8px !important;
+}
+
+/* 은행 입출금 표 금액 칸 */
+.bankTbl td,
+.bankTbl td input{
+  text-align:right !important;
+  padding-right:6px !important;
+}
+
+/* 합계 / 통합 숫자 */
+#incSum,
+#expSum,
+#net,
+#netFoot,
+#endBal,
+#ibInSum,
+#ibOutSum,
+#ibEnd,
+#nhInSum,
+#nhOutSum,
+#nhEnd{
+  text-align:right !important;
+  padding-right:6px !important;
+}
   </style>
 </head>
 
