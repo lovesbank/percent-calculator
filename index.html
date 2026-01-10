@@ -876,22 +876,9 @@ input.money{
               </table>
             </div>
 
-          </div>
+          </
 
-        
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script>
-    /* ===== iPhone “한 장 자동 축소” ===== */
-    (function(){
-      const wrap = document.getElementById('sheetWrap');
-      const stage = document.querySelector('.stage');
-      function px(v){ return <div class="integratedBox">
+              <div class="integratedBox">
   <div class="integratedVal" id="integratedBal">0</div>
 
   <div class="integratedMeta">
@@ -910,10 +897,16 @@ input.money{
       </span>
     </div>
   </div>
-</div> 
+</div>
 
-Number(String(v).replace('px','')) || 0; }
-     function fit(){
+  <script>
+    /* ===== iPhone “한 장 자동 축소” ===== */
+    (function(){
+      const wrap = document.getElementById('sheetWrap');
+      const stage = document.querySelector('.stage');
+      function px(v){ return Number(String(v).replace('px','')) || 0; }
+
+      function fit(){
         const vw = document.documentElement.clientWidth;
         const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
 
