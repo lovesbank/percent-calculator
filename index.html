@@ -1,122 +1,4 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>2025년 12월 결산 보고서</title>
-  <style>
-    :root{
-      --ink:#111;
-      --grid:#222;
-      --muted:#666;
-      --red:#d82222;
-      --sheet-w: 920px;
-      --pad: 18px;
-      --b: 3px;
-      --b2: 2px;
-      --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    }
-    *{ box-sizing:border-box; }
-    html, body{
-      margin:0; padding:0; background:#f3f4f6;
-      font-family:var(--font); color:var(--ink);
-      width:100%; overflow-x:hidden;
-    }
-    .stage{ width:100%; padding:14px 10px 40px; position:relative; }
-    .sheetWrap{
-      width:var(--sheet-w); position:relative; left:50%;
-      transform-origin: top center; transform: translateX(-50%) scale(var(--scale, 1));
-    }
-    .sheet{ width:var(--sheet-w); background:#fff; border:1px solid #d5d7db; box-shadow:0 8px 28px rgba(0,0,0,.08); padding:var(--pad); }
-    input{ width:100%; border:0; outline:0; background:transparent; font:inherit; color:inherit; padding:0; }
-    .num{ text-align:right; font-variant-numeric: tabular-nums; }
-    table{ width:100%; border-collapse:collapse; table-layout:fixed; }
-    th, td{ border:var(--b2) solid var(--grid); padding:6px 8px; font-size:16px; vertical-align:middle; }
-    
-    /* 제목 */
-    .titleWrap{ margin:6px 0 14px; padding:14px 10px 12px; }
-    .titleLineTop, .titleLineBot{ height:6px; border-radius:3px; }
-    .titleLineTop{ margin-bottom:14px; background:linear-gradient(90deg, #9cff4a 0 44%, #6fdc33 44% 46%, #78e63a 46% 100%); }
-    .titleLineBot{ margin-top:14px; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
-    .titleBox{ display:flex; justify-content:center; align-items:center; }
-    .titleText{ font-weight:1000; font-size:56px; color:#143a63; text-shadow: 4px 4px 0 rgba(0,0,0,.18); }
-
-    /* 요약 */
-    .summary{ border:var(--b) solid var(--ink); margin:6px 0 12px; }
-    .summaryGrid{ display:grid; grid-template-columns: 1fr 1fr 1fr; }
-    .sumCell{ border-right:var(--b) solid var(--ink); }
-    .sumCell:last-child{ border-right:0; }
-    .sumHead{ border-bottom:var(--b) solid var(--ink); text-align:center; font-size:20px; padding:10px 8px; font-weight:900; }
-    .sumVal{ text-align:right; font-weight:900; font-size:34px; padding:14px 12px; }
-    .sumVal.red{ color:var(--red); }
-    .sumVal input{ text-align:right; font-weight:900; font-size:34px; }
-
-    .sectionTitle{ display:flex; align-items:center; gap:10px; margin:10px 0 8px; font-weight:900; font-size:22px; }
-    .dot{ width:18px; height:18px; border:2px solid var(--ink); border-radius:50%; }
-    .noteLine{ border:var(--b) solid var(--ink); padding:8px 10px; margin:-2px 0 8px; font-size:14px; text-align:center; font-weight:800; }
-
-    /* 메인 표 색상 및 정렬 */
-    .tbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
-    .subhead th{ background:#f7f7f7 !important; }
-    .colDesc, .colDesc2{ width:28%; } .colAmt, .colAmt2{ width:16%; } .colBigo{ width:12%; }
-    
-    #incomeExpenseTable thead tr.subhead th:nth-child(1),
-    #incomeExpenseTable thead tr.subhead th:nth-child(2),
-    #incomeExpenseTable tbody td:nth-child(1),
-    #incomeExpenseTable tbody td:nth-child(2){ background:#e8f0fb !important; }
-    #incomeExpenseTable thead tr.subhead th:nth-child(3),
-    #incomeExpenseTable thead tr.subhead th:nth-child(4),
-    #incomeExpenseTable tbody td:nth-child(3),
-    #incomeExpenseTable tbody td:nth-child(4){ background:#fde9d9 !important; }
-
-    /* 은행 표 */
-    .bankWrap{ border:var(--b) solid var(--ink); padding:10px; }
-    .bankTables{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; font-size:14px; }
-    .bankTbl td{ font-size:14px; text-align:right; padding-right:6px; }
-    .bankTopTitle{ border:var(--b2) solid var(--grid); border-bottom:0; font-weight:900; text-align:center; padding:6px 0; }
-    .prevRow{ display:grid; grid-template-columns: 140px 1fr; border:var(--b2) solid var(--grid); border-bottom:0; }
-    .prevRow .label{ background:#f7f7f7; border-right:var(--b2) solid var(--grid); text-align:center; font-weight:900; padding:8px; }
-    .prevRow .val{ padding:8px; text-align:right; font-weight:900; }
-    
-    .thIn{ background:#dfe8f6 !important; }
-    .thOut{ background:#f6ddcf !important; }
-    .thBal{ background:#d7f1ea !important; }
-
-    /* 하단 통합 박스 */
-    .integratedBox{ border:var(--b) solid var(--ink); margin-top:10px; padding:40px 12px 30px; display:flex; flex-direction:column; align-items:center; gap:28px; }
-    .metaLine1{ font-size:30px; font-weight:900; color:#143a63; }
-    .metaLine2{ font-size:30px; font-weight:900; color:#143a63; display:flex; align-items:center; gap:10px; }
-    .ceoStamp{ height:65px; width:auto; }
-    .editText{ outline:none; }
-
-    /* 요약 헤더 배경색 */
-    .sumCell:nth-child(1) .sumHead{ background:#e8f0fb !important; }
-    .sumCell:nth-child(2) .sumHead{ background:#fde9d9 !important; }
-    .sumCell:nth-child(3) .sumHead{ background:#e6f6f2 !important; }
-  </style>
-</head>
-<body>
-  <div class="stage">
-    <div class="sheetWrap" id="sheetWrap">
-      <div class="sheet">
-        <div class="titleWrap">
-          <div class="titleLineTop"></div>
-          <div class="titleBox"><div class="titleText editText" contenteditable="true">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div></div>
-          <div class="titleLineBot"></div>
-        </div>
-
-        <div class="summary">
-          <div class="summaryGrid">
-            <div class="sumCell"><div class="sumHead">11월 이월금액</div><div class="sumVal"><input id="carry" class="num money" value="25,554,575"></div></div>
-            <div class="sumCell"><div class="sumHead">수 입 - 지 출</div><div class="sumVal"><input id="net" class="num" value="0" readonly></div></div>
-            <div class="sumCell"><div class="sumHead">12월 31일 통 장 잔 액</div><div class="sumVal red"><input id="endBal" class="num" value="0" readonly></div></div>
-          </div>
-        </div>
-
-        <div class="sectionTitle"><span class="dot"></span>12월 수입/지출 내역서</div>
-        <div class="noteLine">（ 수입은 한달전 생산된 금액입니다. 한달지연 입금됩니다 ）</div>
-        <table class="tbl" id="incomeExpenseTable">
+<table class="tbl" id="incomeExpenseTable">
           <colgroup><col class="colDesc"><col class="colAmt"><col class="colDesc2"><col class="colAmt2"><col class="colBigo"></colgroup>
           <thead>
             <tr><th colspan="2">수 입</th><th colspan="2">지 출</th><th>비 고</th></tr>
@@ -133,11 +15,13 @@
             <tr><td><input value="이자"></td><td><input class="num money inc" value="5,492"></td><td><input value="토지임대료"></td><td><input class="num money exp" value="14,300,000"></td><td><input></td></tr>
             <tr><td><input value=""></td><td><input class="num money inc" value="0"></td><td><input value="운영비"></td><td><input class="num money exp" value="11,000,500"></td><td><input></td></tr>
             <tr><td><input></td><td><input class="num money inc" value="0"></td><td><input></td><td><input class="num money exp" value="0"></td><td><input></td></tr>
+            <tr><td><input></td><td><input class="num money inc" value="0"></td><td><input></td><td><input class="num money exp" value="0"></td><td><input></td></tr>
+            <tr><td><input></td><td><input class="num money inc" value="0"></td><td><input></td><td><input class="num money exp" value="0"></td><td><input></td></tr>
+            <tr><td><input></td><td><input class="num money inc" value="0"></td><td><input></td><td><input class="num money exp" value="0"></td><td><input></td></tr>
           </tbody>
           <tfoot><tr><th>합계</th><th><input id="incSum" class="num" readonly></th><th>합계</th><th><input id="expSum" class="num" readonly></th><th><input id="netFoot" class="num" readonly></th></tr></tfoot>
         </table>
 
-        <div class="sectionTitle" style="margin-top:14px;"><span class="dot"></span>12월 은행 입출금 내역</div>
         <div class="bankWrap">
           <div class="bankTables">
             <div>
@@ -161,10 +45,13 @@
                   <tr><td><input></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td><input></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td><input></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                 </tbody>
                 <tfoot><tr><th>합계</th><th><input id="ibInSum" class="num" readonly></th><th><input id="ibOutSum" class="num" readonly></th><th><input id="ibEnd" class="num" readonly></th></tr></tfoot>
               </table>
             </div>
+
             <div>
               <div class="bankTopTitle">농 협</div>
               <div class="prevRow"><div class="label">전월이월액</div><div class="val"><input id="nhPrev" class="num money" value="10,012,941"></div></div>
@@ -186,12 +73,13 @@
                   <tr><td><input></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td><input></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td><input></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                 </tbody>
                 <tfoot><tr><th>합계</th><th><input id="nhInSum" class="num" readonly></th><th><input id="nhOutSum" class="num" readonly></th><th><input id="nhEnd" class="num" readonly></th></tr></tfoot>
               </table>
             </div>
           </div>
-
           <div class="integratedBox">
             <div class="metaLine1 editText" contenteditable="true">2025년 12월 31일</div>
             <div class="metaLine2">
@@ -201,59 +89,4 @@
           </div>
         </div>
 
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function(){
-      const wrap = document.getElementById('sheetWrap');
-      function fit(){
-        const vw = document.documentElement.clientWidth;
-        const scale = Math.min(1, (vw - 20) / 920);
-        wrap.style.setProperty('--scale', scale.toFixed(4));
-      }
-      window.addEventListener('resize', fit); fit();
-    })();
-
-    function toNumber(v){ return String(v || '').replace(/[^\d\-]/g,'') === '' ? 0 : Number(String(v).replace(/[^\d\-]/g,'')); }
-    function fmt(n){ return (n < 0 ? '-' : '') + Math.abs(Math.trunc(n)).toLocaleString('en-US'); }
-
-    function recalcAll(){
-      let inc = 0, exp = 0;
-      document.querySelectorAll('.inc').forEach(el => inc += toNumber(el.value));
-      document.querySelectorAll('.exp').forEach(el => exp += toNumber(el.value));
-      document.getElementById('incSum').value = fmt(inc);
-      document.getElementById('expSum').value = fmt(exp);
-      document.getElementById('netFoot').value = fmt(inc - exp);
-      document.getElementById('net').value = fmt(inc - exp);
-      document.getElementById('endBal').value = fmt(toNumber(document.getElementById('carry').value) + (inc - exp));
-
-      let ibBal = toNumber(document.getElementById('ibPrev').value);
-      let ibI = 0, ibO = 0;
-      document.querySelectorAll('#ibTable tbody tr').forEach(tr => {
-        const i = toNumber(tr.querySelector('.ib-in').value); const o = toNumber(tr.querySelector('.ib-out').value);
-        ibI += i; ibO += o; ibBal += (i - o);
-        tr.querySelector('.ib-bal').value = fmt(ibBal);
-      });
-      document.getElementById('ibInSum').value = fmt(ibI); document.getElementById('ibOutSum').value = fmt(ibO); document.getElementById('ibEnd').value = fmt(ibBal);
-
-      let nhBal = toNumber(document.getElementById('nhPrev').value);
-      let nhI = 0, nhO = 0;
-      document.querySelectorAll('#nhTable tbody tr').forEach(tr => {
-        const i = toNumber(tr.querySelector('.nh-in').value); const o = toNumber(tr.querySelector('.nh-out').value);
-        nhI += i; nhO += o; nhBal += (i - o);
-        tr.querySelector('.nh-bal').value = fmt(nhBal);
-      });
-      document.getElementById('nhInSum').value = fmt(nhI); document.getElementById('nhOutSum').value = fmt(nhO); document.getElementById('nhEnd').value = fmt(nhBal);
-    }
-
-    document.querySelectorAll('input.money').forEach(el => {
-      el.addEventListener('input', () => { el.value = fmt(toNumber(el.value)); recalcAll(); });
-      el.value = fmt(toNumber(el.value));
-    });
-    recalcAll();
-  </script>
-</body>
-</html>
 
