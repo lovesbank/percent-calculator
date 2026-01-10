@@ -1007,68 +1007,53 @@ input.money{
       recalcBank();
     }
     recalcAll();
-    /* =========================================================
-   ✅ 날짜/월 자동 세팅 (월이 바뀌면 1회 자동, 이후는 수동 수정 가능)
-   - 같은 달에는 다시 안 건드림
-   - 다음 달로 넘어가면 그 달 첫 오픈 때 자동으로 갱신
-   - contenteditable은 그대로라서 사용자가 언제든 수정 가능
-   ========================================================= */
-(function autoSetReportDatesByMonth(){
+  <script>
+/* ===============================
+   날짜 자동 세팅 (페이지 열 때마다)
+   - 현재 날짜 기준
+   - 이후 수동 수정 가능
+================================ */
+(function () {
   const now = new Date();
   const Y = now.getFullYear();
   const M = now.getMonth() + 1; // 1~12
   const D = now.getDate();
 
-  // 이번 달 키 (예: 2026-01)
-  const ymKey = `${Y}-${String(M).padStart(2,'0')}`;
-  const lastApplied = localStorage.getItem('report_auto_ym');
-
-  // ✅ 같은 달이면 자동 갱신 안 함 (수동 수정 보존)
-  if (lastApplied === ymKey) return;
-
-  // --- 유틸 ---
-  const setText = (el, text) => { if (el) el.textContent = text; };
-  const setHTML = (el, html) => { if (el) el.innerHTML = html; };
-
-  // --- 1) 상단 제목: "YYYY년  MM월  결산  보고서" ---
-  // 네가 준 id 버전: reportTitle
+  // 1. 상단 제목: "YYYY년 MM월 결산 보고서"
   const title = document.getElementById('reportTitle');
-  if (title){
-    // 기존처럼 &nbsp; 유지
-    setHTML(title, `${Y}년&nbsp;&nbsp;${M}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`);
-  } else {
-    // id가 없을 수도 있으니(예전 코드 대비) titleText를 하나 더 잡아줌
-    const t2 = document.querySelector('.titleText.editText');
-    if (t2) setHTML(t2, `${Y}년&nbsp;&nbsp;${M}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`);
+  if (title && title.textContent.trim() === '') {
+    title.innerHTML = `${Y}년&nbsp;&nbsp;${M}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
   }
 
-  // --- 2) 상단 요약표 헤더: "11월 이월금액" / "MM월 DD일 통장잔액" ---
-  // "11월 이월금액"은 전달로 자동 (1월이면 12월)
-  const prevM = (M === 1) ? 12 : (M - 1);
+  // 2. 요약 라벨
+  const carryLabel = document.getElementById('carryLabel');
+  if (carryLabel && carryLabel.textContent.trim() === '') {
+    carryLabel.textContent = `${M - 1 <= 0 ? 12 : M - 1}월 이월금액`;
+  }
 
-  // 11월 이월금액(= 전달 이월금액)
-  // 첫번째 sumHead의 span
-  const sumHead1 = document.querySelector('.summaryGrid .sumCell:nth-child(1) .sumHead .editText');
-  if (sumHead1) setText(sumHead1, `${prevM}월 이월금액`);
+  const endBalLabel = document.getElementById('endBalLabel');
+  if (endBalLabel && endBalLabel.textContent.trim() === '') {
+    endBalLabel.textContent = `${M}월 ${D}일 통장 잔액`;
+  }
 
-  // 12월 31일 통장잔액(= 이번달 오늘 날짜)
-  const sumHead3 = document.querySelector('.summaryGrid .sumCell:nth-child(3) .sumHead .editText');
-  if (sumHead3) setText(sumHead3, `${M}월 ${D}일 통 장 잔 액`);
+  // 3. 중간 섹션 제목들
+  const ieTitle = document.getElementById('titleIncomeExpense');
+  if (ieTitle && ieTitle.textContent.trim() === '') {
+    ieTitle.textContent = `${M}월 수입/지출 내역서`;
+  }
 
-  // --- 3) 섹션 제목: "12월 수입/지출 내역서", "12월 은행 입출금 내역" ---
-  const ieTitle = document.getElementById('titleIncomeExpense'); // 네 코드에 있음
-  if (ieTitle) setText(ieTitle, `${M}월 수입/지출 내역서`);
+  const bankTitle = document.getElementById('titleBank');
+  if (bankTitle && bankTitle.textContent.trim() === '') {
+    bankTitle.textContent = `${M}월 은행 입출금 내역`;
+  }
 
-  const bankTitle = document.getElementById('titleBank'); // 네 코드에 있음
-  if (bankTitle) setText(bankTitle, `${M}월 은행 입출금 내역`);
-
-  // --- 4) 맨 아래 날짜: "YYYY년 M월 D일" (네 코드: integratedMeta > metaLine1) ---
-  const footDate = document.querySelector('.integratedMeta .metaLine1 .editText');
-  if (footDate) setText(footDate, `${Y}년 ${M}월 ${D}일`);
-
-  // ✅ 이번 달 자동 적용 완료 기록
-  localStorage.setItem('report_auto_ym', ymKey);
+  // 4. 맨 아래 날짜
+  const footDate = document.getElementById('reportDate');
+  if (footDate && footDate.textContent.trim() === '') {
+    footDate.textContent = `${Y}년 ${M}월 ${D}일`;
+  }
 })();
+</script>
 
   </script>
  
