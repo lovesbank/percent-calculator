@@ -623,6 +623,16 @@ input.money{
   pointer-events:none;
   z-index:1;
 }
+
+/* 서명 라인 폰트 굵기 고정 */
+.signLine{
+  font-weight:900;          /* 기존 metaLine2와 동일 */
+  font-size:30px;           /* 기존과 동일 */
+  color:#143a63;
+  letter-spacing:-0.5px;
+  line-height:1.02;
+  white-space:nowrap;
+}
   </style>
 </head>
 
@@ -876,10 +886,16 @@ input.money{
       <span class="editText" contenteditable="true">2025년 12월 31일</span>
     </div>
     
-  </<div class="metaLine2 ceoLine">
-  <span class="companyTitle editText" contenteditable="true">
-    염전마을주민발전주식회사&nbsp;&nbsp;대표이사
+  <div class="metaLine2">
+  <span class="editText signLine" contenteditable="true">
+    염전마을주민발전주식회사&nbsp;&nbsp;대표이사&nbsp;&nbsp;
+    김&nbsp;&nbsp;진&nbsp;&nbsp;
+    <span class="nameLast">
+      욱
+      <img src="stamp.PNG" class="ceoStampBig" alt="직인">
+    </span>
   </span>
+</div>
 
   <span class="ceoName">
   김<span class="gap"></span>진<span class="gap"></span>
