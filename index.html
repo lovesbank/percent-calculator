@@ -637,6 +637,55 @@ input.money{
   pointer-events:none;
 }
 
+/* ===== 회사명 + 대표자 한 줄 ===== */
+.signOneLine{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:22px;              /* 회사명 ↔ 이름 간격 */
+  font-weight:900;
+  font-size:26px;
+  color:#143a63;
+  white-space:nowrap;
+}
+
+/* 회사명 */
+.companyText{
+  font-size:26px;
+}
+
+/* 김   진   욱 */
+.ceoName{
+  position:relative;
+  font-size:30px;
+  font-weight:900;
+  color:#111;
+}
+
+/* 이름 간격 */
+.ceoName .gap{
+  display:inline-block;
+  width:36px;            /* ← 더 벌리면 44~48 */
+}
+
+/* 욱 기준 */
+.ceoName .last{
+  position:relative;
+  z-index:2;
+}
+
+/* 도장 – 욱 중앙 */
+.signStamp{
+  position:absolute;
+  width:90px;            /* 크기 (지금 딱 좋음) */
+  height:auto;
+  left:50%;
+  transform:translateX(38%) translateY(-6px);
+  opacity:0.9;
+  pointer-events:none;
+}
+
   </style>
 </head>
 
@@ -890,21 +939,23 @@ input.money{
   </div>
 
   <!-- 회사명 + 직함 -->
-  <div class="metaLine2">
-    <span class="editText" contenteditable="true">
-      염전마을주민발전주식회사&nbsp;&nbsp;대표이사
-    </span>
-  </div>
 
-  <!-- 이름(간격) + 도장(욱 중앙) -->
-  <div class="metaLine3 ceoNameWrap">
-    <span class="ceoName">
-      김<span class="gap"></span>진<span class="gap"></span><span class="name-last">욱</span>
-    </span>
-    <img src="stamp.PNG" class="ceoStampCenter" alt="직인">
-  </div>
+<div class="metaLine2 signOneLine">
+
+  <span class="companyText editText" contenteditable="true">
+    염전마을주민발전주식회사&nbsp;&nbsp;대표이사
+  </span>
+
+  <span class="ceoName">
+    김<span class="gap"></span>진<span class="gap"></span><span class="last">욱</span>
+  </span>
+
+  <img src="stamp.PNG" class="signStamp" alt="직인">
+
 </div>
-  
+
+</div>
+
 </div>
           </div>
 
