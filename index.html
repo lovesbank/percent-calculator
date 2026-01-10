@@ -37,13 +37,16 @@
     .sectionTitle{ display:flex; align-items:center; gap:10px; margin:10px 0 8px; font-weight:900; font-size:22px; }
     .dot{ width:18px; height:18px; border:2px solid var(--ink); border-radius:50%; }
     .noteLine{ border:var(--b) solid var(--ink); padding:8px; margin-bottom:8px; text-align:center; font-weight:800; font-size:14px; }
+    
     #incomeExpenseTable thead tr.subhead th:nth-child(1), #incomeExpenseTable thead tr.subhead th:nth-child(2),
     #incomeExpenseTable tbody td:nth-child(1), #incomeExpenseTable tbody td:nth-child(2) { background:#e8f0fb !important; }
     #incomeExpenseTable thead tr.subhead th:nth-child(3), #incomeExpenseTable thead tr.subhead th:nth-child(4),
     #incomeExpenseTable tbody td:nth-child(3), #incomeExpenseTable tbody td:nth-child(4) { background:#fde9d9 !important; }
+    
     .bankWrap{ border:var(--b) solid var(--ink); padding:10px; }
     .bankTables{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
     .thIn{ background:var(--c-in) !important; } .thOut{ background:var(--c-out) !important; } .thBal{ background:var(--c-bal) !important; }
+    
     .integratedBox{ border:var(--b) solid var(--ink); margin-top:10px; padding:45px 12px; display:flex; flex-direction:column; align-items:center; gap:40px; }
     .metaLine1, .metaLine2{ font-weight:900; color:#143a63; font-size:30px; text-align:center; }
     .ceoArea { position: relative; display: inline-block; }
@@ -60,6 +63,7 @@
           <div class="titleText" contenteditable="true">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
           <div class="titleLineBot"></div>
         </div>
+        
         <div class="summary">
           <div class="summaryGrid">
             <div class="sumCell"><div class="sumHead">11월 이월금액</div><div class="sumVal"><input id="carry" class="num money" value="25,554,575"></div></div>
@@ -67,8 +71,10 @@
             <div class="sumCell"><div class="sumHead">12월 31일 통장잔액</div><div class="sumVal" style="color:var(--red)"><input id="endBal" class="num" value="0" readonly></div></div>
           </div>
         </div>
+
         <div class="sectionTitle"><span class="dot"></span>12월 수입/지출 내역서</div>
         <div class="noteLine">（ 수입은 한달전 생산된 금액입니다. 한달지연 입금됩니다 ）</div>
+        
         <table class="tbl" id="incomeExpenseTable">
           <colgroup><col width="28%"><col width="16%"><col width="28%"><col width="16%"><col width="12%"></colgroup>
           <thead><tr><th colspan="2">수&nbsp;&nbsp;입</th><th colspan="2">지&nbsp;&nbsp;출</th><th>비&nbsp;&nbsp;고</th></tr><tr class="subhead"><th>적&nbsp;&nbsp;요</th><th>금&nbsp;&nbsp;액</th><th>적&nbsp;&nbsp;요</th><th>금&nbsp;&nbsp;액</th><th></th></tr></thead>
@@ -82,11 +88,16 @@
             <tr><td><input value="이자"></td><td><input class="num money inc" value="946"></td><td><input value="이음북스"></td><td><input class="num money exp" value="93,700"></td><td><input value=""></td></tr>
             <tr><td><input value="이자"></td><td><input class="num money inc" value="5,492"></td><td><input value="토지임대료"></td><td><input class="num money exp" value="14,300,000"></td><td><input value=""></td></tr>
             <tr><td><input value=""></td><td><input class="num money inc" value="0"></td><td><input value="운영비"></td><td><input class="num money exp" value="11,000,500"></td><td><input value=""></td></tr>
+            <tr><td><input value=""></td><td><input class="num money inc" value="0"></td><td><input value=""></td><td><input class="num money exp" value="0"></td><td><input value=""></td></tr>
+            <tr><td><input value=""></td><td><input class="num money inc" value="0"></td><td><input value=""></td><td><input class="num money exp" value="0"></td><td><input value=""></td></tr>
+            <tr><td><input value=""></td><td><input class="num money inc" value="0"></td><td><input value=""></td><td><input class="num money exp" value="0"></td><td><input value=""></td></tr>
           </tbody>
           <tfoot><tr><th>합계</th><th><input id="incSum" class="num" readonly></th><th>합계</th><th><input id="expSum" class="num" readonly></th><th><input id="netFoot" class="num" readonly></th></tr></tfoot>
         </table>
+
         <div class="sectionTitle" style="margin-top:14px;"><span class="dot"></span>12월 은행 입출금 내역</div>
-        <div class="bankWrap"><div class="bankTables">
+        <div class="bankWrap">
+          <div class="bankTables">
             <div>
               <div style="text-align:center; font-weight:900; padding:5px; border:var(--b2) solid var(--grid)">기 업 은 행</div>
               <table class="bankTbl" id="ibTable">
@@ -100,6 +111,12 @@
                   <tr><td><input value="전력거래소"></td><td><input class="num money ib-in" value="4,527,300"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td><input value="염전마을주"></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="14,300,000"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td><input value="전력거래소"></td><td><input class="num money ib-in" value="1,895,650"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money ib-in" value="0"></td><td><input class="num money ib-out" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                 </tbody>
               </table>
             </div>
@@ -116,11 +133,18 @@
                   <tr><td><input value="김균태회계"></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="154,000"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td><input value="보상금"></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="10,500,500"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td><input value="이자수당"></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="800,000"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td><input value="이자"></td><td><input class="num money nh-in" value="5,492"></td><td><input value="0" class="num money nh-out"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value="군청근조화환"></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="100,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value="운영비"></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="11,000,500"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value="이자"></td><td><input class="num money nh-in" value="5,492"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td><input value=""></td><td><input class="num money nh-in" value="0"></td><td><input class="num money nh-out" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                 </tbody>
               </table>
             </div>
-          </div></div>
+          </div>
+        </div>
+
         <div class="integratedBox">
           <div class="metaLine1">2025년 12월 31일</div>
           <div class="metaLine2">
@@ -160,6 +184,7 @@
   </script>
 </body>
 </html>
+
 
 
 
