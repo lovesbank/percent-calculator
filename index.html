@@ -504,6 +504,33 @@
 .integratedMeta{
   gap:28px !important;   /* 줄 간격 (더 벌리고 싶으면 32~40) */
 }
+    /* =================================================
+   12월 수입/지출 내역서
+   ✔ 적요 / 금액 칸만 색 적용
+   ✔ 비고 제외
+   ================================================= */
+
+/* ── 헤더 (적요 / 금액 한 줄만) ── */
+#incomeExpenseTable thead tr.subhead th:nth-child(1),
+#incomeExpenseTable thead tr.subhead th:nth-child(2){
+  background:#e8f0fb !important;   /* 수입: 연한 파랑 */
+}
+
+#incomeExpenseTable thead tr.subhead th:nth-child(3),
+#incomeExpenseTable thead tr.subhead th:nth-child(4){
+  background:#fde9d9 !important;   /* 지출: 연한 살구 */
+}
+
+/* ── 본문 (적요 / 금액 칸만) ── */
+#incomeExpenseTable tbody td:nth-child(1),
+#incomeExpenseTable tbody td:nth-child(2){
+  background:#e8f0fb !important;   /* 수입 */
+}
+
+#incomeExpenseTable tbody td:nth-child(3),
+#incomeExpenseTable tbody td:nth-child(4){
+  background:#fde9d9 !important;   /* 지출 */
+}
   </style>
 </head>
 
