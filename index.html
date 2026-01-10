@@ -685,6 +685,20 @@ input.money{
   opacity:0.9;
   pointer-events:none;
 }
+    /* ✅ 아이폰 사파리: 2칸 표가 벌어지는 현상 방지 */
+.bankTables{
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap:10px;
+}
+.bankTables > div{
+  min-width:0 !important;       /* 핵심 */
+}
+.bankTbl{
+  width:100% !important;
+}
+.bankWrap{
+  overflow:hidden;              /* 혹시 밀려나가면 잘라줌 */
+}
 
   </style>
 </head>
