@@ -1051,6 +1051,82 @@ if (foot) {
   foot.textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 }
 })();
+    /* =========================
+   월 단위 자동 저장 / 초기화
+   ========================= */
+
+const STORAGE_KEY = 'settlement_autosave';
+const STORAGE_MONTH_KEY = 'settlement_month';
+
+function getCurrentMonthKey(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function clearAllInputs(){
+  document.querySelectorAll('input').forEach(el=>{
+    if (!el.readOnly) el.value = '';
+  });
+  document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+    el.innerHTML = '';
+  });
+}
+
+function saveAll(){
+  const data = { inputs:{}, edits:{} };
+
+  document.querySelectorAll('input').forEach(el=>{
+    if (el.id) data.inputs[el.id] = el.value;
+  });
+
+  document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+    if (el.id) data.edits[el.id] = el.innerHTML;
+  });
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(STORAGE_MONTH_KEY, getCurrentMonthKey());
+}
+
+function loadAll(){
+  const savedMonth = localStorage.getItem(STORAGE_MONTH_KEY);
+  const nowMonth = getCurrentMonthKey();
+
+  if (savedMonth !== nowMonth){
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(STORAGE_MONTH_KEY, nowMonth);
+    clearAllInputs();
+    return;
+  }
+
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+
+  try{
+    const data = JSON.parse(raw);
+
+    if (data.inputs){
+      Object.entries(data.inputs).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if (el && !el.readOnly) el.value = val;
+      });
+    }
+
+    if (data.edits){
+      Object.entries(data.edits).forEach(([id,val])=>{
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = val;
+      });
+    }
+  }catch(e){
+    localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+/* 입력 변경 시 자동 저장 */
+document.addEventListener('input', saveAll);
+
+/* 최초 로드 */
+loadAll(); 
     recalcAll();
   </script>
  
