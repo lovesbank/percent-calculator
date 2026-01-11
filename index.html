@@ -909,233 +909,268 @@ input.money{
           </div>
         </div>
 
-  <script>
-    /* ===== iPhone “한 장 자동 축소” ===== */
-    (function(){
-      const wrap = document.getElementById('sheetWrap');
-      const stage = document.querySelector('.stage');
-      function px(v){ return Number(String(v).replace('px','')) || 0; }
+      <script>
+  /* ===== iPhone “한 장 자동 축소” ===== */
+  (function(){
+    const wrap = document.getElementById('sheetWrap');
+    const stage = document.querySelector('.stage');
+    function px(v){ return Number(String(v).replace('px','')) || 0; }
 
-      function fit(){
-        const vw = document.documentElement.clientWidth;
-        const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
+    function fit(){
+      const vw = document.documentElement.clientWidth;
+      const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
 
-        const st = getComputedStyle(stage);
-        const padL = px(st.paddingLeft);
-        const padR = px(st.paddingRight);
+      const st = getComputedStyle(stage);
+      const padL = px(st.paddingLeft);
+      const padR = px(st.paddingRight);
 
-        const usable = Math.max(320, vw - padL - padR);
-        const scale = Math.min(1, usable / base);
-        wrap.style.setProperty('--scale', scale.toFixed(4));
+      const usable = Math.max(320, vw - padL - padR);
+      const scale = Math.min(1, usable / base);
+      wrap.style.setProperty('--scale', scale.toFixed(4));
+    }
+    window.addEventListener('resize', fit, {passive:true});
+    fit();
+  })();
+
+  function toNumber(v){
+    if (v == null) return 0;
+    const s = String(v).replace(/[^\d\-]/g,'');
+    if (s === '' || s === '-') return 0;
+    return Number(s) || 0;
+  }
+  function fmt(n){
+    const sign = n < 0 ? '-' : '';
+    const abs = Math.abs(Math.trunc(n));
+    return sign + abs.toLocaleString('en-US');
+  }
+  function setInputFormatted(el){
+    const n = toNumber(el.value);
+    el.value = fmt(n);
+  }
+
+  function sumInputs(selector){
+    let s = 0;
+    document.querySelectorAll(selector).forEach(el=>{ s += toNumber(el.value); });
+    return s;
+  }
+
+  function recalcIncomeExpense(){
+    const inc = sumInputs('#incomeExpenseTable .inc');
+    const exp = sumInputs('#incomeExpenseTable .exp');
+    const net = inc - exp;
+
+    document.getElementById('incSum').value = fmt(inc);
+    document.getElementById('expSum').value = fmt(exp);
+    document.getElementById('netFoot').value = fmt(net);
+
+    document.getElementById('net').value = fmt(net);
+
+    const carry = toNumber(document.getElementById('carry').value);
+    document.getElementById('endBal').value = fmt(carry + net);
+  }
+
+  function recalcBankOne(prefix, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
+    let bal = toNumber(document.getElementById(prevId).value);
+    let inSum = 0, outSum = 0;
+
+    document.querySelectorAll(prefix + ' tbody tr').forEach(tr=>{
+      const inEl  = tr.querySelector(inSel);
+      const outEl = tr.querySelector(outSel);
+      const balEl = tr.querySelector(balSel);
+
+      const inn = inEl ? toNumber(inEl.value) : 0;
+      const out = outEl ? toNumber(outEl.value) : 0;
+
+      inSum += inn;
+      outSum += out;
+
+      bal = bal + inn - out;
+      if (balEl) balEl.value = fmt(bal);
+    });
+
+    document.getElementById(inSumId).value = fmt(inSum);
+    document.getElementById(outSumId).value = fmt(outSum);
+    document.getElementById(endId).value = fmt(bal);
+
+    return bal;
+  }
+
+  function recalcBank(){
+    const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
+    const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
+    document.getElementById('integratedBal').textContent = fmt(ibEnd + nhEnd);
+  }
+
+  function recalcAll(){
+    recalcIncomeExpense();
+    recalcBank();
+  }
+
+  /* =========================
+     전월 기준 자동 날짜/문구 세팅 (함수로 변경)
+     ========================= */
+  function autoSetReportTexts(){
+    function lastDayOfMonth(y, m){
+      return new Date(y, m, 0).getDate();
+    }
+
+    const now = new Date();
+
+    // 결산 기준 = 전월
+    const report = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const ry = report.getFullYear();
+    const rm = report.getMonth() + 1;
+
+    // 이월금액 = 전전월
+    const carry = new Date(ry, report.getMonth() - 1, 1);
+    const cm = carry.getMonth() + 1;
+
+    const last = lastDayOfMonth(ry, rm);
+
+    // 상단 제목
+    const title = document.getElementById('reportTitle');
+    if (title) title.innerHTML = `${ry}년&nbsp;&nbsp;${rm}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
+
+    // 요약 라벨
+    const carryLabel = document.getElementById('carryLabel');
+    if (carryLabel) carryLabel.textContent = `${cm}월 이월금액`;
+
+    const endBalLabel = document.getElementById('endBalLabel');
+    if (endBalLabel) endBalLabel.textContent = `${rm}월 ${last}일 통 장 잔 액`;
+
+    // 표 제목
+    const ie = document.getElementById('titleIncomeExpense');
+    if (ie) ie.textContent = `${rm}월 수입/지출 내역서`;
+
+    const bank = document.getElementById('titleBank');
+    if (bank) bank.textContent = `${rm}월 은행 입출금 내역`;
+
+    // 맨 아래 날짜 = 오늘
+    const foot = document.getElementById('reportDate');
+    if (foot) foot.textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+  }
+
+  /* =========================
+     월 단위 자동 저장 / 초기화 (수정 핵심)
+     ========================= */
+  const STORAGE_KEY = 'settlement_autosave';
+  const STORAGE_MONTH_KEY = 'settlement_month';
+
+  function getCurrentMonthKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  }
+
+  function clearAllInputsOnlyUserFields(){
+    // ✅ 사용자가 입력하는 input만 비우기 (readonly는 제외)
+    document.querySelectorAll('input').forEach(el=>{
+      if (!el.readOnly) el.value = '';
+    });
+
+    // ✅ contenteditable은 전부 비우면 제목까지 날아가므로, "사용자 수정용"만 비움
+    // (자동으로 채워주는 것들은 autoSetReportTexts()가 다시 넣어줌)
+    document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+      el.innerHTML = '';
+    });
+  }
+
+  function saveAll(){
+    const data = { inputs:{}, edits:{} };
+
+    document.querySelectorAll('input').forEach(el=>{
+      if (el.id) data.inputs[el.id] = el.value;
+    });
+
+    document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+      if (el.id) data.edits[el.id] = el.innerHTML;
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_MONTH_KEY, getCurrentMonthKey());
+  }
+
+  function loadAll(){
+    const savedMonth = localStorage.getItem(STORAGE_MONTH_KEY);
+    const nowMonth = getCurrentMonthKey();
+
+    // ✅ 처음이거나 키가 없을 때: 초기화 금지, 월키만 세팅
+    if (!savedMonth){
+      localStorage.setItem(STORAGE_MONTH_KEY, nowMonth);
+      return;
+    }
+
+    // ✅ 월이 바뀐 경우에만 초기화
+    if (savedMonth !== nowMonth){
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(STORAGE_MONTH_KEY, nowMonth);
+
+      clearAllInputsOnlyUserFields();
+
+      // ✅ 초기화 후 자동 텍스트 다시 세팅
+      autoSetReportTexts();
+
+      // ✅ 금액 포맷/재계산
+      document.querySelectorAll('input.money').forEach(setInputFormatted);
+      recalcAll();
+      return;
+    }
+
+    // ---- 같은 달이면 저장된 값 로드 ----
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    try{
+      const data = JSON.parse(raw);
+
+      if (data.inputs){
+        Object.entries(data.inputs).forEach(([id,val])=>{
+          const el = document.getElementById(id);
+          if (el && !el.readOnly) el.value = val;
+        });
       }
-      window.addEventListener('resize', fit, {passive:true});
-      fit();
-    })();
 
-    function toNumber(v){
-      if (v == null) return 0;
-      const s = String(v).replace(/[^\d\-]/g,'');
-      if (s === '' || s === '-') return 0;
-      return Number(s) || 0;
+      if (data.edits){
+        Object.entries(data.edits).forEach(([id,val])=>{
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = val;
+        });
+      }
+    }catch(e){
+      localStorage.removeItem(STORAGE_KEY);
     }
-    function fmt(n){
-      const sign = n < 0 ? '-' : '';
-      const abs = Math.abs(Math.trunc(n));
-      return sign + abs.toLocaleString('en-US');
-    }
-    function setInputFormatted(el){
-      const n = toNumber(el.value);
-      el.value = fmt(n);
-    }
+  }
 
+  /* =========================
+     money 입력 이벤트 연결
+     ========================= */
+  function bindMoneyInputs(){
     document.querySelectorAll('input.money').forEach(el=>{
       el.addEventListener('input', ()=> {
         setInputFormatted(el);
         recalcAll();
       });
-      setInputFormatted(el);
     });
-
-    function sumInputs(selector){
-      let s = 0;
-      document.querySelectorAll(selector).forEach(el=>{ s += toNumber(el.value); });
-      return s;
-    }
-
-    function recalcIncomeExpense(){
-      const inc = sumInputs('#incomeExpenseTable .inc');
-      const exp = sumInputs('#incomeExpenseTable .exp');
-      const net = inc - exp;
-
-      document.getElementById('incSum').value = fmt(inc);
-      document.getElementById('expSum').value = fmt(exp);
-      document.getElementById('netFoot').value = fmt(net);
-
-      document.getElementById('net').value = fmt(net);
-
-      const carry = toNumber(document.getElementById('carry').value);
-      document.getElementById('endBal').value = fmt(carry + net);
-    }
-
-    function recalcBankOne(prefix, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
-      let bal = toNumber(document.getElementById(prevId).value);
-      let inSum = 0, outSum = 0;
-
-      document.querySelectorAll(prefix + ' tbody tr').forEach(tr=>{
-        const inEl  = tr.querySelector(inSel);
-        const outEl = tr.querySelector(outSel);
-        const balEl = tr.querySelector(balSel);
-
-        const inn = inEl ? toNumber(inEl.value) : 0;
-        const out = outEl ? toNumber(outEl.value) : 0;
-
-        inSum += inn;
-        outSum += out;
-
-        bal = bal + inn - out;
-        if (balEl) balEl.value = fmt(bal);
-      });
-
-      document.getElementById(inSumId).value = fmt(inSum);
-      document.getElementById(outSumId).value = fmt(outSum);
-      document.getElementById(endId).value = fmt(bal);
-
-      return bal;
-    }
-
-    function recalcBank(){
-      const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
-      const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
-      document.getElementById('integratedBal').textContent = fmt(ibEnd + nhEnd);
-    }
-
-    function recalcAll(){
-      recalcIncomeExpense();
-      recalcBank();
-    }
-    /* =========================
-   전월 기준 자동 날짜/문구 세팅
-   ========================= */
-(function autoSetReportTexts(){
-  function lastDayOfMonth(y, m){
-    return new Date(y, m, 0).getDate();
   }
 
-  const now = new Date();
+  /* =========================
+     실행 순서 (중요)
+     1) 자동 텍스트 세팅
+     2) 로드(같은달 유지 / 월바뀌면 초기화)
+     3) money 이벤트 연결
+     4) 포맷/계산
+     5) input 변경시 저장
+     ========================= */
+  autoSetReportTexts();
+  loadAll();
+  bindMoneyInputs();
 
-  // 결산 기준 = 전월
-  const report = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const ry = report.getFullYear();
-  const rm = report.getMonth() + 1;
+  // 로드된 값도 포맷 보정 + 계산
+  document.querySelectorAll('input.money').forEach(setInputFormatted);
+  recalcAll();
 
-  // 이월금액 = 전전월
-  const carry = new Date(ry, report.getMonth() - 1, 1);
-  const cm = carry.getMonth() + 1;
-
-  const last = lastDayOfMonth(ry, rm);
-
-  // 상단 제목
-  const title = document.getElementById('reportTitle');
-  if (title) title.innerHTML = `${ry}년&nbsp;&nbsp;${rm}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
-
-  // 요약 라벨
-  const carryLabel = document.getElementById('carryLabel');
-  if (carryLabel) carryLabel.textContent = `${cm}월 이월금액`;
-
-  const endBalLabel = document.getElementById('endBalLabel');
-  if (endBalLabel) endBalLabel.textContent = `${rm}월 ${last}일 통 장 잔 액`;
-
-  // 표 제목
-  const ie = document.getElementById('titleIncomeExpense');
-  if (ie) ie.textContent = `${rm}월 수입/지출 내역서`;
-
-  const bank = document.getElementById('titleBank');
-  if (bank) bank.textContent = `${rm}월 은행 입출금 내역`;
-
-   // 맨 아래 날짜 = 오늘
-const foot = document.getElementById('reportDate');
-if (foot) {
-  foot.textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
-}
-})();
-    /* =========================
-   월 단위 자동 저장 / 초기화
-   ========================= */
-
-const STORAGE_KEY = 'settlement_autosave';
-const STORAGE_MONTH_KEY = 'settlement_month';
-
-function getCurrentMonthKey(){
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-
-function clearAllInputs(){
-  document.querySelectorAll('input').forEach(el=>{
-    if (!el.readOnly) el.value = '';
-  });
-  document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
-    el.innerHTML = '';
-  });
-}
-
-function saveAll(){
-  const data = { inputs:{}, edits:{} };
-
-  document.querySelectorAll('input').forEach(el=>{
-    if (el.id) data.inputs[el.id] = el.value;
-  });
-
-  document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
-    if (el.id) data.edits[el.id] = el.innerHTML;
-  });
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  localStorage.setItem(STORAGE_MONTH_KEY, getCurrentMonthKey());
-}
-
-function loadAll(){
-  const savedMonth = localStorage.getItem(STORAGE_MONTH_KEY);
-  const nowMonth = getCurrentMonthKey();
-
-  if (savedMonth !== nowMonth){
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.setItem(STORAGE_MONTH_KEY, nowMonth);
-    clearAllInputs();
-    return;
-  }
-
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return;
-
-  try{
-    const data = JSON.parse(raw);
-
-    if (data.inputs){
-      Object.entries(data.inputs).forEach(([id,val])=>{
-        const el = document.getElementById(id);
-        if (el && !el.readOnly) el.value = val;
-      });
-    }
-
-    if (data.edits){
-      Object.entries(data.edits).forEach(([id,val])=>{
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = val;
-      });
-    }
-  }catch(e){
-    localStorage.removeItem(STORAGE_KEY);
-  }
-}
-
-/* 입력 변경 시 자동 저장 */
-document.addEventListener('input', saveAll);
-
-/* 최초 로드 */
-loadAll(); 
-    recalcAll();
-  </script>
+  // 입력 변경 시 자동 저장
+  document.addEventListener('input', saveAll);
+</script>
  
 </body>
 </html>
