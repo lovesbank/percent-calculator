@@ -703,6 +703,13 @@
     fit();
   })();
 
+  /* ===== (요구2) 맨 아래 빨간 숫자: 지금부터 영구 숨김 ===== */
+  function hideIntegratedBalForever(){
+    const el = document.getElementById('integratedBal');
+    if(el) el.style.display = 'none';
+  }
+  hideIntegratedBalForever();
+
   /* ===== 숫자/포맷 (커서 튐 방지: input 중엔 포맷X, blur 때만 콤마) ===== */
   function toNumber(v){
     if (v == null) return 0;
@@ -783,9 +790,12 @@
     const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
     const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
 
-    const integrated = ibEnd + nhEnd;
+    // 통합잔액은 계산은 하되, 화면에 표시 안 함(요구사항)
     const el = document.getElementById('integratedBal');
-    if (el) el.textContent = fmt(integrated);
+    if (el){
+      el.textContent = fmt(ibEnd + nhEnd);
+      el.style.display = 'none';
+    }
   }
 
   function recalcAll(){
@@ -794,20 +804,25 @@
   }
 
   /* =========================================================
-     ✅ 저장(로컬) + ✅ 월이 바뀌면 자동 초기화 + ✅ 맨아래 날짜는 오늘
-     - 표/도장 구조(HTML)는 건드리지 않고 값/텍스트만 저장
-     - contenteditable(제목/섹션제목/날짜 등)도 같이 저장
+     ✅ 저장(로컬) + ✅ 월 변경 시 초기화 규칙
+     1) 월 초기화 시 money 전부 0
+     2) 단, carry(이월잔액) = 지난달 endBal 값
      ========================================================= */
 
-  // 저장 키(월 단위)
   const STORAGE_PREFIX = 'YEOMJEON_SETTLEMENT_REPORT_V1';
+
   function monthKey(d){
     const y = d.getFullYear();
     const m = String(d.getMonth()+1).padStart(2,'0');
     return `${y}-${m}`;
   }
-  function storageKeyForThisMonth(){
-    return `${STORAGE_PREFIX}:${monthKey(new Date())}`;
+  function storageKeyForMonth(mk){
+    return `${STORAGE_PREFIX}:${mk}`;
+  }
+  function prevMonthKey(now){
+    const d = new Date(now.getFullYear(), now.getMonth(), 1);
+    d.setMonth(d.getMonth() - 1);
+    return monthKey(d);
   }
 
   function todayKoreanDate(d){
@@ -817,7 +832,6 @@
     return `${y}년 ${m}월 ${day}일`;
   }
 
-  // 초기 HTML(네가 작성한 기본 상태)을 def로 저장 → 월 바뀌면 이걸로 복구
   function snapshotDefaults(){
     document.querySelectorAll('input').forEach((el)=>{
       if (el.dataset.def == null) el.dataset.def = (el.value ?? '');
@@ -827,16 +841,7 @@
     });
   }
 
-  function resetToDefaults(){
-    document.querySelectorAll('input').forEach((el)=>{
-      if (el.dataset.def != null) el.value = el.dataset.def;
-    });
-    document.querySelectorAll('[contenteditable="true"]').forEach((el)=>{
-      if (el.dataset.def != null) el.innerHTML = el.dataset.def;
-    });
-  }
-
-  // “기본 문구 그대로일 때만” 현재 월로 패치(사용자가 고친 건 존중)
+  // 기본 문구 그대로일 때만 현재 월로 자동 교체
   function autoPatchMonthTextIfDefault(){
     const now = new Date();
     const y = now.getFullYear();
@@ -857,25 +862,20 @@
       bankTitle.innerHTML = `${m}월 은행 입출금 내역`;
     }
 
-    // 요약 헤더(12월 31일...)도 기본이면 월만 교체
     const heads = document.querySelectorAll('.summary .sumHead [contenteditable="true"]');
     heads.forEach(h=>{
       if(!h.dataset.def) return;
       if(h.innerHTML !== h.dataset.def) return;
       const t = (h.innerText || '').replace(/\s+/g,'');
-      // "12월31일통장잔액" 같은 기본패턴일 때만
       if(t.includes('월31일') && t.includes('통장') && t.includes('잔액')){
         h.innerText = `${m}월 31일 통 장 잔 액`;
       }
     });
   }
 
-  // 맨아래 날짜는 항상 오늘(월 초기화/첫 실행 때 적용)
   function setBottomDateToToday(){
-    const el = document.getElementById('reportDateText'); // ✅ PART2에서 추가한 id
-    if(el){
-      el.innerText = todayKoreanDate(new Date());
-    }
+    const el = document.getElementById('reportDateText');
+    if(el) el.innerText = todayKoreanDate(new Date());
   }
 
   function collectState(){
@@ -885,13 +885,11 @@
       edits: {}
     };
 
-    // input 저장
     document.querySelectorAll('input').forEach((el, idx)=>{
       const key = el.id ? `id:${el.id}` : `idx:${idx}`;
       state.inputs[key] = (el.value ?? '');
     });
 
-    // contenteditable 저장
     document.querySelectorAll('[contenteditable="true"]').forEach((el, idx)=>{
       const key = el.id ? `id:${el.id}` : `idx:${idx}`;
       state.edits[key] = (el.innerHTML ?? '');
@@ -918,15 +916,15 @@
     });
   }
 
-  function saveState(){
+  function saveStateForKey(storageKey){
     try{
-      localStorage.setItem(storageKeyForThisMonth(), JSON.stringify(collectState()));
+      localStorage.setItem(storageKey, JSON.stringify(collectState()));
     }catch(e){}
   }
 
-  function loadState(){
+  function loadStateForKey(storageKey){
     try{
-      const raw = localStorage.getItem(storageKeyForThisMonth());
+      const raw = localStorage.getItem(storageKey);
       if(!raw) return null;
       return JSON.parse(raw);
     }catch(e){
@@ -934,74 +932,107 @@
     }
   }
 
-  // 디바운스 저장(버벅임 방지)
+  // ✅ 월 초기화 규칙(요구사항)
+  function resetForNewMonth(prevEndBalValue){
+    const carryEl = document.getElementById('carry');
+    if(carryEl){
+      carryEl.value = (prevEndBalValue != null && prevEndBalValue !== '') ? prevEndBalValue : '0';
+    }
+
+    // money 전부 0 (carry 제외)
+    document.querySelectorAll('input.money').forEach(el=>{
+      if(el.id === 'carry') return;
+      el.value = '0';
+    });
+
+    // 계산표시 칸들도 0으로(표시 안정)
+    ['net','endBal','incSum','expSum','netFoot','ibInSum','ibOutSum','ibEnd','nhInSum','nhOutSum','nhEnd'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.value = '0';
+    });
+
+    hideIntegratedBalForever();
+  }
+
+  // 저장 디바운스
   let saveTimer = null;
-  function scheduleSave(){
+  function scheduleSave(storageKey){
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveState, 250);
+    saveTimer = setTimeout(()=>saveStateForKey(storageKey), 250);
   }
 
   /* ===== 이벤트 바인딩 ===== */
-  function bindMoneyEvents(){
-    // money: 입력 중에는 계산만, blur 때 콤마 정리
+  function bindMoneyEvents(storageKey){
     document.querySelectorAll('input.money').forEach(el=>{
       el.addEventListener('input', ()=>{
         recalcAll();
-        scheduleSave();
+        scheduleSave(storageKey);
       });
       el.addEventListener('blur', ()=>{
         normalizeMoneyInput(el);
         recalcAll();
-        scheduleSave();
+        scheduleSave(storageKey);
       });
-      // 초기 정리
       normalizeMoneyInput(el);
     });
 
-    // money 아닌 input도 저장
     document.querySelectorAll('input:not(.money)').forEach(el=>{
-      el.addEventListener('input', scheduleSave);
-      el.addEventListener('change', scheduleSave);
+      el.addEventListener('input', ()=>scheduleSave(storageKey));
+      el.addEventListener('change', ()=>scheduleSave(storageKey));
     });
   }
 
-  function bindEditableSaves(){
+  function bindEditableSaves(storageKey){
     document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
-      el.addEventListener('input', scheduleSave);
-      el.addEventListener('blur', scheduleSave);
+      el.addEventListener('input', ()=>scheduleSave(storageKey));
+      el.addEventListener('blur', ()=>scheduleSave(storageKey));
     });
   }
 
   /* ===== 부팅 ===== */
   (function boot(){
     snapshotDefaults();
+    hideIntegratedBalForever();
 
-    // 이 페이지의 “월 키”에 저장된 데이터가 있으면 복원
-    const saved = loadState();
+    const now = new Date();
+    const mkNow = monthKey(now);
+    const keyNow = storageKeyForMonth(mkNow);
 
-    if(saved){
-      applyState(saved);
+    const savedNow = loadStateForKey(keyNow);
+
+    if(savedNow){
+      // 같은 달: 그대로 복원
+      applyState(savedNow);
     }else{
-      // 저장이 없으면(=신규/월 바뀜) 기본값 유지 + 월/오늘 날짜 반영
+      // 새 달: 지난달 endBal을 carry로 가져오고 나머지는 0
+      const mkPrev = prevMonthKey(now);
+      const keyPrev = storageKeyForMonth(mkPrev);
+      const savedPrev = loadStateForKey(keyPrev);
+
+      let prevEndBal = '0';
+      if(savedPrev && savedPrev.inputs && savedPrev.inputs['id:endBal'] != null){
+        prevEndBal = savedPrev.inputs['id:endBal'];
+      }
+
+      resetForNewMonth(prevEndBal);
+
+      // 월/날짜 자동 반영(기본 문구일 때만)
       autoPatchMonthTextIfDefault();
       setBottomDateToToday();
-      saveState();
+
+      saveStateForKey(keyNow);
     }
 
-    bindMoneyEvents();
-    bindEditableSaves();
+    bindMoneyEvents(keyNow);
+    bindEditableSaves(keyNow);
 
-    // 계산 한번 돌려서 합계/잔액 채움
     recalcAll();
-
-    // 혹시 저장 복원 후 money에 콤마가 엉켜도 정리
     document.querySelectorAll('input.money').forEach(normalizeMoneyInput);
 
-    // 최종 저장
-    saveState();
+    hideIntegratedBalForever();
+    saveStateForKey(keyNow);
   })();
 </script>
-
 </body>
 </html>
 
