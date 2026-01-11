@@ -886,7 +886,7 @@ input.money{
 
           <div class="integratedMeta">
             <div class="metaLine1">
-              <span class="editText" contenteditable="true">2025년 12월 31일</span>
+              <span class="editText" id="reportDate" contenteditable="true">
             </div>
 
             <div class="metaLine2">
@@ -1045,12 +1045,11 @@ input.money{
   const bank = document.getElementById('titleBank');
   if (bank) bank.textContent = `${rm}월 은행 입출금 내역`;
 
-  // 맨 아래 날짜 = 오늘
-  const foot = document.getElementById('reportDate');
-  if (foot) {
-    foot.textContent =
-      `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
-  }
+   // 맨 아래 날짜 = 오늘
+const foot = document.getElementById('reportDate');
+if (foot) {
+  foot.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+} 
 })();
     recalcAll();
   </script>
