@@ -3,22 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>결산 보고서</title>
-
+  <title>2025년 12월 결산 보고서</title>
   <style>
     :root{
       --ink:#111;
       --grid:#222;
+      --muted:#666;
       --red:#d82222;
 
       --sheet-w: 920px;
       --pad: 18px;
       --b: 3px;
       --b2: 2px;
-
       --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-      /* 은행표 헤더만 은은하게 */
+      /* 은행표 헤더만 은은하게(요구한 “한 줄만” 느낌) */
       --c-in:  #dfe8f6;
       --c-out: #f6ddcf;
       --c-bal: #d7f1ea;
@@ -26,7 +25,8 @@
 
     *{ box-sizing:border-box; }
     html, body{
-      margin:0; padding:0;
+      margin:0;
+      padding:0;
       background:#f3f4f6;
       font-family:var(--font);
       color:var(--ink);
@@ -81,7 +81,6 @@
       appearance:none;
       border-radius:0;
     }
-
     .num{
       text-align:right;
       white-space:nowrap;
@@ -93,7 +92,6 @@
       border-collapse:collapse;
       table-layout:fixed;
     }
-
     th, td{
       overflow:hidden;
       white-space:nowrap;
@@ -102,7 +100,9 @@
       min-width:0;
     }
 
-    /* ===== 제목 ===== */
+    /* =========================
+       제목(수정 가능 + 점선 제거)
+       ========================= */
     .titleWrap{
       margin:6px 0 14px;
       padding:14px 10px 12px;
@@ -115,10 +115,7 @@
       border-radius:3px;
     }
     .titleLineTop{ margin:0 0 14px; }
-    .titleLineBot{
-      margin:14px 0 0;
-      background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%);
-    }
+    .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
 
     .titleBox{
       border:0;
@@ -139,7 +136,6 @@
       white-space:nowrap;
     }
 
-    /* ===== 요약 3칸 ===== */
     .summary{
       border:var(--b) solid var(--ink);
       margin:6px 0 12px;
@@ -150,7 +146,6 @@
     }
     .sumCell{ border-right:var(--b) solid var(--ink); }
     .sumCell:last-child{ border-right:0; }
-
     .sumHead{
       border-bottom:var(--b) solid var(--ink);
       text-align:center;
@@ -158,27 +153,25 @@
       padding:10px 8px;
       letter-spacing:2px;
       font-weight:900;
-      background:#fff;
+      background:#fff; /* ✅ 배경색 제거 */
     }
     .sumVal{
+      text-align:center;
       font-weight:900;
       font-size:34px;
       padding:14px 10px;
-      background:#fff;
+      background:#fff; /* ✅ 배경색 제거 */
     }
     .sumVal.red{ color:var(--red); }
     .sumVal input{
+      text-align:center;
       font-weight:900;
       font-size:34px;
     }
     .sumVal.red input{ color:var(--red); }
 
-    /* ✅ 요약 헤더 한 줄만 색 */
-    .sumCell:nth-child(1) .sumHead{ background:#e8f0fb !important; } /* 이월 */
-    .sumCell:nth-child(2) .sumHead{ background:#fde9d9 !important; } /* 수입-지출 */
-    .sumCell:nth-child(3) .sumHead{ background:#e6f6f2 !important; } /* 잔액 */
+    .miniNote{ display:none; }
 
-    /* ===== 섹션 타이틀 ===== */
     .sectionTitle{
       display:flex;
       align-items:center;
@@ -193,6 +186,7 @@
       border-radius:50%;
       flex:0 0 auto;
     }
+
     .editText{
       display:inline-block;
       min-width:10px;
@@ -200,17 +194,6 @@
       cursor:text;
     }
 
-    .noteLine{
-      border:var(--b) solid var(--ink);
-      padding:8px 10px;
-      margin:-2px 0 8px;
-      font-size:14px;
-      color:#222;
-      text-align:center;
-      font-weight:800;
-    }
-
-    /* ===== 표 공통 ===== */
     .tbl{
       border:var(--b) solid var(--ink);
     }
@@ -229,9 +212,19 @@
       background:#f7f7f7;
       letter-spacing:1px;
     }
-
     .center{ text-align:center; }
     .right{ text-align:right; }
+    .bold{ font-weight:900; }
+
+    .noteLine{
+      border:var(--b) solid var(--ink);
+      padding:8px 10px;
+      margin:-2px 0 8px;
+      font-size:14px;
+      color:#222;
+      text-align:center;
+      font-weight:800;
+    }
 
     .colDesc{ width:28%; }
     .colAmt{ width:16%; }
@@ -239,20 +232,6 @@
     .colAmt2{ width:16%; }
     .colBigo{ width:12%; }
 
-    /* ✅ 수입/지출: '적요/금액' 헤더 한 줄만 색 */
-    #incomeExpenseTable thead tr.subhead th:nth-child(1),
-    #incomeExpenseTable thead tr.subhead th:nth-child(2){
-      background:#e8f0fb !important;
-    }
-    #incomeExpenseTable thead tr.subhead th:nth-child(3),
-    #incomeExpenseTable thead tr.subhead th:nth-child(4){
-      background:#fde9d9 !important;
-    }
-
-    /* 본문칸 배경은 깔끔하게 흰색 */
-    .cellDesc, .cellAmt{ background:#fff; }
-
-    /* ===== 은행 ===== */
     .bankWrap{
       border:var(--b) solid var(--ink);
       padding:10px;
@@ -304,11 +283,21 @@
     .bankTbl col.out{ width:24%; }
     .bankTbl col.bal{ width:24%; }
 
+    .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
+
+    /* ✅ 은행 “한 줄만” 색: 헤더의 입금/출금/잔액 칸만 */
     .thIn{ background:var(--c-in) !important; }
     .thOut{ background:var(--c-out) !important; }
     .thBal{ background:var(--c-bal) !important; }
 
-    /* ===== 하단 ===== */
+    .cellDesc{ background:#fbfbfb; }
+    .cellAmt{ background:#fdfdfd; }
+
+    /* =========================
+       하단: 통합잔액(그냥 전체 숫자)
+       - 라벨 없음
+       - 날짜/회사+대표 2줄 박스 안
+       ========================= */
     .integratedBox{
       border:var(--b) solid var(--ink);
       margin-top:10px;
@@ -319,6 +308,7 @@
       position:relative;
       min-height:150px;
     }
+
     .integratedVal{
       width:100%;
       text-align:right;
@@ -330,16 +320,12 @@
       line-height:1.05;
     }
 
-    /* ✅ 원하면 숫자 숨김 유지 */
-    #integratedBal{ display:none !important; }
-
     .integratedMeta{
       display:flex;
       flex-direction:column;
-      gap:28px;
+      gap:6px;
       padding-top:2px;
     }
-
     .metaLine1,
     .metaLine2{
       text-align:center;
@@ -352,12 +338,62 @@
       white-space:nowrap;
     }
 
-    /* 도장 */
-    .nameLast{
-      position:relative;
-      display:inline-block;
-      z-index:2;
+    .stampOverlay{
+      position:absolute;
+      right:18px;
+      bottom:10px;
+      width:92px;
+      height:92px;
+      pointer-events:none;
+      opacity:.92;
+      transform: rotate(-2deg);
+      display:none;
+      z-index:5;
     }
+
+    @media print{
+      body{ background:#fff; }
+      .stage{ padding:0; }
+      .sheet{ border:0; box-shadow:none; }
+      .sheetWrap{ transform: translateX(-50%) scale(1) !important; }
+    }
+
+    /* ===== 상단 요약 3칸 : 헤더 한 줄만 색 ===== */
+    .sumCell:nth-child(1) .sumHead{ background:#e8f0fb !important; }
+    .sumCell:nth-child(2) .sumHead{ background:#fde9d9 !important; }
+    .sumCell:nth-child(3) .sumHead{ background:#e6f6f2 !important; }
+
+    /* ===== 수입/지출: '적요/금액' 헤더 한 줄만 색 ===== */
+    #incomeExpenseTable thead tr.subhead th:nth-child(1),
+    #incomeExpenseTable thead tr.subhead th:nth-child(2){ background:#e8f0fb !important; }
+    #incomeExpenseTable thead tr.subhead th:nth-child(3),
+    #incomeExpenseTable thead tr.subhead th:nth-child(4){ background:#fde9d9 !important; }
+
+    /* (중요) 본문칸은 기존 cellDesc/cellAmt 색이 있으면 제거 */
+    #incomeExpenseTable tbody td.cellDesc,
+    #incomeExpenseTable tbody td.cellAmt{ background:#fff !important; }
+
+    /* ===== 모든 금액 숫자 오른쪽 끝 정렬 ===== */
+    input.num, input.money{ text-align:right !important; padding-right:0 !important; }
+    .sumVal, .sumVal input{ text-align:right !important; padding-right:12px !important; }
+
+    #incomeExpenseTable td:nth-child(2),
+    #incomeExpenseTable td:nth-child(4),
+    #incomeExpenseTable td:nth-child(2) input,
+    #incomeExpenseTable td:nth-child(4) input{
+      text-align:right !important; padding-right:8px !important;
+    }
+
+    .bankTbl td,
+    .bankTbl td input{ text-align:right !important; padding-right:6px !important; }
+
+    #incSum,#expSum,#net,#netFoot,#endBal,#ibInSum,#ibOutSum,#ibEnd,#nhInSum,#nhOutSum,#nhEnd{
+      text-align:right !important; padding-right:6px !important;
+    }
+
+    /* 도장 */
+    .ceoStamp{ height:34px; margin-left:10px; vertical-align:middle; opacity:0.9; }
+    .nameLast{ position:relative; display:inline-block; z-index:2; }
     .ceoStampBig{
       position:absolute;
       width:90px;
@@ -369,38 +405,25 @@
       pointer-events:none;
       z-index:1;
     }
-
     .signLine{
-      font-weight:1000;
-      font-size:40px;
+      font-weight:900;
+      font-size:30px;
       color:#143a63;
       letter-spacing:-0.5px;
       line-height:1.02;
       white-space:nowrap;
     }
-
-    /* ✅ 모든 금액 오른쪽 끝 정렬 */
-    input.num, input.money{ text-align:right !important; padding-right:0 !important; }
-    .sumVal, .sumVal input{ text-align:right !important; padding-right:12px !important; }
-
-    @media print{
-      body{ background:#fff; }
-      .stage{ padding:0; }
-      .sheet{ border:0; box-shadow:none; }
-      .sheetWrap{ transform: translateX(-50%) scale(1) !important; }
-    }
   </style>
 </head>
-
-<body>
-  <div class="stage">
+   <body>
+    <div class="stage">
     <div class="sheetWrap" id="sheetWrap">
       <div class="sheet" id="sheet">
 
         <div class="titleWrap">
           <div class="titleLineTop"></div>
           <div class="titleBox">
-            <div class="titleText editText" id="reportTitle" contenteditable="true"></div>
+            <div class="titleText editText" contenteditable="true">2025년&nbsp;&nbsp;12월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서</div>
           </div>
           <div class="titleLineBot"></div>
         </div>
@@ -408,33 +431,21 @@
         <div class="summary">
           <div class="summaryGrid">
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true" id="carryLabel">11월 이월금액</span>
-              </div>
-              <div class="sumVal">
-                <input id="carry" class="num money" inputmode="numeric" value="25,554,575">
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">11월 이월금액</span></div>
+              <div class="sumVal"><input id="carry" class="num money" inputmode="numeric" value="25,554,575"></div>
             </div>
-
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true">수 입 - 지 출</span>
-              </div>
-              <div class="sumVal">
-                <input id="net" class="num" value="0" readonly>
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">수 입 - 지 출</span></div>
+              <div class="sumVal"><input id="net" class="num" value="0" readonly></div>
             </div>
-
             <div class="sumCell">
-              <div class="sumHead">
-                <span class="editText" contenteditable="true" id="endBalLabel">12월 31일 통 장 잔 액</span>
-              </div>
-              <div class="sumVal red">
-                <input id="endBal" class="num" value="0" readonly>
-              </div>
+              <div class="sumHead"><span class="editText" contenteditable="true">12월 31일 통 장 잔 액</span></div>
+              <div class="sumVal red"><input id="endBal" class="num" value="0" readonly></div>
             </div>
           </div>
         </div>
+
+        <div class="miniNote"></div>
 
         <div class="sectionTitle">
           <span class="dot"></span>
@@ -468,65 +479,65 @@
           <tbody>
             <tr>
               <td class="cellDesc"><input value="1차 SMP"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="8,508,100"></td>
               <td class="cellDesc"><input value="송전료"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="347,720"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="2차 SMP"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="6,967,300"></td>
               <td class="cellDesc"><input value="이사회식대"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="52,000"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="3차 SMP"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="4,527,300"></td>
               <td class="cellDesc"><input value="사람과사람세무사"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="154,000"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="4차 SMP"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="1,895,650"></td>
               <td class="cellDesc"><input value="보상금"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="10,500,500"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="KT 전력예측"></td>
               <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
               <td class="cellDesc"><input value="대표,이사회수당"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="800,000"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="rec"></td>
               <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
               <td class="cellDesc"><input value="군청근조화환"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="100,000"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="이자"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="946"></td>
               <td class="cellDesc"><input value="이음북스"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="93,700"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value="이자"></td>
-              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="5,492"></td>
               <td class="cellDesc"><input value="토지임대료"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="14,300,000"></td>
               <td><input value=""></td>
             </tr>
             <tr>
               <td class="cellDesc"><input value=""></td>
               <td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td>
               <td class="cellDesc"><input value="운영비"></td>
-              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td>
+              <td class="cellAmt"><input class="num money exp" inputmode="numeric" value="11,000,500"></td>
               <td><input value=""></td>
             </tr>
 
@@ -534,6 +545,7 @@
             <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td><td><input value=""></td></tr>
             <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money inc" inputmode="numeric" value="0"></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money exp" inputmode="numeric" value="0"></td><td><input value=""></td></tr>
           </tbody>
+
           <tfoot>
             <tr>
               <th class="center">합&nbsp;&nbsp;계</th>
@@ -571,14 +583,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="8,508,100"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="15,500,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="946"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="6,967,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="4,527,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="14,300,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="1,895,650"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
 
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
@@ -612,14 +628,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td class="cellDesc"><input value="이음북스"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="이사회식대"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="송전료"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="김균태회계"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="보상금"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="대표,이사회수당"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="이음북스"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="93,700"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="이사회식대"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="52,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="15,500,000"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="송전료"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="347,720"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="김균태회계"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="154,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="보상금"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="10,500,500"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="대표,이사회수당"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="800,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="군청근조화환"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="100,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="운영비"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="11,000,500"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="5,492"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
 
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                   <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
@@ -643,7 +663,7 @@
 
           <div class="integratedMeta">
             <div class="metaLine1">
-              <span class="editText" id="reportDate" contenteditable="true"></span>
+              <span class="editText" id="reportDateText" contenteditable="true">2025년 12월 31일</span>
             </div>
 
             <div class="metaLine2">
@@ -658,346 +678,330 @@
             </div>
           </div>
         </div>
+
 <script>
-(function(){
-  "use strict";
+  /* ===== iPhone “한 장 자동 축소” ===== */
+  (function(){
+    const wrap = document.getElementById('sheetWrap');
+    const stage = document.querySelector('.stage');
+    function px(v){ return Number(String(v).replace('px','')) || 0; }
 
-  /* =========================
-     0) 결산월(전월) 기준 월키
-     ========================= */
-  function getClosingMonthKey(){
-    const now = new Date();
-    let y = now.getFullYear();
-    let m = now.getMonth(); // 0~11 (현재월)
-    // 결산은 "전월"
-    m -= 1;
-    if(m < 0){ m = 11; y -= 1; }
-    const mm = String(m+1).padStart(2,"0");
-    return `${y}-${mm}`;
-  }
+    function fit(){
+      if(!wrap || !stage) return;
+      const vw = document.documentElement.clientWidth;
+      const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
 
-  const STORAGE_PREFIX = "settlement_report_v1";
-  const monthKey = getClosingMonthKey();
-  const STORAGE_KEY = `${STORAGE_PREFIX}:${monthKey}`;
-  const STORAGE_MONTH_KEY = `${STORAGE_PREFIX}:savedMonth`;
+      const st = getComputedStyle(stage);
+      const padL = px(st.paddingLeft);
+      const padR = px(st.paddingRight);
 
-  /* =========================
-     1) 유틸
-     ========================= */
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+      const usable = Math.max(320, vw - padL - padR);
+      const scale = Math.min(1, usable / base);
+      wrap.style.setProperty('--scale', scale.toFixed(4));
+    }
+    window.addEventListener('resize', fit, {passive:true});
+    fit();
+  })();
 
-  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-  function parseMoney(v){
-    if(v == null) return 0;
-    const s = String(v).replace(/[^\d\-]/g,"").trim();
-    if(s === "" || s === "-" ) return 0;
+  /* ===== 숫자/포맷 (커서 튐 방지: input 중엔 포맷X, blur 때만 콤마) ===== */
+  function toNumber(v){
+    if (v == null) return 0;
+    const s = String(v).replace(/[^\d\-]/g,'');
+    if (s === '' || s === '-') return 0;
     const n = Number(s);
     return Number.isFinite(n) ? n : 0;
   }
-
-  function fmtMoney(n){
-    const sign = n < 0 ? "-" : "";
+  function fmt(n){
+    const sign = n < 0 ? '-' : '';
     const abs = Math.abs(Math.round(n));
     return sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-
-  function setInputMoney(el, n){
-    el.value = fmtMoney(n);
-  }
-
   function normalizeMoneyInput(el){
-    const n = parseMoney(el.value);
-    el.value = fmtMoney(n);
+    el.value = fmt(toNumber(el.value));
   }
 
-  /* =========================
-     2) iPhone 한 장 scale
-     ========================= */
-  function applyScale(){
-    const wrap = $("#sheetWrap");
-    if(!wrap) return;
-    const sheetW = 920; // --sheet-w
-    const available = Math.max(320, window.innerWidth - 24); // 양쪽 여백
-    const s = clamp(available / sheetW, 0.33, 1);
-    wrap.style.setProperty("--scale", String(s));
+  /* ===== 계산 ===== */
+  function sumInputs(selector){
+    let s = 0;
+    document.querySelectorAll(selector).forEach(el=>{ s += toNumber(el.value); });
+    return s;
   }
 
-  window.addEventListener("resize", applyScale, {passive:true});
-  applyScale();
+  function recalcIncomeExpense(){
+    const inc = sumInputs('#incomeExpenseTable .inc');
+    const exp = sumInputs('#incomeExpenseTable .exp');
+    const net = inc - exp;
 
-  /* =========================
-     3) 제목/날짜 자동 세팅
-     ========================= */
-  function setDefaultTitleAndDate(){
-    const titleEl = $("#reportTitle");
-    const dateEl  = $("#reportDate");
-    if(!titleEl || !dateEl) return;
+    const incSumEl = document.getElementById('incSum');
+    const expSumEl = document.getElementById('expSum');
+    const netFootEl = document.getElementById('netFoot');
+    const netEl = document.getElementById('net');
+    const carryEl = document.getElementById('carry');
+    const endBalEl = document.getElementById('endBal');
 
-    // 결산월(전월) 계산
-    const [yy, mm] = monthKey.split("-");
-    const year = Number(yy);
-    const month = Number(mm);
+    if(incSumEl) incSumEl.value = fmt(inc);
+    if(expSumEl) expSumEl.value = fmt(exp);
+    if(netFootEl) netFootEl.value = fmt(net);
+    if(netEl) netEl.value = fmt(net);
 
-    // 제목
-    if(!titleEl.textContent || titleEl.textContent.trim() === ""){
-      titleEl.textContent = `${year}년 ${month}월 결산 보고서`;
-    }
-
-    // 날짜 기본값 (결산월 말일)
-    if(!dateEl.textContent || dateEl.textContent.trim() === ""){
-      const lastDay = new Date(year, month, 0).getDate(); // month는 1~12로 들어가면 그 전월 말일
-      dateEl.textContent = `${year}년 ${month}월 ${lastDay}일`;
-    }
-
-    // 라벨들도 결산월로 맞춰줌(기본값만)
-    const carryLabel = $("#carryLabel");
-    const endBalLabel = $("#endBalLabel");
-    const titleIncomeExpense = $("#titleIncomeExpense");
-    const titleBank = $("#titleBank");
-
-    if(carryLabel && carryLabel.textContent.trim() === "11월 이월금액"){
-      // 결산월의 전전월이 이월(예: 12월 결산이면 11월 이월)
-      let cy = year, cm = month - 1;
-      if(cm <= 0){ cm = 12; cy -= 1; }
-      carryLabel.textContent = `${cm}월 이월금액`;
-    }
-
-    if(endBalLabel && endBalLabel.textContent.replace(/\s/g,"").includes("12월31일통장잔액")){
-      endBalLabel.textContent = `${month}월 31일 통 장 잔 액`;
-    }
-
-    if(titleIncomeExpense && titleIncomeExpense.textContent.trim() === "12월 수입/지출 내역서"){
-      titleIncomeExpense.textContent = `${month}월 수입/지출 내역서`;
-    }
-
-    if(titleBank && titleBank.textContent.trim() === "12월 은행 입출금 내역"){
-      titleBank.textContent = `${month}월 은행 입출금 내역`;
-    }
+    const carry = carryEl ? toNumber(carryEl.value) : 0;
+    if(endBalEl) endBalEl.value = fmt(carry + net);
   }
 
-  setDefaultTitleAndDate();
+  function recalcBankOne(prefixTableSel, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
+    const prevEl = document.getElementById(prevId);
+    let bal = prevEl ? toNumber(prevEl.value) : 0;
+    let inSum = 0, outSum = 0;
 
-  /* =========================
-     4) 합계/자동계산
-     ========================= */
-  function calcIncomeExpense(){
-    const incEls = $$(".inc");
-    const expEls = $$(".exp");
+    document.querySelectorAll(prefixTableSel + ' tbody tr').forEach(tr=>{
+      const inEl  = tr.querySelector(inSel);
+      const outEl = tr.querySelector(outSel);
+      const balEl = tr.querySelector(balSel);
 
-    let incSum = 0;
-    let expSum = 0;
+      const inn = inEl ? toNumber(inEl.value) : 0;
+      const out = outEl ? toNumber(outEl.value) : 0;
 
-    for(const el of incEls) incSum += parseMoney(el.value);
-    for(const el of expEls) expSum += parseMoney(el.value);
+      inSum += inn;
+      outSum += out;
 
-    const net = incSum - expSum;
+      bal = bal + inn - out;
+      if (balEl) balEl.value = fmt(bal);
+    });
 
-    $("#incSum").value = fmtMoney(incSum);
-    $("#expSum").value = fmtMoney(expSum);
-    $("#netFoot").value = fmtMoney(net);
-    $("#net").value = fmtMoney(net);
+    const inSumEl = document.getElementById(inSumId);
+    const outSumEl = document.getElementById(outSumId);
+    const endEl = document.getElementById(endId);
 
-    // 12/31 잔액 = 이월 + (수입-지출)
-    const carry = parseMoney($("#carry").value);
-    const endBal = carry + net;
-    $("#endBal").value = fmtMoney(endBal);
-  }
-
-  function calcBankOne(prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
-    const prev = parseMoney($(prevId).value);
-    const ins = $$(inSel);
-    const outs = $$(outSel);
-    const bals = $$(balSel);
-
-    let bal = prev;
-    let inSum = 0;
-    let outSum = 0;
-
-    for(let i=0;i<Math.max(ins.length, outs.length, bals.length);i++){
-      const inEl = ins[i];
-      const outEl = outs[i];
-      const balEl = bals[i];
-
-      const vin  = inEl ? parseMoney(inEl.value) : 0;
-      const vout = outEl ? parseMoney(outEl.value) : 0;
-
-      inSum += vin;
-      outSum += vout;
-
-      bal = bal + vin - vout;
-      if(balEl) balEl.value = fmtMoney(bal);
-    }
-
-    $(inSumId).value = fmtMoney(inSum);
-    $(outSumId).value = fmtMoney(outSum);
-    $(endId).value = fmtMoney(bal);
+    if(inSumEl) inSumEl.value = fmt(inSum);
+    if(outSumEl) outSumEl.value = fmt(outSum);
+    if(endEl) endEl.value = fmt(bal);
 
     return bal;
   }
 
-  function calcAll(){
-    calcIncomeExpense();
+  function recalcBank(){
+    const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
+    const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
 
-    const ibEnd = calcBankOne("#ibPrev", ".ib-in", ".ib-out", ".ib-bal", "#ibInSum", "#ibOutSum", "#ibEnd");
-    const nhEnd = calcBankOne("#nhPrev", ".nh-in", ".nh-out", ".nh-bal", "#nhInSum", "#nhOutSum", "#nhEnd");
-
-    // 통합잔액(기업+농협 최종)
     const integrated = ibEnd + nhEnd;
-    const integratedEl = $("#integratedBal");
-    if(integratedEl) integratedEl.textContent = fmtMoney(integrated);
-
-    saveNow(); // 계산될 때마다 저장
+    const el = document.getElementById('integratedBal');
+    if (el) el.textContent = fmt(integrated);
   }
 
-  /* =========================
-     5) 저장/복원 (결산월 기준)
-     ========================= */
-  function snapshot(){
-    const data = {};
-
-    // input 값
-    $$("input").forEach((el, idx)=>{
-      // readonly도 포함해서 저장(복원시 동일)
-      const key = el.id ? `#${el.id}` : `input:${idx}`;
-      data[key] = el.value;
-    });
-
-    // contenteditable 텍스트
-    $$(".editText[contenteditable='true']").forEach((el, idx)=>{
-      const key = el.id ? `ce#${el.id}` : `ce:${idx}`;
-      data[key] = el.textContent;
-    });
-
-    return data;
+  function recalcAll(){
+    recalcIncomeExpense();
+    recalcBank();
   }
 
-  function restore(data){
-    if(!data) return;
+  /* =========================================================
+     ✅ 저장(로컬) + ✅ 월이 바뀌면 자동 초기화 + ✅ 맨아래 날짜는 오늘
+     - 표/도장 구조(HTML)는 건드리지 않고 값/텍스트만 저장
+     - contenteditable(제목/섹션제목/날짜 등)도 같이 저장
+     ========================================================= */
 
-    $$("input").forEach((el, idx)=>{
-      const key = el.id ? `#${el.id}` : `input:${idx}`;
-      if(Object.prototype.hasOwnProperty.call(data, key)){
-        el.value = data[key];
-      }
+  // 저장 키(월 단위)
+  const STORAGE_PREFIX = 'YEOMJEON_SETTLEMENT_REPORT_V1';
+  function monthKey(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    return `${y}-${m}`;
+  }
+  function storageKeyForThisMonth(){
+    return `${STORAGE_PREFIX}:${monthKey(new Date())}`;
+  }
+
+  function todayKoreanDate(d){
+    const y = d.getFullYear();
+    const m = d.getMonth()+1;
+    const day = d.getDate();
+    return `${y}년 ${m}월 ${day}일`;
+  }
+
+  // 초기 HTML(네가 작성한 기본 상태)을 def로 저장 → 월 바뀌면 이걸로 복구
+  function snapshotDefaults(){
+    document.querySelectorAll('input').forEach((el)=>{
+      if (el.dataset.def == null) el.dataset.def = (el.value ?? '');
     });
-
-    $$(".editText[contenteditable='true']").forEach((el, idx)=>{
-      const key = el.id ? `ce#${el.id}` : `ce:${idx}`;
-      if(Object.prototype.hasOwnProperty.call(data, key)){
-        el.textContent = data[key];
-      }
+    document.querySelectorAll('[contenteditable="true"]').forEach((el)=>{
+      if (el.dataset.def == null) el.dataset.def = (el.innerHTML ?? '');
     });
   }
 
-  function ensureMonth(){
-    const savedMonth = localStorage.getItem(STORAGE_MONTH_KEY);
+  function resetToDefaults(){
+    document.querySelectorAll('input').forEach((el)=>{
+      if (el.dataset.def != null) el.value = el.dataset.def;
+    });
+    document.querySelectorAll('[contenteditable="true"]').forEach((el)=>{
+      if (el.dataset.def != null) el.innerHTML = el.dataset.def;
+    });
+  }
 
-    // 1) 최초 실행이면: 지금 결산월로 세팅하고 기본 스냅샷 저장
-    if(!savedMonth){
-      localStorage.setItem(STORAGE_MONTH_KEY, monthKey);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
-      return;
+  // “기본 문구 그대로일 때만” 현재 월로 패치(사용자가 고친 건 존중)
+  function autoPatchMonthTextIfDefault(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth()+1;
+
+    const titleEl = document.querySelector('.titleText[contenteditable="true"]');
+    if (titleEl && titleEl.dataset.def != null && titleEl.innerHTML === titleEl.dataset.def){
+      titleEl.innerHTML = `${y}년&nbsp;&nbsp;${m}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
     }
 
-    // 2) savedMonth와 현재 결산월이 다르면: 새 결산월로 초기화(자동)
-    if(savedMonth !== monthKey){
-      // 기존 키들 정리(선택)
-      // 이전 달 데이터는 남기고 싶으면 아래 2줄 주석처리
-      Object.keys(localStorage).forEach(k=>{
-        if(k.startsWith(STORAGE_PREFIX + ":") && k !== STORAGE_MONTH_KEY){
-          localStorage.removeItem(k);
-        }
+    const ieTitle = document.getElementById('titleIncomeExpense');
+    if (ieTitle && ieTitle.dataset.def != null && ieTitle.innerHTML === ieTitle.dataset.def){
+      ieTitle.innerHTML = `${m}월 수입/지출 내역서`;
+    }
+
+    const bankTitle = document.getElementById('titleBank');
+    if (bankTitle && bankTitle.dataset.def != null && bankTitle.innerHTML === bankTitle.dataset.def){
+      bankTitle.innerHTML = `${m}월 은행 입출금 내역`;
+    }
+
+    // 요약 헤더(12월 31일...)도 기본이면 월만 교체
+    const heads = document.querySelectorAll('.summary .sumHead [contenteditable="true"]');
+    heads.forEach(h=>{
+      if(!h.dataset.def) return;
+      if(h.innerHTML !== h.dataset.def) return;
+      const t = (h.innerText || '').replace(/\s+/g,'');
+      // "12월31일통장잔액" 같은 기본패턴일 때만
+      if(t.includes('월31일') && t.includes('통장') && t.includes('잔액')){
+        h.innerText = `${m}월 31일 통 장 잔 액`;
+      }
+    });
+  }
+
+  // 맨아래 날짜는 항상 오늘(월 초기화/첫 실행 때 적용)
+  function setBottomDateToToday(){
+    const el = document.getElementById('reportDateText'); // ✅ PART2에서 추가한 id
+    if(el){
+      el.innerText = todayKoreanDate(new Date());
+    }
+  }
+
+  function collectState(){
+    const state = {
+      mk: monthKey(new Date()),
+      inputs: {},
+      edits: {}
+    };
+
+    // input 저장
+    document.querySelectorAll('input').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      state.inputs[key] = (el.value ?? '');
+    });
+
+    // contenteditable 저장
+    document.querySelectorAll('[contenteditable="true"]').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      state.edits[key] = (el.innerHTML ?? '');
+    });
+
+    return state;
+  }
+
+  function applyState(state){
+    if(!state) return;
+
+    document.querySelectorAll('input').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      if(state.inputs && Object.prototype.hasOwnProperty.call(state.inputs, key)){
+        el.value = state.inputs[key];
+      }
+    });
+
+    document.querySelectorAll('[contenteditable="true"]').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      if(state.edits && Object.prototype.hasOwnProperty.call(state.edits, key)){
+        el.innerHTML = state.edits[key];
+      }
+    });
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(storageKeyForThisMonth(), JSON.stringify(collectState()));
+    }catch(e){}
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(storageKeyForThisMonth());
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){
+      return null;
+    }
+  }
+
+  // 디바운스 저장(버벅임 방지)
+  let saveTimer = null;
+  function scheduleSave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveState, 250);
+  }
+
+  /* ===== 이벤트 바인딩 ===== */
+  function bindMoneyEvents(){
+    // money: 입력 중에는 계산만, blur 때 콤마 정리
+    document.querySelectorAll('input.money').forEach(el=>{
+      el.addEventListener('input', ()=>{
+        recalcAll();
+        scheduleSave();
       });
-
-      localStorage.setItem(STORAGE_MONTH_KEY, monthKey);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
-    }
-  }
-
-  function saveNow(){
-    try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
-    }catch(e){
-      // 저장공간 부족 등 — 조용히 무시
-    }
-  }
-
-  function loadNow(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return false;
-      const data = JSON.parse(raw);
-      restore(data);
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
-  /* =========================
-     6) 이벤트 바인딩
-     ========================= */
-  function bindMoneyFormatting(){
-    const moneyInputs = $$(".money");
-    moneyInputs.forEach(el=>{
-      el.addEventListener("focus", ()=>{}, {passive:true});
-      el.addEventListener("blur", ()=>{
+      el.addEventListener('blur', ()=>{
         normalizeMoneyInput(el);
-        calcAll();
-      }, {passive:true});
-      el.addEventListener("input", ()=>{
-        // 입력 중엔 콤마 강제X(커서 튐 방지) -> 계산만
-        calcAll();
-      }, {passive:true});
+        recalcAll();
+        scheduleSave();
+      });
+      // 초기 정리
+      normalizeMoneyInput(el);
     });
 
-    // money가 아닌 일반 input도 저장
-    $$("input:not(.money)").forEach(el=>{
-      el.addEventListener("input", ()=>{
-        saveNow();
-      }, {passive:true});
+    // money 아닌 input도 저장
+    document.querySelectorAll('input:not(.money)').forEach(el=>{
+      el.addEventListener('input', scheduleSave);
+      el.addEventListener('change', scheduleSave);
     });
   }
 
-  function bindEditableSaving(){
-    $$(".editText[contenteditable='true']").forEach(el=>{
-      el.addEventListener("input", ()=>{
-        saveNow();
-      }, {passive:true});
-      el.addEventListener("blur", ()=>{
-        saveNow();
-      }, {passive:true});
+  function bindEditableSaves(){
+    document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+      el.addEventListener('input', scheduleSave);
+      el.addEventListener('blur', scheduleSave);
     });
   }
 
-  /* =========================
-     7) 시작 시퀀스
-     ========================= */
-  ensureMonth();
-  const loaded = loadNow();
+  /* ===== 부팅 ===== */
+  (function boot(){
+    snapshotDefaults();
 
-  // 로드 못했으면 기본값 기반 한번 저장(새로고침 안정감)
-  if(!loaded){
-    saveNow();
-  }
+    // 이 페이지의 “월 키”에 저장된 데이터가 있으면 복원
+    const saved = loadState();
 
-  // 로드 후 숫자 정리(콤마/자동계산)
-  // money 입력은 한번 정규화
-  $$(".money").forEach(el=> normalizeMoneyInput(el));
-  bindMoneyFormatting();
-  bindEditableSaving();
+    if(saved){
+      applyState(saved);
+    }else{
+      // 저장이 없으면(=신규/월 바뀜) 기본값 유지 + 월/오늘 날짜 반영
+      autoPatchMonthTextIfDefault();
+      setBottomDateToToday();
+      saveState();
+    }
 
-  // 처음 계산 한번 돌려서 잔액/합계 채우기
-  calcAll();
+    bindMoneyEvents();
+    bindEditableSaves();
 
-})();
+    // 계산 한번 돌려서 합계/잔액 채움
+    recalcAll();
+
+    // 혹시 저장 복원 후 money에 콤마가 엉켜도 정리
+    document.querySelectorAll('input.money').forEach(normalizeMoneyInput);
+
+    // 최종 저장
+    saveState();
+  })();
 </script>
 
-      </div>
-    </div>
-  </div>
 </body>
 </html>
 
