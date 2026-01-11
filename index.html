@@ -1022,7 +1022,22 @@
         prevEndBal = savedPrev.inputs['id:endBal'];
       }
 
+      /* ✅ (추가) 월이 바뀌면 지난달 은행 '합계잔액'을 이번달 '전월이월액'으로 자동 세팅 */
+      let prevIbEnd = '0';
+      if(savedPrev && savedPrev.inputs && savedPrev.inputs['id:ibEnd'] != null){
+        prevIbEnd = savedPrev.inputs['id:ibEnd'];
+      }
+      let prevNhEnd = '0';
+      if(savedPrev && savedPrev.inputs && savedPrev.inputs['id:nhEnd'] != null){
+        prevNhEnd = savedPrev.inputs['id:nhEnd'];
+      }
+
       resetForNewMonth(prevEndBal);
+
+      const ibPrevEl = document.getElementById('ibPrev');
+      if(ibPrevEl) ibPrevEl.value = prevIbEnd;
+      const nhPrevEl = document.getElementById('nhPrev');
+      if(nhPrevEl) nhPrevEl.value = prevNhEnd;
 
       // 월/날짜 자동 반영(기본 문구일 때만)
       autoPatchMonthTextIfDefault();
