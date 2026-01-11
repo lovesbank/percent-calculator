@@ -680,195 +680,370 @@
         </div>
 
 <script>
-/* ===== iPhone 한 장 자동 축소 ===== */
-(function(){
-  const wrap = document.getElementById('sheetWrap');
-  const stage = document.querySelector('.stage');
-  if(!wrap || !stage) return;
+  /* ===== iPhone “한 장 자동 축소” ===== */
+  (function(){
+    const wrap = document.getElementById('sheetWrap');
+    const stage = document.querySelector('.stage');
+    function px(v){ return Number(String(v).replace('px','')) || 0; }
 
-  function px(v){ return Number(String(v).replace('px','')) || 0; }
-  function fit(){
-    const vw = document.documentElement.clientWidth;
-    const base = parseFloat(getComputedStyle(document.documentElement)
-      .getPropertyValue('--sheet-w')) || 920;
+    function fit(){
+      if(!wrap || !stage) return;
+      const vw = document.documentElement.clientWidth;
+      const base = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet-w')) || 920;
 
-    const st = getComputedStyle(stage);
-    const usable = Math.max(320, vw - px(st.paddingLeft) - px(st.paddingRight));
-    wrap.style.setProperty('--scale', Math.min(1, usable / base).toFixed(4));
+      const st = getComputedStyle(stage);
+      const padL = px(st.paddingLeft);
+      const padR = px(st.paddingRight);
+
+      const usable = Math.max(320, vw - padL - padR);
+      const scale = Math.min(1, usable / base);
+      wrap.style.setProperty('--scale', scale.toFixed(4));
+    }
+    window.addEventListener('resize', fit, {passive:true});
+    fit();
+  })();
+
+  /* ===== (요구2) 맨 아래 빨간 숫자: 지금부터 영구 숨김 ===== */
+  function hideIntegratedBalForever(){
+    const el = document.getElementById('integratedBal');
+    if(el) el.style.display = 'none';
   }
-  window.addEventListener('resize', fit, {passive:true});
-  fit();
-})();
-
-/* ===== integratedBal 영구 숨김 ===== */
-function hideIntegratedBalForever(){
-  const el = document.getElementById('integratedBal');
-  if(el) el.style.display = 'none';
-}
-hideIntegratedBalForever();
-
-/* ===== 숫자 유틸 ===== */
-function toNumber(v){
-  const s = String(v ?? '').replace(/[^\d\-]/g,'');
-  if(s === '' || s === '-') return 0;
-  const n = Number(s);
-  return Number.isFinite(n) ? n : 0;
-}
-function fmt(n){
-  const sign = n < 0 ? '-' : '';
-  return sign + Math.abs(Math.round(n))
-    .toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-function normalizeMoney(el){
-  el.value = fmt(toNumber(el.value));
-}
-
-/* ===== 계산 ===== */
-function sumInputs(sel){
-  let s = 0;
-  document.querySelectorAll(sel).forEach(el => s += toNumber(el.value));
-  return s;
-}
-
-function recalcIncomeExpense(){
-  const inc = sumInputs('#incomeExpenseTable .inc');
-  const exp = sumInputs('#incomeExpenseTable .exp');
-  const net = inc - exp;
-
-  incSum.value = fmt(inc);
-  expSum.value = fmt(exp);
-  netFoot.value = fmt(net);
-  net.value = fmt(net);
-
-  endBal.value = fmt(toNumber(carry.value) + net);
-}
-
-function recalcBankOne(tbl, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
-  let bal = toNumber(document.getElementById(prevId).value);
-  let ins = 0, outs = 0;
-
-  document.querySelectorAll(tbl+' tbody tr').forEach(tr=>{
-    const i = toNumber(tr.querySelector(inSel)?.value);
-    const o = toNumber(tr.querySelector(outSel)?.value);
-    ins += i; outs += o;
-    bal = bal + i - o;
-    const b = tr.querySelector(balSel);
-    if(b) b.value = fmt(bal);
-  });
-
-  document.getElementById(inSumId).value = fmt(ins);
-  document.getElementById(outSumId).value = fmt(outs);
-  document.getElementById(endId).value = fmt(bal);
-  return bal;
-}
-
-function recalcAll(){
-  recalcIncomeExpense();
-  recalcBankOne('#ibTable','ibPrev','.ib-in','.ib-out','.ib-bal','ibInSum','ibOutSum','ibEnd');
-  recalcBankOne('#nhTable','nhPrev','.nh-in','.nh-out','.nh-bal','nhInSum','nhOutSum','nhEnd');
   hideIntegratedBalForever();
-}
 
-/* ===== 저장 키 ===== */
-const STORAGE_PREFIX = 'YEOMJEON_SETTLEMENT_REPORT_V1';
-function monthKey(d){
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-function storageKey(mk){ return `${STORAGE_PREFIX}:${mk}`; }
-function prevMonthKey(d){
-  const x = new Date(d.getFullYear(), d.getMonth()-1, 1);
-  return monthKey(x);
-}
+  /* ===== 숫자/포맷 (커서 튐 방지: input 중엔 포맷X, blur 때만 콤마) ===== */
+  function toNumber(v){
+    if (v == null) return 0;
+    const s = String(v).replace(/[^\d\-]/g,'');
+    if (s === '' || s === '-') return 0;
+    const n = Number(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function fmt(n){
+    const sign = n < 0 ? '-' : '';
+    const abs = Math.abs(Math.round(n));
+    return sign + abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function normalizeMoneyInput(el){
+    el.value = fmt(toNumber(el.value));
+  }
 
-/* ===== 상태 저장 ===== */
-function collectState(){
-  const s = { inputs:{}, edits:{} };
-  document.querySelectorAll('input').forEach((el,i)=>{
-    s.inputs[el.id || `i${i}`] = el.value;
-  });
-  document.querySelectorAll('[contenteditable="true"]').forEach((el,i)=>{
-    s.edits[el.id || `e${i}`] = el.innerHTML;
-  });
-  return s;
-}
-function applyState(s){
-  if(!s) return;
-  document.querySelectorAll('input').forEach((el,i)=>{
-    const k = el.id || `i${i}`;
-    if(k in s.inputs) el.value = s.inputs[k];
-  });
-  document.querySelectorAll('[contenteditable="true"]').forEach((el,i)=>{
-    const k = el.id || `e${i}`;
-    if(k in s.edits) el.innerHTML = s.edits[k];
-  });
-}
+  /* ===== 계산 ===== */
+  function sumInputs(selector){
+    let s = 0;
+    document.querySelectorAll(selector).forEach(el=>{ s += toNumber(el.value); });
+    return s;
+  }
 
-/* ===== 상단 첫칸: 지난달 이월금액 자동 표기 ===== */
-function patchCarryHeaderToPrevMonth(){
-  const h = document.querySelector('.summary .sumCell:nth-child(1) .sumHead [contenteditable="true"]');
-  if(!h || h.dataset.locked === '1') return;
+  function recalcIncomeExpense(){
+    const inc = sumInputs('#incomeExpenseTable .inc');
+    const exp = sumInputs('#incomeExpenseTable .exp');
+    const net = inc - exp;
 
-  const now = new Date();
-  const prev = new Date(now.getFullYear(), now.getMonth()-1, 1);
-  h.innerText = `${prev.getMonth()+1}월 이월금액`;
-  h.dataset.locked = '1';
-}
+    const incSumEl = document.getElementById('incSum');
+    const expSumEl = document.getElementById('expSum');
+    const netFootEl = document.getElementById('netFoot');
+    const netEl = document.getElementById('net');
+    const carryEl = document.getElementById('carry');
+    const endBalEl = document.getElementById('endBal');
 
-/* ===== 월 초기화 규칙 ===== */
-function resetForNewMonth(prevEndBal){
-  carry.value = prevEndBal || '0';
+    if(incSumEl) incSumEl.value = fmt(inc);
+    if(expSumEl) expSumEl.value = fmt(exp);
+    if(netFootEl) netFootEl.value = fmt(net);
+    if(netEl) netEl.value = fmt(net);
 
-  document.querySelectorAll('input.money').forEach(el=>{
-    if(el.id !== 'carry') el.value = '0';
-  });
+    const carry = carryEl ? toNumber(carryEl.value) : 0;
+    if(endBalEl) endBalEl.value = fmt(carry + net);
+  }
 
-  ['net','endBal','incSum','expSum','netFoot',
-   'ibInSum','ibOutSum','ibEnd','nhInSum','nhOutSum','nhEnd'
-  ].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.value = '0';
-  });
+  function recalcBankOne(prefixTableSel, prevId, inSel, outSel, balSel, inSumId, outSumId, endId){
+    const prevEl = document.getElementById(prevId);
+    let bal = prevEl ? toNumber(prevEl.value) : 0;
+    let inSum = 0, outSum = 0;
 
-  patchCarryHeaderToPrevMonth();
-  hideIntegratedBalForever();
-}
+    document.querySelectorAll(prefixTableSel + ' tbody tr').forEach(tr=>{
+      const inEl  = tr.querySelector(inSel);
+      const outEl = tr.querySelector(outSel);
+      const balEl = tr.querySelector(balSel);
 
-/* ===== 이벤트 ===== */
-let saveTimer;
-function scheduleSave(key){
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{
-    localStorage.setItem(key, JSON.stringify(collectState()));
-  }, 250);
-}
+      const inn = inEl ? toNumber(inEl.value) : 0;
+      const out = outEl ? toNumber(outEl.value) : 0;
 
-document.querySelectorAll('input.money').forEach(el=>{
-  el.addEventListener('input', ()=>{ recalcAll(); scheduleSave(CUR_KEY); });
-  el.addEventListener('blur', ()=>{ normalizeMoney(el); recalcAll(); scheduleSave(CUR_KEY); });
-  normalizeMoney(el);
-});
-document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
-  el.addEventListener('input', ()=>scheduleSave(CUR_KEY));
-  el.addEventListener('blur', ()=>scheduleSave(CUR_KEY));
-});
+      inSum += inn;
+      outSum += out;
 
-/* ===== 부팅 ===== */
-const NOW = new Date();
-const CUR_KEY = storageKey(monthKey(NOW));
-const PREV_KEY = storageKey(prevMonthKey(NOW));
+      bal = bal + inn - out;
+      if (balEl) balEl.value = fmt(bal);
+    });
 
-const saved = localStorage.getItem(CUR_KEY);
-if(saved){
-  applyState(JSON.parse(saved));
-}else{
-  const prev = localStorage.getItem(PREV_KEY);
-  const prevEnd = prev ? JSON.parse(prev).inputs?.endBal : '0';
-  resetForNewMonth(prevEnd);
-}
+    const inSumEl = document.getElementById(inSumId);
+    const outSumEl = document.getElementById(outSumId);
+    const endEl = document.getElementById(endId);
 
-recalcAll();
-hideIntegratedBalForever();
-localStorage.setItem(CUR_KEY, JSON.stringify(collectState()));
+    if(inSumEl) inSumEl.value = fmt(inSum);
+    if(outSumEl) outSumEl.value = fmt(outSum);
+    if(endEl) endEl.value = fmt(bal);
+
+    return bal;
+  }
+
+  function recalcBank(){
+    const ibEnd = recalcBankOne('#ibTable', 'ibPrev', '.ib-in', '.ib-out', '.ib-bal', 'ibInSum','ibOutSum','ibEnd');
+    const nhEnd = recalcBankOne('#nhTable', 'nhPrev', '.nh-in', '.nh-out', '.nh-bal', 'nhInSum','nhOutSum','nhEnd');
+
+    // 통합잔액은 계산은 하되, 화면에 표시 안 함(요구사항)
+    const el = document.getElementById('integratedBal');
+    if (el){
+      el.textContent = fmt(ibEnd + nhEnd);
+      el.style.display = 'none';
+    }
+  }
+
+  function recalcAll(){
+    recalcIncomeExpense();
+    recalcBank();
+  }
+
+  /* =========================================================
+     ✅ 저장(로컬) + ✅ 월 변경 시 초기화 규칙
+     1) 월 초기화 시 money 전부 0
+     2) 단, carry(이월잔액) = 지난달 endBal 값
+     ========================================================= */
+
+  const STORAGE_PREFIX = 'YEOMJEON_SETTLEMENT_REPORT_V1';
+
+  function monthKey(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    return `${y}-${m}`;
+  }
+  function storageKeyForMonth(mk){
+    return `${STORAGE_PREFIX}:${mk}`;
+  }
+  function prevMonthKey(now){
+    const d = new Date(now.getFullYear(), now.getMonth(), 1);
+    d.setMonth(d.getMonth() - 1);
+    return monthKey(d);
+  }
+
+  function todayKoreanDate(d){
+    const y = d.getFullYear();
+    const m = d.getMonth()+1;
+    const day = d.getDate();
+    return `${y}년 ${m}월 ${day}일`;
+  }
+
+  function snapshotDefaults(){
+    document.querySelectorAll('input').forEach((el)=>{
+      if (el.dataset.def == null) el.dataset.def = (el.value ?? '');
+    });
+    document.querySelectorAll('[contenteditable="true"]').forEach((el)=>{
+      if (el.dataset.def == null) el.dataset.def = (el.innerHTML ?? '');
+    });
+  }
+
+  // 기본 문구 그대로일 때만 현재 월로 자동 교체
+  function autoPatchMonthTextIfDefault(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth()+1;
+
+    /* ✅ (수정) 상단 첫칸 "이월금액" 헤더는 저장 여부와 상관없이 '지난달'로 자동 표기 */
+    const carryHead = document.querySelector('.summary .sumCell:nth-child(1) .sumHead [contenteditable="true"]');
+    if (carryHead){
+      const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1); // 지난달
+      const pm = prev.getMonth() + 1;
+      carryHead.innerText = `${pm}월 이월금액`;
+    }
+
+    const titleEl = document.querySelector('.titleText[contenteditable="true"]');
+    if (titleEl && titleEl.dataset.def != null && titleEl.innerHTML === titleEl.dataset.def){
+      titleEl.innerHTML = `${y}년&nbsp;&nbsp;${m}월&nbsp;&nbsp;결산&nbsp;&nbsp;보고서`;
+    }
+
+    const ieTitle = document.getElementById('titleIncomeExpense');
+    if (ieTitle && ieTitle.dataset.def != null && ieTitle.innerHTML === ieTitle.dataset.def){
+      ieTitle.innerHTML = `${m}월 수입/지출 내역서`;
+    }
+
+    const bankTitle = document.getElementById('titleBank');
+    if (bankTitle && bankTitle.dataset.def != null && bankTitle.innerHTML === bankTitle.dataset.def){
+      bankTitle.innerHTML = `${m}월 은행 입출금 내역`;
+    }
+
+    const heads = document.querySelectorAll('.summary .sumHead [contenteditable="true"]');
+    heads.forEach(h=>{
+      if(!h.dataset.def) return;
+      if(h.innerHTML !== h.dataset.def) return;
+      const t = (h.innerText || '').replace(/\s+/g,'');
+      if(t.includes('월31일') && t.includes('통장') && t.includes('잔액')){
+        h.innerText = `${m}월 31일 통 장 잔 액`;
+      }
+    });
+  }
+
+  function setBottomDateToToday(){
+    const el = document.getElementById('reportDateText');
+    if(el) el.innerText = todayKoreanDate(new Date());
+  }
+
+  function collectState(){
+    const state = {
+      mk: monthKey(new Date()),
+      inputs: {},
+      edits: {}
+    };
+
+    document.querySelectorAll('input').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      state.inputs[key] = (el.value ?? '');
+    });
+
+    document.querySelectorAll('[contenteditable="true"]').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      state.edits[key] = (el.innerHTML ?? '');
+    });
+
+    return state;
+  }
+
+  function applyState(state){
+    if(!state) return;
+
+    document.querySelectorAll('input').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      if(state.inputs && Object.prototype.hasOwnProperty.call(state.inputs, key)){
+        el.value = state.inputs[key];
+      }
+    });
+
+    document.querySelectorAll('[contenteditable="true"]').forEach((el, idx)=>{
+      const key = el.id ? `id:${el.id}` : `idx:${idx}`;
+      if(state.edits && Object.prototype.hasOwnProperty.call(state.edits, key)){
+        el.innerHTML = state.edits[key];
+      }
+    });
+  }
+
+  function saveStateForKey(storageKey){
+    try{
+      localStorage.setItem(storageKey, JSON.stringify(collectState()));
+    }catch(e){}
+  }
+
+  function loadStateForKey(storageKey){
+    try{
+      const raw = localStorage.getItem(storageKey);
+      if(!raw) return null;
+      return JSON.parse(raw);
+    }catch(e){
+      return null;
+    }
+  }
+
+  // ✅ 월 초기화 규칙(요구사항)
+  function resetForNewMonth(prevEndBalValue){
+    const carryEl = document.getElementById('carry');
+    if(carryEl){
+      carryEl.value = (prevEndBalValue != null && prevEndBalValue !== '') ? prevEndBalValue : '0';
+    }
+
+    // money 전부 0 (carry 제외)
+    document.querySelectorAll('input.money').forEach(el=>{
+      if(el.id === 'carry') return;
+      el.value = '0';
+    });
+
+    // 계산표시 칸들도 0으로(표시 안정)
+    ['net','endBal','incSum','expSum','netFoot','ibInSum','ibOutSum','ibEnd','nhInSum','nhOutSum','nhEnd'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.value = '0';
+    });
+
+    hideIntegratedBalForever();
+  }
+
+  // 저장 디바운스
+  let saveTimer = null;
+  function scheduleSave(storageKey){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>saveStateForKey(storageKey), 250);
+  }
+
+  /* ===== 이벤트 바인딩 ===== */
+  function bindMoneyEvents(storageKey){
+    document.querySelectorAll('input.money').forEach(el=>{
+      el.addEventListener('input', ()=>{
+        recalcAll();
+        scheduleSave(storageKey);
+      });
+      el.addEventListener('blur', ()=>{
+        normalizeMoneyInput(el);
+        recalcAll();
+        scheduleSave(storageKey);
+      });
+      normalizeMoneyInput(el);
+    });
+
+    document.querySelectorAll('input:not(.money)').forEach(el=>{
+      el.addEventListener('input', ()=>scheduleSave(storageKey));
+      el.addEventListener('change', ()=>scheduleSave(storageKey));
+    });
+  }
+
+  function bindEditableSaves(storageKey){
+    document.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+      el.addEventListener('input', ()=>scheduleSave(storageKey));
+      el.addEventListener('blur', ()=>scheduleSave(storageKey));
+    });
+  }
+
+  /* ===== 부팅 ===== */
+  (function boot(){
+    snapshotDefaults();
+    hideIntegratedBalForever();
+
+    const now = new Date();
+    const mkNow = monthKey(now);
+    const keyNow = storageKeyForMonth(mkNow);
+
+    const savedNow = loadStateForKey(keyNow);
+
+    if(savedNow){
+      // 같은 달: 그대로 복원
+      applyState(savedNow);
+    }else{
+      // 새 달: 지난달 endBal을 carry로 가져오고 나머지는 0
+      const mkPrev = prevMonthKey(now);
+      const keyPrev = storageKeyForMonth(mkPrev);
+      const savedPrev = loadStateForKey(keyPrev);
+
+      let prevEndBal = '0';
+      if(savedPrev && savedPrev.inputs && savedPrev.inputs['id:endBal'] != null){
+        prevEndBal = savedPrev.inputs['id:endBal'];
+      }
+
+      resetForNewMonth(prevEndBal);
+
+      // 월/날짜 자동 반영(기본 문구일 때만)
+      autoPatchMonthTextIfDefault();
+      setBottomDateToToday();
+
+      saveStateForKey(keyNow);
+    }
+
+    bindMoneyEvents(keyNow);
+    bindEditableSaves(keyNow);
+
+    recalcAll();
+    document.querySelectorAll('input.money').forEach(normalizeMoneyInput);
+
+    hideIntegratedBalForever();
+
+    /* ✅ (추가) 저장 복원/신규달 모두에서 '지난달 이월금액'을 확실히 적용 */
+    autoPatchMonthTextIfDefault();
+
+    saveStateForKey(keyNow);
+  })();
 </script>
 </body>
 </html>
