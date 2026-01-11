@@ -5,415 +5,451 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>2025년 12월 결산 보고서</title>
   <style>
-    :root{
-      --ink:#111;
-      --grid:#222;
-      --muted:#666;
-      --red:#d82222;
+  :root{
+    --ink:#111;
+    --grid:#222;
+    --muted:#666;
+    --red:#d82222;
 
-      --sheet-w: 920px;
-      --pad: 18px;
-      --b: 3px;
-      --b2: 2px;
-      --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    --sheet-w: 920px;
+    --pad: 18px;
+    --b: 3px;
+    --b2: 2px;
+    --font: "Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-      /* 은행표 헤더만 은은하게(요구한 “한 줄만” 느낌) */
-      --c-in:  #dfe8f6;
-      --c-out: #f6ddcf;
-      --c-bal: #d7f1ea;
-    }
+    /* 은행표 헤더만 은은하게(요구한 “한 줄만” 느낌) */
+    --c-in:  #dfe8f6;
+    --c-out: #f6ddcf;
+    --c-bal: #d7f1ea;
+  }
 
-    *{ box-sizing:border-box; }
-    html, body{
-      margin:0;
-      padding:0;
-      background:#f3f4f6;
-      font-family:var(--font);
-      color:var(--ink);
-      width:100%;
-      overflow-x:hidden;
-      -webkit-text-size-adjust:100%;
-      text-size-adjust:100%;
-    }
+  *{ box-sizing:border-box; }
+  html, body{
+    margin:0;
+    padding:0;
+    background:#f3f4f6;
+    font-family:var(--font);
+    color:var(--ink);
+    width:100%;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
 
-    .stage{
-      width:100%;
-      padding-top:14px;
-      padding-bottom:40px;
-      padding-left:calc(10px + env(safe-area-inset-left));
-      padding-right:calc(10px + env(safe-area-inset-right));
-      overflow-x:hidden;
-      position:relative;
-    }
+  .stage{
+    width:100%;
+    padding-top:14px;
+    padding-bottom:40px;
+    padding-left:calc(10px + env(safe-area-inset-left));
+    padding-right:calc(10px + env(safe-area-inset-right));
+    overflow-x:hidden;
+    position:relative;
+  }
 
-    .sheetWrap{
-      width:var(--sheet-w);
-      position:relative;
-      left:50%;
-      transform-origin: top center;
-      transform: translateX(-50%) scale(var(--scale, 1));
-      will-change: transform;
-      backface-visibility:hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+  .sheetWrap{
+    width:var(--sheet-w);
+    position:relative;
+    left:50%;
+    transform-origin: top center;
+    transform: translateX(-50%) scale(var(--scale, 1));
+    will-change: transform;
+    backface-visibility:hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    .sheet{
-      width:var(--sheet-w);
-      background:#fff;
-      border:1px solid #d5d7db;
-      box-shadow:0 8px 28px rgba(0,0,0,.08);
-      padding:var(--pad);
-    }
+  .sheet{
+    width:var(--sheet-w);
+    background:#fff;
+    border:1px solid #d5d7db;
+    box-shadow:0 8px 28px rgba(0,0,0,.08);
+    padding:var(--pad);
+  }
 
-    input{
-      width:100%;
-      min-width:0;
-      max-width:100%;
-      border:0;
-      outline:0;
-      background:transparent;
-      font:inherit;
-      color:inherit;
-      padding:0;
-      margin:0;
-      display:block;
-      -webkit-appearance:none;
-      appearance:none;
-      border-radius:0;
-    }
-    .num{
-      text-align:right;
-      white-space:nowrap;
-      font-variant-numeric: tabular-nums;
-    }
+  input{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    font:inherit;
+    color:inherit;
+    padding:0;
+    margin:0;
+    display:block;
+    -webkit-appearance:none;
+    appearance:none;
+    border-radius:0;
+  }
+  .num{
+    text-align:right;
+    white-space:nowrap;
+    font-variant-numeric: tabular-nums;
+  }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      table-layout:fixed;
-    }
-    th, td{
-      overflow:hidden;
-      white-space:nowrap;
-      text-overflow:clip;
-      vertical-align:middle;
-      min-width:0;
-    }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+  }
+  th, td{
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:clip;
+    vertical-align:middle;
+    min-width:0;
+  }
 
-    /* =========================
-       제목(수정 가능 + 점선 제거)
-       ========================= */
-    .titleWrap{
-      margin:6px 0 14px;
-      padding:14px 10px 12px;
-      position:relative;
-    }
-    .titleLineTop,
-    .titleLineBot{
-      height:6px;
-      background:linear-gradient(90deg, #9cff4a 0 44%, #6fdc33 44% 46%, #78e63a 46% 100%);
-      border-radius:3px;
-    }
-    .titleLineTop{ margin:0 0 14px; }
-    .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
+  /* =========================
+     제목(수정 가능 + 점선 제거)
+     ========================= */
+  .titleWrap{
+    margin:6px 0 14px;
+    padding:14px 10px 12px;
+    position:relative;
+  }
+  .titleLineTop,
+  .titleLineBot{
+    height:6px;
+    background:linear-gradient(90deg, #9cff4a 0 44%, #6fdc33 44% 46%, #78e63a 46% 100%);
+    border-radius:3px;
+  }
+  .titleLineTop{ margin:0 0 14px; }
+  .titleLineBot{ margin:14px 0 0; background:linear-gradient(90deg, #2f7f2b 0 50%, #5fdd33 50% 52%, #2f7f2b 52% 100%); }
 
-    .titleBox{
-      border:0;
-      padding:10px 14px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:#fff;
-    }
-    .titleText{
-      font-weight:1000;
-      -webkit-text-stroke: 1px rgba(0,0,0,.25);
-      font-size:56px;
-      letter-spacing:-1px;
-      line-height:1.02;
-      color:#143a63;
-      text-shadow: 4px 4px 0 rgba(0,0,0,.18);
-      white-space:nowrap;
-    }
+  .titleBox{
+    border:0;
+    padding:10px 14px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#fff;
+  }
+  .titleText{
+    font-weight:1000;
+    -webkit-text-stroke: 1px rgba(0,0,0,.25);
+    font-size:56px;
+    letter-spacing:-1px;
+    line-height:1.02;
+    color:#143a63;
+    text-shadow: 4px 4px 0 rgba(0,0,0,.18);
+    white-space:nowrap;
+  }
 
-    .summary{
-      border:var(--b) solid var(--ink);
-      margin:6px 0 12px;
-    }
-    .summaryGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    .sumCell{ border-right:var(--b) solid var(--ink); }
-    .sumCell:last-child{ border-right:0; }
-    .sumHead{
-      border-bottom:var(--b) solid var(--ink);
-      text-align:center;
-      font-size:20px;
-      padding:10px 8px;
-      letter-spacing:2px;
-      font-weight:900;
-      background:#fff; /* ✅ 배경색 제거 */
-    }
-    .sumVal{
-      text-align:center;
-      font-weight:900;
-      font-size:34px;
-      padding:14px 10px;
-      background:#fff; /* ✅ 배경색 제거 */
-    }
-    .sumVal.red{ color:var(--red); }
-    .sumVal input{
-      text-align:center;
-      font-weight:900;
-      font-size:34px;
-    }
-    .sumVal.red input{ color:var(--red); }
+  .summary{
+    border:var(--b) solid var(--ink);
+    margin:6px 0 12px;
+  }
+  .summaryGrid{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .sumCell{ border-right:var(--b) solid var(--ink); }
+  .sumCell:last-child{ border-right:0; }
+  .sumHead{
+    border-bottom:var(--b) solid var(--ink);
+    text-align:center;
+    font-size:20px;
+    padding:10px 8px;
+    letter-spacing:2px;
+    font-weight:900;
+    background:#fff; /* ✅ 배경색 제거 */
+  }
+  .sumVal{
+    text-align:center;
+    font-weight:900;
+    font-size:34px;
+    padding:14px 10px;
+    background:#fff; /* ✅ 배경색 제거 */
+  }
+  .sumVal.red{ color:var(--red); }
+  .sumVal input{
+    text-align:center;
+    font-weight:900;
+    font-size:34px;
+  }
+  .sumVal.red input{ color:var(--red); }
 
-    .miniNote{ display:none; }
+  .miniNote{ display:none; }
 
-    .sectionTitle{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:10px 0 8px;
-      font-weight:900;
-      font-size:22px;
-    }
-    .dot{
-      width:18px; height:18px;
-      border:2px solid var(--ink);
-      border-radius:50%;
-      flex:0 0 auto;
-    }
+  .sectionTitle{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:10px 0 8px;
+    font-weight:900;
+    font-size:22px;
+  }
+  .dot{
+    width:18px; height:18px;
+    border:2px solid var(--ink);
+    border-radius:50%;
+    flex:0 0 auto;
+  }
 
-    .editText{
-      display:inline-block;
-      min-width:10px;
-      outline:none;
-      cursor:text;
-    }
+  .editText{
+    display:inline-block;
+    min-width:10px;
+    outline:none;
+    cursor:text;
+  }
 
-    .tbl{
-      border:var(--b) solid var(--ink);
-    }
-    .tbl th, .tbl td{
-      border:var(--b2) solid var(--grid);
-      padding:6px 8px;
-      font-size:16px;
-    }
-    .tbl th{
-      background:#f2f2f2;
-      text-align:center;
-      font-weight:900;
-      letter-spacing:2px;
-    }
-    .tbl .subhead th{
-      background:#f7f7f7;
-      letter-spacing:1px;
-    }
-    .center{ text-align:center; }
-    .right{ text-align:right; }
-    .bold{ font-weight:900; }
+  .tbl{
+    border:var(--b) solid var(--ink);
+  }
+  .tbl th, .tbl td{
+    border:var(--b2) solid var(--grid);
+    padding:6px 8px;
+    font-size:16px;
+  }
+  .tbl th{
+    background:#f2f2f2;
+    text-align:center;
+    font-weight:900;
+    letter-spacing:2px;
+  }
+  .tbl .subhead th{
+    background:#f7f7f7;
+    letter-spacing:1px;
+  }
+  .center{ text-align:center; }
+  .right{ text-align:right; }
+  .bold{ font-weight:900; }
 
-    .noteLine{
-      border:var(--b) solid var(--ink);
-      padding:8px 10px;
-      margin:-2px 0 8px;
-      font-size:14px;
-      color:#222;
-      text-align:center;
-      font-weight:800;
-    }
+  .noteLine{
+    border:var(--b) solid var(--ink);
+    padding:8px 10px;
+    margin:-2px 0 8px;
+    font-size:14px;
+    color:#222;
+    text-align:center;
+    font-weight:800;
+  }
 
-    .colDesc{ width:28%; }
-    .colAmt{ width:16%; }
-    .colDesc2{ width:28%; }
-    .colAmt2{ width:16%; }
-    .colBigo{ width:12%; }
+  .colDesc{ width:28%; }
+  .colAmt{ width:16%; }
+  .colDesc2{ width:28%; }
+  .colAmt2{ width:16%; }
+  .colBigo{ width:12%; }
 
-    .bankWrap{
-      border:var(--b) solid var(--ink);
-      padding:10px;
-    }
-    .bankTables{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .bankTbl{
-      border:var(--b) solid var(--ink);
-    }
-    .bankTbl th, .bankTbl td{
-      border:var(--b2) solid var(--grid);
-      padding:6px 6px;
-      font-size:14px;
-    }
-    .bankTopTitle{
-      border-bottom:var(--b2) solid var(--grid);
-      font-weight:900;
-      text-align:center;
-      letter-spacing:4px;
-      padding:6px 0;
-      background:#fff;
-    }
+  .bankWrap{
+    border:var(--b) solid var(--ink);
+    padding:10px;
+  }
+  .bankTables{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+  .bankTbl{
+    border:var(--b) solid var(--ink);
+  }
+  .bankTbl th, .bankTbl td{
+    border:var(--b2) solid var(--grid);
+    padding:6px 6px;
+    font-size:14px;
+  }
+  .bankTopTitle{
+    border-bottom:var(--b2) solid var(--grid);
+    font-weight:900;
+    text-align:center;
+    letter-spacing:4px;
+    padding:6px 0;
+    background:#fff;
+  }
 
-    .prevRow{
-      display:grid;
-      grid-template-columns: 140px 1fr;
-      border-bottom:var(--b2) solid var(--grid);
-    }
-    .prevRow .label{
-      background:#f7f7f7;
-      border-right:var(--b2) solid var(--grid);
-      text-align:center;
-      font-weight:900;
-      letter-spacing:2px;
-      padding:8px 8px;
-    }
-    .prevRow .val{
-      padding:8px 8px;
-      font-weight:900;
-      text-align:right;
-      min-width:0;
-    }
+  .prevRow{
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    border-bottom:var(--b2) solid var(--grid);
+  }
+  .prevRow .label{
+    background:#f7f7f7;
+    border-right:var(--b2) solid var(--grid);
+    text-align:center;
+    font-weight:900;
+    letter-spacing:2px;
+    padding:8px 8px;
+  }
+  .prevRow .val{
+    padding:8px 8px;
+    font-weight:900;
+    text-align:right;
+    min-width:0;
+  }
 
-    .bankTbl col.desc{ width:28%; }
-    .bankTbl col.in{ width:24%; }
-    .bankTbl col.out{ width:24%; }
-    .bankTbl col.bal{ width:24%; }
+  .bankTbl col.desc{ width:28%; }
+  .bankTbl col.in{ width:24%; }
+  .bankTbl col.out{ width:24%; }
+  .bankTbl col.bal{ width:24%; }
 
-    .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
+  .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
 
-    /* ✅ 은행 “한 줄만” 색: 헤더의 입금/출금/잔액 칸만 */
-    .thIn{ background:var(--c-in) !important; }
-    .thOut{ background:var(--c-out) !important; }
-    .thBal{ background:var(--c-bal) !important; }
+  /* ✅ 은행 “한 줄만” 색: 헤더의 입금/출금/잔액 칸만 */
+  .thIn{ background:var(--c-in) !important; }
+  .thOut{ background:var(--c-out) !important; }
+  .thBal{ background:var(--c-bal) !important; }
 
-    .cellDesc{ background:#fbfbfb; }
-    .cellAmt{ background:#fdfdfd; }
+  .cellDesc{ background:#fbfbfb; }
+  .cellAmt{ background:#fdfdfd; }
 
-    /* =========================
-       하단: 통합잔액(그냥 전체 숫자)
-       - 라벨 없음
-       - 날짜/회사+대표 2줄 박스 안
-       ========================= */
-    .integratedBox{
-      border:var(--b) solid var(--ink);
-      margin-top:10px;
-      padding:12px 12px 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      position:relative;
-      min-height:150px;
-    }
+  /* =========================
+     하단: 통합잔액(그냥 전체 숫자)
+     - 라벨 없음
+     - 날짜/회사+대표 2줄 박스 안
+     ========================= */
+  .integratedBox{
+    border:var(--b) solid var(--ink);
+    margin-top:10px;
+    padding:12px 12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    position:relative;
+    min-height:150px;
+  }
 
-    .integratedVal{
-      width:100%;
-      text-align:right;
-      font-size:34px;
-      font-weight:900;
-      color:var(--red);
-      white-space:nowrap;
-      overflow:hidden;
-      line-height:1.05;
-    }
+  .integratedVal{
+    width:100%;
+    text-align:right;
+    font-size:34px;
+    font-weight:900;
+    color:var(--red);
+    white-space:nowrap;
+    overflow:hidden;
+    line-height:1.05;
+  }
 
-    .integratedMeta{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      padding-top:2px;
-    }
-    .metaLine1,
-    .metaLine2{
-      text-align:center;
-      font-weight:900;
-      color:#143a63;
-      text-shadow: 2px 2px 0 rgba(0,0,0,.14);
-      letter-spacing:-0.5px;
-      font-size:30px;
-      line-height:1.02;
-      white-space:nowrap;
-    }
+  .integratedMeta{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding-top:2px;
+  }
+  .metaLine1,
+  .metaLine2{
+    text-align:center;
+    font-weight:900;
+    color:#143a63;
+    text-shadow: 2px 2px 0 rgba(0,0,0,.14);
+    letter-spacing:-0.5px;
+    font-size:30px;
+    line-height:1.02;
+    white-space:nowrap;
+  }
 
-    .stampOverlay{
-      position:absolute;
-      right:18px;
-      bottom:10px;
-      width:92px;
-      height:92px;
-      pointer-events:none;
-      opacity:.92;
-      transform: rotate(-2deg);
-      display:none;
-      z-index:5;
-    }
+  .stampOverlay{
+    position:absolute;
+    right:18px;
+    bottom:10px;
+    width:92px;
+    height:92px;
+    pointer-events:none;
+    opacity:.92;
+    transform: rotate(-2deg);
+    display:none;
+    z-index:5;
+  }
 
-    @media print{
-      body{ background:#fff; }
-      .stage{ padding:0; }
-      .sheet{ border:0; box-shadow:none; }
-      .sheetWrap{ transform: translateX(-50%) scale(1) !important; }
-    }
+  @media print{
+    body{ background:#fff; }
+    .stage{ padding:0; }
+    .sheet{ border:0; box-shadow:none; }
+    .sheetWrap{ transform: translateX(-50%) scale(1) !important; }
+  }
 
-    /* ===== 상단 요약 3칸 : 헤더 한 줄만 색 ===== */
-    .sumCell:nth-child(1) .sumHead{ background:#e8f0fb !important; }
-    .sumCell:nth-child(2) .sumHead{ background:#fde9d9 !important; }
-    .sumCell:nth-child(3) .sumHead{ background:#e6f6f2 !important; }
+  /* ===== 상단 요약 3칸 : 헤더 한 줄만 색 ===== */
+  .sumCell:nth-child(1) .sumHead{ background:#e8f0fb !important; }
+  .sumCell:nth-child(2) .sumHead{ background:#fde9d9 !important; }
+  .sumCell:nth-child(3) .sumHead{ background:#e6f6f2 !important; }
 
-    /* ===== 수입/지출: '적요/금액' 헤더 한 줄만 색 ===== */
-    #incomeExpenseTable thead tr.subhead th:nth-child(1),
-    #incomeExpenseTable thead tr.subhead th:nth-child(2){ background:#e8f0fb !important; }
-    #incomeExpenseTable thead tr.subhead th:nth-child(3),
-    #incomeExpenseTable thead tr.subhead th:nth-child(4){ background:#fde9d9 !important; }
+  /* ===== 수입/지출: '적요/금액' 헤더 한 줄만 색 ===== */
+  #incomeExpenseTable thead tr.subhead th:nth-child(1),
+  #incomeExpenseTable thead tr.subhead th:nth-child(2){ background:#e8f0fb !important; }
+  #incomeExpenseTable thead tr.subhead th:nth-child(3),
+  #incomeExpenseTable thead tr.subhead th:nth-child(4){ background:#fde9d9 !important; }
 
-    /* (중요) 본문칸은 기존 cellDesc/cellAmt 색이 있으면 제거 */
-    #incomeExpenseTable tbody td.cellDesc,
-    #incomeExpenseTable tbody td.cellAmt{ background:#fff !important; }
+  /* (중요) 본문칸은 기존 cellDesc/cellAmt 색이 있으면 제거 */
+  #incomeExpenseTable tbody td.cellDesc,
+  #incomeExpenseTable tbody td.cellAmt{ background:#fff !important; }
 
-    /* ===== 모든 금액 숫자 오른쪽 끝 정렬 ===== */
-    input.num, input.money{ text-align:right !important; padding-right:0 !important; }
-    .sumVal, .sumVal input{ text-align:right !important; padding-right:12px !important; }
+  /* ===== 모든 금액 숫자 오른쪽 끝 정렬 ===== */
+  input.num, input.money{ text-align:right !important; padding-right:0 !important; }
+  .sumVal, .sumVal input{ text-align:right !important; padding-right:12px !important; }
 
-    #incomeExpenseTable td:nth-child(2),
-    #incomeExpenseTable td:nth-child(4),
-    #incomeExpenseTable td:nth-child(2) input,
-    #incomeExpenseTable td:nth-child(4) input{
-      text-align:right !important; padding-right:8px !important;
-    }
+  #incomeExpenseTable td:nth-child(2),
+  #incomeExpenseTable td:nth-child(4),
+  #incomeExpenseTable td:nth-child(2) input,
+  #incomeExpenseTable td:nth-child(4) input{
+    text-align:right !important; padding-right:8px !important;
+  }
 
-    .bankTbl td,
-    .bankTbl td input{ text-align:right !important; padding-right:6px !important; }
+  .bankTbl td,
+  .bankTbl td input{ text-align:right !important; padding-right:6px !important; }
 
-    #incSum,#expSum,#net,#netFoot,#endBal,#ibInSum,#ibOutSum,#ibEnd,#nhInSum,#nhOutSum,#nhEnd{
-      text-align:right !important; padding-right:6px !important;
-    }
+  #incSum,#expSum,#net,#netFoot,#endBal,#ibInSum,#ibOutSum,#ibEnd,#nhInSum,#nhOutSum,#nhEnd{
+    text-align:right !important; padding-right:6px !important;
+  }
 
-    /* 도장 */
-    .ceoStamp{ height:34px; margin-left:10px; vertical-align:middle; opacity:0.9; }
-    .nameLast{ position:relative; display:inline-block; z-index:2; }
-    .ceoStampBig{
-      position:absolute;
-      width:90px;
-      height:90px;
-      left:50%;
-      top:50%;
-      transform:translate(-50%, -50%);
-      opacity:0.9;
-      pointer-events:none;
-      z-index:1;
-    }
-    .signLine{
-      font-weight:900;
-      font-size:30px;
-      color:#143a63;
-      letter-spacing:-0.5px;
-      line-height:1.02;
-      white-space:nowrap;
-    }
-  </style>
+  /* 도장 */
+  .ceoStamp{ height:34px; margin-left:10px; vertical-align:middle; opacity:0.9; }
+  .nameLast{ position:relative; display:inline-block; z-index:2; }
+  .ceoStampBig{
+    position:absolute;
+    width:90px;
+    height:90px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    opacity:0.9;
+    pointer-events:none;
+    z-index:1;
+  }
+  .signLine{
+    font-weight:900;
+    font-size:30px;
+    color:#143a63;
+    letter-spacing:-0.5px;
+    line-height:1.02;
+    white-space:nowrap;
+  }
+
+  /* ===============================
+     ✅ 추가: 적요(본문) 전체 가운데 정렬
+     =============================== */
+  #incomeExpenseTable tbody td.cellDesc,
+  #incomeExpenseTable tbody td.cellDesc input{
+    text-align:center !important;
+  }
+
+  .bankTbl tbody td:first-child,
+  .bankTbl tbody td:first-child input{
+    text-align:center !important;
+    padding-right:0 !important;
+  }
+
+  /* ===============================
+     ✅ 추가: 은행 거래내역 전월이월액/합계잔액 숫자만 빨강
+     =============================== */
+  #ibPrev, #nhPrev, #ibEnd, #nhEnd{
+    color: var(--red) !important;
+  }
+
+  /* ===============================
+     ✅ 추가: 모든 글자/숫자 굵게
+     =============================== */
+  body,
+  input,
+  textarea,
+  select,
+  table,
+  th,
+  td,
+  span,
+  div{
+    font-weight:900 !important;
+  }
+</style>
 </head>
    <body>
     <div class="stage">
