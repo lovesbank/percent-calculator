@@ -278,10 +278,11 @@
     min-width:0;
   }
 
-  .bankTbl col.desc{ width:28%; }
-  .bankTbl col.in{ width:24%; }
-  .bankTbl col.out{ width:24%; }
-  .bankTbl col.bal{ width:24%; }
+  .bankTbl col.date{ width:18%; }
+  .bankTbl col.desc{ width:22%; }
+  .bankTbl col.in{ width:20%; }
+  .bankTbl col.out{ width:20%; }
+  .bankTbl col.bal{ width:20%; }
 
   .bankTbl th{ background:#f2f2f2; text-align:center; font-weight:900; }
 
@@ -422,8 +423,10 @@
     text-align:center !important;
   }
 
-  .bankTbl tbody td:first-child,
-  .bankTbl tbody td:first-child input{
+  .bankTbl tbody td:nth-child(1),
+  .bankTbl tbody td:nth-child(1) input,
+  .bankTbl tbody td:nth-child(2),
+  .bankTbl tbody td:nth-child(2) input{
     text-align:center !important;
     padding-right:0 !important;
   }
@@ -609,9 +612,10 @@
               </div>
 
               <table class="bankTbl" id="ibTable">
-                <colgroup><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
+                <colgroup><col class="date"><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
                 <thead>
                   <tr>
+                    <th class="center">날&nbsp;&nbsp;짜</th>
                     <th class="center">적&nbsp;&nbsp;요</th>
                     <th class="center thIn">입&nbsp;&nbsp;금</th>
                     <th class="center thOut">출&nbsp;&nbsp;금</th>
@@ -619,25 +623,26 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="8,508,100"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="15,500,000"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="946"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="6,967,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="4,527,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="14,300,000"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="1,895,650"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="8,508,100"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="15,500,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="946"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="6,967,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="4,527,300"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="14,300,000"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="전력거래소"></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="1,895,650"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
 
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money ib-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money ib-out" inputmode="numeric" value="0"></td><td><input class="num ib-bal" readonly></td></tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <th class="center">합&nbsp;&nbsp;계</th>
+                    <th class="right"></th>
                     <th class="right"><input id="ibInSum" class="num" readonly></th>
                     <th class="right"><input id="ibOutSum" class="num" readonly></th>
                     <th class="right"><input id="ibEnd" class="num" readonly></th>
@@ -654,9 +659,10 @@
               </div>
 
               <table class="bankTbl" id="nhTable">
-                <colgroup><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
+                <colgroup><col class="date"><col class="desc"><col class="in"><col class="out"><col class="bal"></colgroup>
                 <thead>
                   <tr>
+                    <th class="center">날&nbsp;&nbsp;짜</th>
                     <th class="center">적&nbsp;&nbsp;요</th>
                     <th class="center thIn">입&nbsp;&nbsp;금</th>
                     <th class="center thOut">출&nbsp;&nbsp;금</th>
@@ -664,25 +670,26 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td class="cellDesc"><input value="이음북스"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="93,700"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="이사회식대"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="52,000"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="15,500,000"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="송전료"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="347,720"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="김균태회계"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="154,000"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="보상금"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="10,500,500"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="대표,이사회수당"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="800,000"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="군청근조화환"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="100,000"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="운영비"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="11,000,500"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="5,492"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="이음북스"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="93,700"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="이사회식대"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="52,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="염전마을주"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="15,500,000"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="송전료"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="347,720"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="김균태회계"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="154,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="보상금"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="10,500,500"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="대표,이사회수당"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="800,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="군청근조화환"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="100,000"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="운영비"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="11,000,500"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value="이자"></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="5,492"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
 
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
-                  <tr><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
+                  <tr><td class="cellDesc"><input value=""></td><td class="cellDesc"><input value=""></td><td class="cellAmt"><input class="num money nh-in" inputmode="numeric" value="0"></td><td class="cellAmt"><input class="num money nh-out" inputmode="numeric" value="0"></td><td><input class="num nh-bal" readonly></td></tr>
                 </tbody>
                 <tfoot>
                   <tr>
                     <th class="center">합&nbsp;&nbsp;계</th>
+                    <th class="right"></th>
                     <th class="right"><input id="nhInSum" class="num" readonly></th>
                     <th class="right"><input id="nhOutSum" class="num" readonly></th>
                     <th class="right"><input id="nhEnd" class="num" readonly></th>
